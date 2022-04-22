@@ -8,7 +8,7 @@ export default function tokenDetails() {
       <h1 className=' font-space-grotesk font-bold text-xl text-white'>Token details</h1>
       <PrimaryButton title='primary button' />
       <SecondaryButton title='secondary button' />
-      <Input />
+      <Input label='Name of your token' placeholder='ABCD' />
     </section>
   )
 }
