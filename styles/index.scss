@@ -3,3 +3,7 @@
 @tailwind utilities;
 
 @import "./utilities.scss";
+
+.body-gradient {
+  background: linear-gradient(119.2deg, #071741 22.38%, #010c27 93.45%);
+}
