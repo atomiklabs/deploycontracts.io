@@ -10,7 +10,10 @@ class MyDocument extends Document {
             rel='stylesheet'
           />
         </Head>
-        <body className='font-montserrat font-default text-base'>
+        <body
+          className='font-montserrat font-default text-base h-screen'
+          style={{ background: 'linear-gradient(119.2deg, #071741 22.38%, #010C27 93.45%)' }}
+        >
           <Main />
           <NextScript />
         </body>
