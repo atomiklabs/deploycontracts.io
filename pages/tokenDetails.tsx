@@ -1,14 +1,28 @@
 import PrimaryButton from '@/components/buttons/PrimaryButton'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
+import Container from '@/components/Container'
 import Input from '@/components/Input'
 
 export default function tokenDetails() {
   return (
-    <section className='flex flex-col m-auto max-w-[500px] gap-y-8'>
-      <h1 className=' font-space-grotesk font-bold text-xl text-white'>Token details</h1>
-      <PrimaryButton title='primary button' />
-      <SecondaryButton title='secondary button' />
-      <Input label='Name of your token' placeholder='ABCD' />
+    <section>
+      <Container>
+        <div className='col-start-5 col-span-4 flex flex-col gap-y-[34px]'>
+          <h1 className='font-space-grotesk font-bold text-xl text-white'>Token details</h1>
+          <p className='text-gray-100'>
+            Token generations is.... consectetur adipiscing elit. Etiam pulvinar leo vitae massa congue euismod eget
+            convallis tortor.
+          </p>
+        </div>
+        <div className='col-start-5 col-span-4'>
+          <SecondaryButton title='secondary button' />
+        </div>
+        <form className='col-start-5 col-span-4 mt-12 flex flex-col gap-y-[52px]'>
+          <Input label='Name of your token' placeholder='ABCD' />
+          <Input label='Tottal supply' placeholder='1 000 000 000' />
+          <PrimaryButton title='primary button' />
+        </form>
+      </Container>
     </section>
   )
 }
