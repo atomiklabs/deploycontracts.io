@@ -3,7 +3,7 @@ import Document, { Html, Head, Main, NextScript } from 'next/document'
 class MyDocument extends Document {
   render() {
     return (
-      <Html>
+      <Html className='bg-[#031032]'>
         <Head>
           <link
             href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&family=Space+Grotesk:wght@700&display=swap'
