@@ -7,7 +7,7 @@ export default function Input({ label, placeholder }: { label: string; placehold
     <div className='flex flex-col gap-y-2'>
       <label className='text-white font-medium'>{label}</label>
       <input
-        className='py-4 px-5 bg-[#000B28] border-2 border-[#455378] outline-none focus:ring-0 rounded-2xl text-gray-100 placeholder:text-gray-300 input focus:input visited:border-[#6075AA]'
+        className='input py-4 px-5 bg-[#000B28] border-2 border-[#455378] outline-none focus:ring-0 rounded-2xl text-gray-100 placeholder:text-gray-300 active:input visited:border-[#6075AA]'
         style={{ borderColor: error ? `${defaultColors.error}` : '' }}
         type='text'
         placeholder={placeholder}
