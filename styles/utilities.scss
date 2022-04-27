@@ -14,13 +14,13 @@
     -webkit-mask: linear-gradient(115.82deg, #671bc9 5.15%, #fd0f9e 108.88%) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
   }
-  &:hover::before {
-    background: linear-gradient(122.48deg, #671bc9 -52.99%, #fd0f9e 97.26%) !important;
-  }
+  
+  &:hover::before,
   &:focus::before {
     background: linear-gradient(122.48deg, #671bc9 -52.99%, #fd0f9e 97.26%) !important;
   }
 }
+
 .input {
   position: relative;
 
@@ -32,3 +32,4 @@
     background-clip: padding-box, border-box;
   }
 }
+
