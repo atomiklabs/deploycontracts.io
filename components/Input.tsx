@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 
 export default function Input({ label, placeholder }: { label: string; placeholder: string }) {
-  const [error, setError] = useState(true)
+  const [error, setError] = useState(false)
   return (
     <div className='flex flex-col gap-y-2'>
       <label className='text-white font-medium'>{label}</label>
