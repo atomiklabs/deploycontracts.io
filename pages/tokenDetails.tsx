@@ -1,15 +1,17 @@
+import { useState } from 'react'
 import PrimaryButton from '@/components/buttons/PrimaryButton'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import Container from '@/components/Container'
 import Input from '@/components/Input'
-import Steps from '@/components/steps/Steps'
+import { Steps } from '@/components/steps'
 
 export default function tokenDetails() {
+  const [activeStep, setActiveStep] = useState(2)
   return (
     <section>
       <Container>
         <div className='mt-10 col-span-full sm:col-start-3 sm:col-span-8 xl:col-start-5 xl:col-span-4'>
-          <Steps />
+          <Steps activeStep={activeStep} />
         </div>
         <div className='col-span-full sm:col-start-3 sm:col-span-8 xl:col-start-5 xl:col-span-4 flex flex-col gap-y-[34px]'>
           <h1 className='font-space-grotesk font-bold text-xl text-white'>Token details</h1>
