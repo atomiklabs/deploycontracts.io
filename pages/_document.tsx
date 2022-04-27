@@ -11,7 +11,7 @@ class MyDocument extends Document {
           />
         </Head>
         <body
-          className='font-montserrat font-default text-base h-screen'
+          className='font-montserrat font-default text-base min-h-screen'
           style={{ background: 'linear-gradient(119.2deg, #071741 22.38%, #010C27 93.45%)' }}
         >
           <Main />
