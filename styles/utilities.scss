@@ -14,7 +14,7 @@
     -webkit-mask: linear-gradient(115.82deg, #671bc9 5.15%, #fd0f9e 108.88%) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
   }
-  
+
   &:hover::before,
   &:active::before {
     background: linear-gradient(122.48deg, #671bc9 -52.99%, #fd0f9e 97.26%) !important;
@@ -30,6 +30,6 @@
     background-image: linear-gradient(#000b28, #000b28), linear-gradient(115.82deg, #671bc9 5.15%, #fd0f9e 108.88%);
     background-origin: border-box;
     background-clip: padding-box, border-box;
+    box-shadow: none;
   }
 }
-
