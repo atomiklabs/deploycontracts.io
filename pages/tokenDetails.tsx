@@ -6,7 +6,7 @@ export default function tokenDetails() {
     <section className='text-center'>
       <h1 className=' font-space-grotesk font-bold text-xl text-white'>Token details</h1>
 
-      <PrimaryButton title='primary button' />
+      <PrimaryButton>Primary Button</PrimaryButton>
       <SecondaryButton>secondary button</SecondaryButton>
     </section>
   )
