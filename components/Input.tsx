@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { useState } from 'react'
 
 export default function Input({ label, placeholder }: { label: string; placeholder: string }) {
@@ -14,7 +13,7 @@ export default function Input({ label, placeholder }: { label: string; placehold
       />
       {error && (
         <div className='flex flex-row gap-x-2 items-center'>
-          <Image src='/assets/error.svg' width={14} height={16} />
+          <img src='/assets/error.svg' width={14} height={16} />
           <span className='text-xs font-medium text-[#FC0E47]'>Error</span>
         </div>
       )}
