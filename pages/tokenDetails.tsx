@@ -1,10 +1,14 @@
-import PrimaryButton from '@/components/PrimaryButton'
+import PrimaryButton from '@/components/buttons/PrimaryButton'
+import SecondaryButton from '@/components/buttons/SecondaryButton'
+import Input from '@/components/Input'
 
 export default function tokenDetails() {
   return (
-    <section className='text-center'>
+    <section className='flex flex-col m-auto max-w-[500px] gap-y-8'>
       <h1 className=' font-space-grotesk font-bold text-xl text-white'>Token details</h1>
-      <PrimaryButton>primary button</PrimaryButton>
+      <PrimaryButton title='primary button' />
+      <SecondaryButton title='secondary button' />
+      <Input label='Name of your token' placeholder='ABCD' />
     </section>
   )
 }
