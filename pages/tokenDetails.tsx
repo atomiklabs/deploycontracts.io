@@ -19,12 +19,12 @@ export default function tokenDetails() {
           </p>
         </div>
         <div className='col-span-full sm:col-start-3 sm:col-span-8 xl:col-start-5 xl:col-span-4'>
-          <SecondaryButton title='secondary button' />
+          <SecondaryButton>Connect you wallet</SecondaryButton>
         </div>
         <form className='col-span-full sm:col-start-3 sm:col-span-8 xl:col-start-5 xl:col-span-4 mt-12 flex flex-col gap-y-[52px]'>
           <Input label='Name of your token' placeholder='ABCD' />
           <Input label='Tottal supply' placeholder='1 000 000 000' />
-          <PrimaryButton title='primary button' />
+          <PrimaryButton>Next</PrimaryButton>
         </form>
       </Container>
     </section>
