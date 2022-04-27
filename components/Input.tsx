@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { defaultColors } from '../consts'
 
 export default function Input({ label, placeholder }: { label: string; placeholder: string }) {
   const [error, setError] = useState(false)
@@ -7,7 +8,7 @@ export default function Input({ label, placeholder }: { label: string; placehold
       <label className='text-white font-medium'>{label}</label>
       <input
         className='py-4 px-5 bg-[#000B28] border-2 border-[#455378] outline-none focus:ring-0 rounded-2xl text-gray-100 placeholder:text-gray-300 input focus:input visited:border-[#6075AA]'
-        style={{ borderColor: error ? '#FC0E47' : '' }}
+        style={{ borderColor: error ? `${defaultColors.error}` : '' }}
         type='text'
         placeholder={placeholder}
       />
