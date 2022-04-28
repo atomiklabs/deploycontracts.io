@@ -22,7 +22,7 @@ export function Steps({ activeStep }: StepsProps) {
           activeStep === idx ? (
             <div className='flex flex-1 items-center gap-x-4'>
               <StepIcon
-                key={idx}
+                key={`a-${idx}`}
                 className='w-12 h-12 cursor-pointer'
                 data-for='custom-class'
                 data-tip={pageTitles.slice(idx, idx + 1)}
@@ -48,9 +48,9 @@ export function Steps({ activeStep }: StepsProps) {
               />
             </div>
           ) : (
-            <div>
+            <>
               <StepIcon
-                key={idx}
+                key={`b-${idx}`}
                 className='w-12 h-12 cursor-pointer self-end'
                 data-for='custom-class'
                 data-tip={pageTitles.slice(idx, idx + 1)}
@@ -72,7 +72,7 @@ export function Steps({ activeStep }: StepsProps) {
                 type='dark'
                 effect='solid'
               />
-            </div>
+            </>
           ),
         )}
       </div>
