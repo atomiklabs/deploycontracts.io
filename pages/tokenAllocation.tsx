@@ -19,7 +19,7 @@ export default function tokenAllocation() {
   }
 
   return (
-    <section>
+    <section className='py-20'>
       <Container>
         <div className='mt-[38px]flex flex-col gap-y-[34px]'>
           <h1 className='font-space-grotesk font-bold text-xl text-white'>Token allocation</h1>
