@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Container from '@/components/Container'
-import AllocationCart from '@/components/AllocationCart'
+import AllocationCard from '@/components/AllocationCard'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 
 export default function tokenAllocation() {
@@ -30,7 +30,7 @@ export default function tokenAllocation() {
         </div>
         <div className='mt-[41px] flex flex-col gap-y-9'>
           {allocations.map((x, i) => (
-            <AllocationCart key={i} myKey={x} counter={counter} deleteAllocation={deleteAllocation} />
+            <AllocationCard key={i} myKey={x} counter={counter} deleteAllocation={deleteAllocation} />
           ))}
           <SecondaryButton onClick={() => addAllocation()}>
             <div className='px-12 py-4'>Add new</div>
