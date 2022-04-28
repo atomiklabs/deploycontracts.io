@@ -1,5 +1,5 @@
-import { Step1Icon, Step2Icon, Step3Icon, Step4Icon, useStepIcon } from '@/components/steps/icons'
-
+import { Step1Icon, Step2Icon, Step3Icon, Step4Icon } from '@/components/steps/icons'
+import { useStepIcon } from '@/components/steps/useStepIcon'
 type StepsProps = {
   activeStep: number
 }
