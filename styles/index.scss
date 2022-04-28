@@ -5,6 +5,9 @@
 @import "./utilities.scss";
 @import "./fonts.scss";
 
+html {
+  background: #071741;
+}
 .body-gradient {
   background: linear-gradient(119.2deg, #071741 22.38%, #010c27 93.45%);
 }
