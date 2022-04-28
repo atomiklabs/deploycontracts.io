@@ -1,10 +1,14 @@
+import dynamic from 'next/dynamic'
 import { useState } from 'react'
-import ReactTooltip from 'react-tooltip'
 import { Step1Icon, Step2Icon, Step3Icon, Step4Icon } from '@/components/steps/icons'
 import { useStepIcon } from '@/components/steps/useStepIcon'
 type StepsProps = {
   activeStep: number
 }
+
+const ReactTooltip = dynamic(() => import('react-tooltip'), {
+  ssr: false,
+})
 
 const pageTitles = ['Token Details', 'Token Allocation', 'Marketing details', 'Summary']
 
@@ -20,7 +24,7 @@ export function Steps({ activeStep }: StepsProps) {
               <StepIcon
                 key={idx}
                 className='w-12 h-12 cursor-pointer'
-                data-class='custom-tooltip'
+                data-for='custom-class'
                 data-tip={pageTitles.slice(idx, idx + 1)}
                 {...useStepIcon(idx, activeStep)}
                 onMouseOver={() => {
@@ -34,6 +38,7 @@ export function Steps({ activeStep }: StepsProps) {
                 STEP {activeStep + 1}/4
               </span>
               <ReactTooltip
+                id='custom-class'
                 className='custom-tooltip'
                 textColor='#DCE2F2'
                 backgroundColor='#0F204C'
@@ -47,7 +52,7 @@ export function Steps({ activeStep }: StepsProps) {
               <StepIcon
                 key={idx}
                 className='w-12 h-12 cursor-pointer self-end'
-                data-class='custom-tooltip'
+                data-for='custom-class'
                 data-tip={pageTitles.slice(idx, idx + 1)}
                 {...useStepIcon(idx, activeStep)}
                 onMouseOver={() => {
@@ -57,16 +62,16 @@ export function Steps({ activeStep }: StepsProps) {
                   sethoveredId(null)
                 }}
               />
-              {
-                <ReactTooltip
-                  className='custom-tooltip'
-                  textColor='#DCE2F2'
-                  backgroundColor='#0F204C'
-                  place='bottom'
-                  type='dark'
-                  effect='solid'
-                />
-              }
+
+              <ReactTooltip
+                id='custom-class'
+                className='custom-tooltip'
+                textColor='#DCE2F2'
+                backgroundColor='#0F204C'
+                place='bottom'
+                type='dark'
+                effect='solid'
+              />
             </div>
           ),
         )}
