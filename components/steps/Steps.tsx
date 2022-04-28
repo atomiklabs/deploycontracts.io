@@ -17,9 +17,8 @@ export function Steps({ activeStep }: StepsProps) {
       <div className='flex flex-row gap-x-4'>
         {[Step1Icon, Step2Icon, Step3Icon, Step4Icon].map((StepIcon, idx) =>
           activeStep === idx ? (
-            <div className='flex flex-1 items-center gap-x-4'>
+            <div key={`a-${idx}`} className='flex flex-1 items-center gap-x-4'>
               <StepIcon
-                key={`a-${idx}`}
                 className='w-12 h-12 cursor-pointer'
                 data-for='custom-class'
                 data-tip={pageTitles.slice(idx, idx + 1)}
@@ -39,9 +38,8 @@ export function Steps({ activeStep }: StepsProps) {
               />
             </div>
           ) : (
-            <>
+            <div key={`b-${idx}`}>
               <StepIcon
-                key={`b-${idx}`}
                 className='w-12 h-12 cursor-pointer self-end'
                 data-for='custom-class'
                 data-tip={pageTitles.slice(idx, idx + 1)}
@@ -57,7 +55,7 @@ export function Steps({ activeStep }: StepsProps) {
                 type='dark'
                 effect='solid'
               />
-            </>
+            </div>
           ),
         )}
       </div>
