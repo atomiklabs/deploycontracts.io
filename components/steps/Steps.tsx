@@ -13,8 +13,6 @@ const ReactTooltip = dynamic(() => import('react-tooltip'), {
 const pageTitles = ['Token Details', 'Token Allocation', 'Marketing details', 'Summary']
 
 export function Steps({ activeStep }: StepsProps) {
-  const [hoveredId, sethoveredId] = useState<number | null>(null)
-
   return (
     <section>
       <div className='flex flex-row gap-x-4'>
@@ -27,12 +25,6 @@ export function Steps({ activeStep }: StepsProps) {
                 data-for='custom-class'
                 data-tip={pageTitles.slice(idx, idx + 1)}
                 {...useStepIcon(idx, activeStep)}
-                onMouseOver={() => {
-                  sethoveredId(idx)
-                }}
-                onMouseLeave={() => {
-                  sethoveredId(null)
-                }}
               />
               <span className='text-gray-100 font-medium whitespace-nowrap tracking-[.2rem]'>
                 STEP {activeStep + 1}/4
@@ -55,12 +47,6 @@ export function Steps({ activeStep }: StepsProps) {
                 data-for='custom-class'
                 data-tip={pageTitles.slice(idx, idx + 1)}
                 {...useStepIcon(idx, activeStep)}
-                onMouseOver={() => {
-                  sethoveredId(idx)
-                }}
-                onMouseLeave={() => {
-                  sethoveredId(null)
-                }}
               />
 
               <ReactTooltip
