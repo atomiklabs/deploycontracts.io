@@ -1,16 +1,41 @@
+import { useState } from 'react'
 import Container from '@/components/Container'
+import AllocationCart from '@/components/AllocationCart'
+import SecondaryButton from '@/components/buttons/SecondaryButton'
 
 export default function tokenAllocation() {
+  const [allocations, setAllocations] = useState([0])
+  const [counter, setCounter] = useState(0)
+
+  function addAllocation() {
+    setCounter((prev) => (prev === 14 ? 0 : prev + 1))
+    let lastItem = allocations.slice(-1).toString()
+    setAllocations([...allocations, parseInt(lastItem) + 1])
+  }
+
+  function deleteAllocation(index: number) {
+    const newAllocations = allocations.filter((x) => x !== index || index === 0)
+    setAllocations([...newAllocations])
+  }
+
   return (
     <section>
       <Container>
-        <div className='mt-10 col-span-full sm:col-start-3 sm:col-span-8 xl:col-start-5 xl:col-span-4'></div>
-        <div className='mt-[38px] col-start-5 col-span-4 flex flex-col gap-y-[34px]'>
+        <div className='mt-10'></div>
+        <div className='mt-[38px] flex flex-col gap-y-[34px]'>
           <h1 className='font-space-grotesk font-bold text-xl text-white'>Token allocation</h1>
           <p className='text-gray-100'>
             Token generations is.... consectetur adipiscing elit. Etiam pulvinar leo vitae massa congue euismod eget
             convallis tortor.
           </p>
+        </div>
+        <div className='mt-[41px] flex flex-col gap-y-9'>
+          {allocations.map((x, i) => (
+            <AllocationCart key={i} myKey={x} counter={counter} deleteAllocation={deleteAllocation} />
+          ))}
+          <SecondaryButton onClick={() => addAllocation()}>
+            <div className='px-12 py-4'>Add new</div>
+          </SecondaryButton>
         </div>
       </Container>
     </section>
