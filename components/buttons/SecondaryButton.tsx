@@ -1,6 +1,6 @@
 type Props = {
   children: any
-  onClick: () => void
+  onClick?: () => void
 }
 
 export default function SecondaryButton({ children, ...props }: Props) {
