@@ -34,7 +34,7 @@ export function Steps({ activeStep }: StepsProps) {
             )}
             <ReactTooltip
               id='custom-class'
-              className='custom-tooltip'
+              className='steps-tooltip'
               textColor='#DCE2F2'
               backgroundColor='#0F204C'
               place='bottom'
