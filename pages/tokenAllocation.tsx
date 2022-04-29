@@ -2,10 +2,20 @@ import { useState } from 'react'
 import Container from '@/components/Container'
 import AllocationCard from '@/components/AllocationCard'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
+import ProgressBar from '@/components/ProgressBar'
 
 export default function tokenAllocation() {
   const [allocations, setAllocations] = useState([0])
   const [counter, setCounter] = useState(0)
+
+  const [progressBarItems, setProgressBarItems] = useState([
+    {
+      id: '',
+      precentage: '0%',
+      colour: '',
+    },
+  ])
+  console.log(progressBarItems)
 
   function addAllocation() {
     setCounter((prev) => (prev === 14 ? 0 : prev + 1))
@@ -32,6 +42,7 @@ export default function tokenAllocation() {
           {allocations.map((x, i) => (
             <AllocationCard key={i} myKey={x} counter={counter} deleteAllocation={deleteAllocation} />
           ))}
+          <ProgressBar progressBarItems={progressBarItems} />
           <SecondaryButton onClick={() => addAllocation()}>
             <div className='px-12 py-4'>Add new</div>
           </SecondaryButton>
