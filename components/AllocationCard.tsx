@@ -21,23 +21,23 @@ const colourPallete = [
 ]
 
 export default function AllocationCart({
-  myKey,
+  hideDeleteButton,
   counter,
   deleteAllocation,
 }: {
-  myKey: number
+  hideDeleteButton: boolean
   counter: number
   deleteAllocation: any
 }) {
   const [count, setCount] = useState<number>(counter)
-  const [colour, setColour] = useState('')
+  const [colour, setColour] = useState(colourPallete[0])
 
   useEffect(() => {
     setColour(colourPallete.slice(count, count + 1).toString())
   }, [])
 
   return (
-    <div key={myKey} className='relative flex flex-col gap-y-9 bg-[#0F204D] rounded-3xl p-8'>
+    <div className='relative flex flex-col gap-y-9 bg-[#0F204D] rounded-3xl p-8'>
       <div className='flex flex-col md:flex-row gap-y-4 md:gap-x-5 lg:gap-x-[26px]'>
         <div className='sm:w-[80%] xl:w-[85%] whitespace-nowrap'>
           <Input label='Name of your allocation' placeholder='eg. Team' />
@@ -53,11 +53,11 @@ export default function AllocationCart({
           style={{ backgroundColor: colour }}
         ></div>
       )}
-      {myKey === 0 ? null : (
+      {hideDeleteButton ? (
         <div className='md:absolute md:top-0 md:bottom-0 m-auto md:right-[-70px] w-[64px] h-[64px] hover:bg-[#242b3c] rounded-full'>
-          <Delete className='cursor-pointer' height={64} width={64} onClick={() => deleteAllocation(myKey)} />
+          <Delete className='cursor-pointer' height={64} width={64} onClick={() => deleteAllocation()} />
         </div>
-      )}
+      ) : null}
     </div>
   )
 }
