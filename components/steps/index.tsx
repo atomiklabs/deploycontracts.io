@@ -28,7 +28,7 @@ export function Steps({ activeStep }: StepsProps) {
               {...useStepIcon(idx, activeStep)}
             />
             {activeStep === idx && (
-              <span className='text-gray-100 font-medium whitespace-nowrap tracking-[.2rem]'>
+              <span className='text-gray-100 text-sm font-medium whitespace-nowrap tracking-[.2rem]'>
                 STEP {activeStep + 1}/4
               </span>
             )}
