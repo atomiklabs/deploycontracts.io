@@ -3,6 +3,7 @@ module.exports = {
     return {
       '/': { page: '/' },
       '/tokenDetails': { page: '/tokenDetails' },
+      '/tokenAllocation': { page: '/tokenAllocation' },
     }
   },
 }
