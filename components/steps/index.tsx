@@ -9,7 +9,7 @@ const ReactTooltip = dynamic(() => import('react-tooltip'), {
   ssr: false,
 })
 
-const pageTitles = ['Token Details', 'Token Allocation', 'Marketing details', 'Summary']
+const stepTitles = ['Token Details', 'Token Allocation', 'Marketing details', 'Summary']
 
 export function Steps({ activeStep }: StepsProps) {
   return (
@@ -24,7 +24,7 @@ export function Steps({ activeStep }: StepsProps) {
             <StepIcon
               className='w-12 h-12 cursor-pointer'
               data-for='custom-class'
-              data-tip={pageTitles.slice(idx, idx + 1)}
+              data-tip={stepTitles.slice(idx, idx + 1)}
               {...useStepIcon(idx, activeStep)}
             />
             {activeStep === idx && (
