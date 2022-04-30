@@ -4,7 +4,7 @@ import SecondaryButton from '@/components/buttons/SecondaryButton'
 import { useToken } from '@/utils/token'
 
 export default function tokenAllocation() {
-  const { allocations, counter, addAllocation, deleteAllocation } = useToken()
+  const { allocations, addAllocation } = useToken()
 
   return (
     <section className='mt-10'>
@@ -17,15 +17,7 @@ export default function tokenAllocation() {
           </p>
         </div>
         <div className='mt-[41px] flex flex-col gap-y-9'>
-          {allocations &&
-            allocations.map((x, i) => (
-              <AllocationCard
-                key={i}
-                hideDeleteButton={x === 0 ? false : true}
-                counter={counter}
-                deleteAllocation={deleteAllocation}
-              />
-            ))}
+          {allocations && allocations.map((x) => <AllocationCard key={x.id} cardId={x.id} colour={x.colour} />)}
           <SecondaryButton onClick={() => addAllocation()}>
             <div className='px-12 py-4'>Add new</div>
           </SecondaryButton>
