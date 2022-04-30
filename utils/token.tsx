@@ -8,13 +8,13 @@ const TokenContext = createContext({} as IToken)
 export function TokenProvider({ children }: any) {
   const [colour, setColour] = useState(colourPallete[0])
   const [counter, setCounter] = useState(1)
-  const [allocations, setAllocations] = useLocalStorage('allocations', [
+  const [allocations, setAllocations] = useState([
     {
       id: 0,
       colour: colourPallete[0],
       percentageValue: 0,
     },
-  ]) as [AllocationCard[], any]
+  ])
 
   function setAllocationColour() {
     setColour(colourPallete.slice(counter, counter + 1).toString())
