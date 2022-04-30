@@ -1,25 +1,52 @@
 import { createContext, useContext, useState } from 'react'
-import { IToken } from '@/utils/token.d'
+import { useLocalStorage } from './useLocalStorage'
+import { AllocationCard, IToken } from '@/utils/token.d'
+import { colourPallete } from '@/utils/colourPallete'
 
 const TokenContext = createContext({} as IToken)
 
 export function TokenProvider({ children }: any) {
-  const [allocations, setAllocations] = useState([20])
-  const [counter, setCounter] = useState(0)
+  const [colour, setColour] = useState(colourPallete[0])
+  const [counter, setCounter] = useState(1)
+  const [allocations, setAllocations] = useLocalStorage('allocations', [
+    {
+      id: 0,
+      colour: colourPallete[0],
+      percentageValue: 0,
+    },
+  ]) as [AllocationCard[], any]
+
+  function setAllocationColour() {
+    setColour(colourPallete.slice(counter, counter + 1).toString())
+  }
 
   function addAllocation() {
-    setCounter((prev) => (prev === 14 ? 0 : prev + 1))
-    let lastItem = allocations.slice(-1).toString()
-    setAllocations([...allocations, parseInt(lastItem) + 1])
+    setCounter((prev) => (prev === colourPallete.length - 1 ? 0 : prev + 1))
+
+    let newId = parseInt(
+      allocations
+        .slice(-1)
+        .map((x) => x.id + 1)
+        .toString(),
+    )
+
+    setAllocations([
+      ...allocations,
+      {
+        id: newId,
+        colour: colour,
+        percentageValue: 0,
+      },
+    ])
   }
 
   function deleteAllocation(index: number) {
-    const newAllocations = allocations.filter((x) => x !== index || index === 0)
+    const newAllocations = allocations.filter((x) => x.id !== index || index === 0)
     setAllocations([...newAllocations])
   }
 
   return (
-    <TokenContext.Provider value={{ allocations, counter, addAllocation, deleteAllocation }}>
+    <TokenContext.Provider value={{ allocations, counter, addAllocation, setAllocationColour, deleteAllocation }}>
       {children}
     </TokenContext.Provider>
   )
