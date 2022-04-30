@@ -1,22 +1,13 @@
 import { useEffect, useState } from 'react'
+import { useToken } from '@/utils/token'
 import Input from '@/components/Input'
-import Delete from '@/components/Delete'
-import { colourPallete } from '@/utils/colourPallete'
 
-export default function AllocationCart({
-  hideDeleteButton,
-  counter,
-  deleteAllocation,
-}: {
-  hideDeleteButton: boolean
-  counter: number
-  deleteAllocation: any
-}) {
-  const [count, setCount] = useState<number>(counter)
-  const [colour, setColour] = useState(colourPallete[0])
+export default function AllocationCar({ colour, cardId }: { colour: string; cardId: number }) {
+  const { setAllocationColour, deleteAllocation } = useToken()
+  const [deleteImage, setDeleteImage] = useState('/assets/delete-default.svg')
 
   useEffect(() => {
-    setColour(colourPallete.slice(count, count + 1).toString())
+    setAllocationColour()
   }, [])
 
   return (
@@ -36,11 +27,16 @@ export default function AllocationCart({
           style={{ backgroundColor: colour }}
         ></div>
       )}
-      {hideDeleteButton ? (
-        <div className='md:absolute md:top-0 md:bottom-0 m-auto md:right-[-70px] w-[64px] h-[64px] hover:bg-[#242b3c] rounded-full'>
-          <Delete className='cursor-pointer' height={64} width={64} onClick={() => deleteAllocation()} />
-        </div>
-      ) : null}
+      {cardId === 0 ? null : (
+        <button
+          className='md:absolute md:top-0 md:bottom-0 m-auto md:right-[-70px] w-[64px] h-[64px] hover:bg-[#0F204C] rounded-full flex items-center justify-center'
+          onClick={() => deleteAllocation(cardId)}
+          onMouseEnter={() => setDeleteImage('/assets/delete-active.svg')}
+          onMouseLeave={() => setDeleteImage('/assets/delete-default.svg')}
+        >
+          <img src={deleteImage} className='w-6 h-6 cursor-pointer' alt='delete button icon' />
+        </button>
+      )}
     </div>
   )
 }
