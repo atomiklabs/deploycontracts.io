@@ -7,7 +7,7 @@ export default function tokenAllocation() {
   const { allocations, addAllocation } = useToken()
 
   return (
-    <section className='mt-10'>
+    <section className='my-10'>
       <Container>
         <div className='flex flex-col gap-y-[34px]'>
           <h1 className='font-space-grotesk font-bold text-xl text-white'>Token allocation</h1>
