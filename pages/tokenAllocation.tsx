@@ -15,7 +15,6 @@ export default function tokenAllocation() {
       colour: '',
     },
   ])
-  console.log(progressBarItems)
 
   function addAllocation() {
     setCounter((prev) => (prev === 14 ? 0 : prev + 1))
@@ -42,7 +41,7 @@ export default function tokenAllocation() {
           {allocations.map((x, i) => (
             <AllocationCard key={i} myKey={x} counter={counter} deleteAllocation={deleteAllocation} />
           ))}
-          <ProgressBar progressBarItems={progressBarItems} />
+          <ProgressBar />
           <SecondaryButton onClick={() => addAllocation()}>
             <div className='px-12 py-4'>Add new</div>
           </SecondaryButton>
