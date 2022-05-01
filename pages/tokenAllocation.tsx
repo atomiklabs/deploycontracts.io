@@ -8,14 +8,6 @@ export default function tokenAllocation() {
   const [allocations, setAllocations] = useState([0])
   const [counter, setCounter] = useState(0)
 
-  const [progressBarItems, setProgressBarItems] = useState([
-    {
-      id: '',
-      precentage: '0%',
-      colour: '',
-    },
-  ])
-
   function addAllocation() {
     setCounter((prev) => (prev === 14 ? 0 : prev + 1))
     let lastItem = allocations.slice(-1).toString()
