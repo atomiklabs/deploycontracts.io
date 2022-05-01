@@ -1,13 +1,10 @@
-import Link from 'next/link'
-import BackButton from '@/components/buttons/BackButton'
+import LinkButton from '@/components/buttons/LinkButton'
 
 export default function Example() {
   return (
     <div className='max-w-md mx-auto my-20'>
       <main>
-        <BackButton>
-          <Link href={'/'}>Back</Link>
-        </BackButton>
+        <LinkButton href='/'></LinkButton>
       </main>
     </div>
   )
