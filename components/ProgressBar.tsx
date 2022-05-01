@@ -22,11 +22,11 @@ export default function ProgressBar() {
 
   return (
     <section className='mt-8 flex flex-col gap-y-1'>
-      <div className='w-full bg-[#455378] rounded-full h-2.5 flex flex-row'>
+      <div className='w-full bg-[#455378] rounded-full h-2 flex flex-row'>
         {data.map((x, i) => (
           <div
             key={x.id}
-            className={`h-2.5 cursor-pointer ${
+            className={`h-2 cursor-pointer ${
               i == 0 ? ' rounded-l-[4px]' : i === data.length - 1 ? 'rounded-r-[4px]' : 'rounded-none'
             }`}
             data-for='custom-class'
