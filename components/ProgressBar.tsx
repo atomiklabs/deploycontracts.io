@@ -5,7 +5,7 @@ const data = [
   { id: 0, name: 'Marketing1', colour: '#FD0F9E', percentage: 20 },
   { id: 1, name: 'Marketing2', colour: '#671BC9', percentage: 60 },
   { id: 2, name: 'Marketing3', colour: '#FD810F', percentage: 10 },
-  { id: 2, name: 'Marketing4', colour: '#00D0FE', percentage: 10 },
+  { id: 3, name: 'Marketing4', colour: '#00D0FE', percentage: 10 },
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), {
