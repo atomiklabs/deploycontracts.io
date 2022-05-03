@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic'
 import { useState } from 'react'
 import Container from '@/components/Container'
 import AllocationCard from '@/components/AllocationCard'
@@ -6,17 +5,12 @@ import SecondaryButton from '@/components/buttons/SecondaryButton'
 import ProgressBar from '@/components/ProgressBar'
 import PrimaryButton from '@/components/buttons/PrimaryButton'
 
-const freeSpace = 100
-
-const ReactTooltip = dynamic(() => import('react-tooltip'), {
-  ssr: false,
-})
-
 export default function tokenAllocation() {
   const [allocations, setAllocations] = useState([0])
   const [counter, setCounter] = useState(0)
+
+  const [freeSpace, setFreeSpace] = useState(10)
   const [disabledLink, setDisabledLink] = useState(false)
-  console.log(disabledLink)
 
   function addAllocation() {
     setCounter((prev) => (prev === 14 ? 0 : prev + 1))
@@ -29,14 +23,19 @@ export default function tokenAllocation() {
     setAllocations([...newAllocations])
   }
 
-  function checkFreeSpace() {
-    if (freeSpace > 100) {
+  function checkFreeSpace(e: any) {
+    if (freeSpace < 100) {
+      e.preventDefault()
       setDisabledLink(true)
     } else {
       setDisabledLink(false)
     }
-    console.log('clicked')
+    setTimeout(() => {
+      setDisabledLink(false)
+    }, 3000)
   }
+
+  console.log(disabledLink)
 
   return (
     <section className='mt-10 mb-20'>
@@ -57,17 +56,21 @@ export default function tokenAllocation() {
             <div className='px-12 py-4'>Add new</div>
           </SecondaryButton>
         </div>
-        <div className='relative mt-32 flex flex-col gap-y-6'>
-          <div className='relative z-20 py-4 px-6 text-base text-gray-100 flex flex-row gap-x-6 bg-[#341035] items-center justify-between rounded-3xl'>
-            <img src='/assets/error.svg' alt='error icon' className='w-[24px] h-[24px]' />
-            To go next step should use all off space.... Proin elementum nunc faucibus lacinia sollicitudin.
-            <div className='absolute bottom-[-5px] -z-10 right-[calc(50%-100px)] w-10 h-10 bg-[#341035] rotate-45'></div>
-          </div>
+        <div className='relative mt-64 sm:mt-40 flex flex-col gap-y-6'>
+          {disabledLink && (
+            <div className='animate-hide-div absolute bottom-[140%] md:bottom-[140%] z-20 py-4 px-6 text-base text-gray-100 flex flex-row gap-x-6 bg-[#341035] items-center justify-between rounded-3xl'>
+              <img src='/assets/error.svg' alt='error icon' className='w-[24px] h-[24px]' />
+              To go next step should use all off space.... Proin elementum nunc faucibus lacinia sollicitudin.
+              <div className='absolute bottom-[-5px] -z-10 right-[calc(50%-50px)] md:right-[calc(50%-100px)] w-10 h-10 bg-[#341035] rotate-45'></div>
+            </div>
+          )}
           <div className='flex flex-row justify-between gap-x-16 md:gap-x-[144px]'>
             <div></div>
             <div className='flex-1'>
-              <PrimaryButton onClick={() => checkFreeSpace()}>
-                <div className='px-12 py-4 inline-block w-full h-full'>Next</div>
+              <PrimaryButton>
+                <a href='/' onClick={(e) => checkFreeSpace(e)} className='px-12 py-4 inline-block w-full h-full'>
+                  Next
+                </a>
               </PrimaryButton>
             </div>
           </div>
