@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import Container from '@/components/Container'
 import Input from '@/components/Input'
+import PrimaryButton from '@/components/buttons/PrimaryButton'
 
 export default function marketing() {
-  const [logo, setLogo] = useState(true)
+  const [logo, setLogo] = useState(false)
   return (
     <section className='mt-20'>
       <Container>
@@ -42,6 +43,16 @@ export default function marketing() {
                 <input type='file' name='file_upload' className='hidden' />
               </label>
             )}
+          </div>
+          <div className='my-20 flex flex-row justify-between gap-x-16 md:gap-x-[144px]'>
+            <div>Back</div>
+            <div className='flex-1'>
+              <PrimaryButton>
+                <a href='/' className='px-12 py-4 inline-block w-full h-full'>
+                  Next
+                </a>
+              </PrimaryButton>
+            </div>
           </div>
         </div>
       </Container>
