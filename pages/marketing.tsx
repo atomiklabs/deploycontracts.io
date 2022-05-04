@@ -3,7 +3,7 @@ import Container from '@/components/Container'
 import Input from '@/components/Input'
 
 export default function marketing() {
-  const [logo, setLogo] = useState(true)
+  const [logo, setLogo] = useState(false)
   return (
     <section className='mt-20'>
       <Container>
@@ -33,7 +33,7 @@ export default function marketing() {
                   <img className='w-8 h-8' src='/assets/folder.svg' alt='folder logo' />
                 </div>
                 <div className='mt-6 font-medium text-base text-gray-100'>
-                  <span className='drag-drop-select relative bg-clip-text text-transparent bg-[linear-gradient(115.82deg,#671BC9_5.15%,#FD0F9E_108.88%)]'>
+                  <span className='drag-drop-gradient relative bg-clip-text text-transparent bg-[linear-gradient(115.82deg,#671BC9_5.15%,#FD0F9E_108.88%)]'>
                     Select logo
                   </span>{' '}
                   or drag and dorp here
