@@ -8,7 +8,7 @@ import { Steps } from '@/components/steps'
 export default function tokenDetails() {
   const [activeStep, setActiveStep] = useState(0)
   return (
-    <section className='pt-20'>
+    <section className='mt-20'>
       <Container>
         <div className='flex flex-col gap-y-[34px]'>
           <Steps activeStep={activeStep} />
