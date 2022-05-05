@@ -33,3 +33,29 @@
     box-shadow: none;
   }
 }
+
+.steps-tooltip {
+  padding: 0px 12px !important;
+  border-radius: 8px !important;
+}
+
+.link-button {
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-bottom: 1px solid transparent;
+    -webkit-mask: linear-gradient(98.98deg, #671bc9 -83.86%, #fd0f9e 85.88%) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+  }
+
+  &:hover::before {
+    background: linear-gradient(98.98deg, #671bc9 -83.86%, #fd0f9e 85.88%);
+  }
+  &:active::before {
+    background: linear-gradient(115.82deg, #671bc9 5.15%, #fd0f9e 108.88%);
+  }
+}
