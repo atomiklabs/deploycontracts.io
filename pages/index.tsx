@@ -1,10 +1,10 @@
-import Hello from '@/components/Hello'
+import LinkButton from '@/components/buttons/LinkButton'
 
 export default function Example() {
   return (
     <div className='max-w-md mx-auto my-20'>
       <main>
-        <Hello />
+        <LinkButton href='/'>Back</LinkButton>
       </main>
     </div>
   )
