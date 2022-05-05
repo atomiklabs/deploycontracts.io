@@ -17,7 +17,10 @@ export default function tokenAllocation() {
           </p>
         </div>
         <div className='mt-[41px] flex flex-col gap-y-9'>
-          {allocations && allocations.map((x) => <AllocationCard key={x.id} cardId={x.id} colour={x.colour} />)}
+          {allocations.map((x, i) => (
+            <AllocationCard key={i} index={i} allocation={x} colour={colourPallete[i]} />
+          ))}
+
           <SecondaryButton onClick={() => addAllocation()}>
             <div className='px-12 py-4'>Add new</div>
           </SecondaryButton>
@@ -26,3 +29,21 @@ export default function tokenAllocation() {
     </section>
   )
 }
+
+const colourPallete = [
+  '#FD0F9E',
+  '#671BC9',
+  '#FD810F',
+  '#00D0FE',
+  '#FD3A0F',
+  '#BCFE00',
+  '#FDBA0F',
+  '#0CE2AF',
+  '#FE6B00',
+  '#BD01DC',
+  '#0084FE',
+  '#7EE42D',
+  '#4F14F9',
+  '#0DB427',
+  '#0EADAD',
+]
