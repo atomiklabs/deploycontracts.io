@@ -8,7 +8,13 @@ const emptyAllocation = { percentageValue: 0, name: '', address: '' }
 export function TokenProvider({ children }: any) {
   const [allocations, setAllocations] = useState([emptyAllocation])
 
+  const isAllocationMaxItems = allocations.length >= colourPallete.length
+
   function addAllocation() {
+    if (isAllocationMaxItems) {
+      return
+    }
+
     setAllocations([...allocations, emptyAllocation])
   }
 
@@ -19,10 +25,32 @@ export function TokenProvider({ children }: any) {
   }
 
   return (
-    <TokenContext.Provider value={{ allocations, addAllocation, deleteAllocation }}>{children}</TokenContext.Provider>
+    <TokenContext.Provider
+      value={{ allocations, addAllocation, deleteAllocation, colourPallete, isAllocationMaxItems }}
+    >
+      {children}
+    </TokenContext.Provider>
   )
 }
 
 export function useToken() {
   return useContext(TokenContext)
 }
+
+const colourPallete = [
+  '#FD0F9E',
+  '#671BC9',
+  '#FD810F',
+  '#00D0FE',
+  '#FD3A0F',
+  '#BCFE00',
+  '#FDBA0F',
+  '#0CE2AF',
+  '#FE6B00',
+  '#BD01DC',
+  '#0084FE',
+  '#7EE42D',
+  '#4F14F9',
+  '#0DB427',
+  '#0EADAD',
+]
