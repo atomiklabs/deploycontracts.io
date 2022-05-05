@@ -39,7 +39,7 @@ export default function AllocationCardComponent({
         ></div>
       )}
 
-      {index && (
+      {!!index && (
         <button
           className='md:absolute md:top-0 md:bottom-0 m-auto md:right-[-70px] w-[64px] h-[64px] hover:bg-[#0F204C] rounded-full flex items-center justify-center'
           onClick={() => deleteAllocation(index)}
