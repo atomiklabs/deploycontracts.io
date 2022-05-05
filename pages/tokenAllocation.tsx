@@ -1,23 +1,11 @@
-import { useState } from 'react'
 import Container from '@/components/Container'
 import AllocationCard from '@/components/AllocationCard'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import ProgressBar from '@/components/ProgressBar'
+import { useToken } from '@/utils/token'
 
 export default function tokenAllocation() {
-  const [allocations, setAllocations] = useState([0])
-  const [counter, setCounter] = useState(0)
-
-  function addAllocation() {
-    setCounter((prev) => (prev === 14 ? 0 : prev + 1))
-    let lastItem = allocations.slice(-1).toString()
-    setAllocations([...allocations, parseInt(lastItem) + 1])
-  }
-
-  function deleteAllocation(index: number) {
-    const newAllocations = allocations.filter((x) => x !== index || index === 0)
-    setAllocations([...newAllocations])
-  }
+  const { allocations, addAllocation, colourPallete, isAllocationMaxItems } = useToken()
 
   return (
     <section className='mt-10'>
@@ -31,12 +19,14 @@ export default function tokenAllocation() {
         </div>
         <div className='mt-[41px] flex flex-col gap-y-9'>
           {allocations.map((x, i) => (
-            <AllocationCard key={i} myKey={x} counter={counter} deleteAllocation={deleteAllocation} />
+            <AllocationCard key={i} index={i} allocation={x} colour={colourPallete[i]} />
           ))}
           <ProgressBar />
-          <SecondaryButton onClick={() => addAllocation()}>
-            <div className='px-12 py-4'>Add new</div>
-          </SecondaryButton>
+          {!isAllocationMaxItems && (
+            <SecondaryButton onClick={() => addAllocation()}>
+              <div className='px-12 py-4'>Add new</div>
+            </SecondaryButton>
+          )}
         </div>
       </Container>
     </section>
