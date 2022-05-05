@@ -1,13 +1,17 @@
+import { useState } from 'react'
 import PrimaryButton from '@/components/buttons/PrimaryButton'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import Container from '@/components/Container'
 import Input from '@/components/Input'
+import { Steps } from '@/components/steps'
 
 export default function tokenDetails() {
+  const [activeStep, setActiveStep] = useState(0)
   return (
-    <section className='mt-20'>
+    <section className='pt-20'>
       <Container>
         <div className='flex flex-col gap-y-[34px]'>
+          <Steps activeStep={activeStep} />
           <h1 className='font-space-grotesk font-bold text-xl text-white'>Token details</h1>
           <p className='text-gray-100'>
             Token generations is.... consectetur adipiscing elit. Etiam pulvinar leo vitae massa congue euismod eget
