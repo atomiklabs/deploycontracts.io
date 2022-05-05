@@ -18,12 +18,12 @@ export default function AllocationCardComponent({
   return (
     <div className='relative flex flex-col gap-y-9 bg-[#0F204D] rounded-3xl p-8'>
       <div className='flex flex-col md:flex-row gap-y-4 md:gap-x-5 lg:gap-x-[26px]'>
-        <div className='sm:w-[80%] xl:w-[85%] whitespace-nowrap'>
+        <div className='w-full md:w-[80%] xl:w-[85%] whitespace-nowrap'>
           {/* TODO: Add onChange logic */}
           <Input label='Name of your allocation' placeholder='eg. Team' />
         </div>
 
-        <div className='sm:w-[20%] xl:w-[15%]'>
+        <div className='w-full md:w-[20%] xl:w-[15%]'>
           {/* TODO: Add onChange logic */}
           <Input label='Value' placeholder='15%' />
         </div>
