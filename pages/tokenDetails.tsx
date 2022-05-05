@@ -14,13 +14,17 @@ export default function tokenDetails() {
             convallis tortor.
           </p>
         </div>
+
         <div className='mt-9 flex flex-col gap-y-[14px]'>
           <div className='text-white font-medium'>Minter adress</div>
+
           <SecondaryButton>Connect your wallet</SecondaryButton>
         </div>
+
         <form className='mt-12 flex flex-col gap-y-[52px]'>
           <Input label='Name of your token' placeholder='Token name' />
           <Input label='Tottal supply' placeholder='1 000 000 000' />
+
           <PrimaryButton>Next</PrimaryButton>
         </form>
       </Container>

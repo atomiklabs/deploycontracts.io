@@ -1,13 +1,13 @@
 export interface IToken {
   allocations: AllocationCard[]
-  counter: number
+  colourPallete: string[]
+  isAllocationMaxItems: boolean
   addAllocation: () => void
-  deleteAllocation: (number) => void
-  setAllocationColour: () => void
+  deleteAllocation: (index: number) => void
 }
 
-export interface AllocationCard {  
-    id: number,
-    colour: string,
-    percentageValue: number
-  }[]
+export interface AllocationCard {
+  name: string
+  address: string
+  percentageValue: number
+}

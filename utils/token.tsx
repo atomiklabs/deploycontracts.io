@@ -1,52 +1,33 @@
 import { createContext, useContext, useState } from 'react'
-import { useLocalStorage } from './useLocalStorage'
-import { AllocationCard, IToken } from '@/utils/token.d'
-import { colourPallete } from '@/utils/colourPallete'
+import { IToken } from '@/utils/token.d'
 
 const TokenContext = createContext({} as IToken)
 
-export function TokenProvider({ children }: any) {
-  const [colour, setColour] = useState(colourPallete[0])
-  const [counter, setCounter] = useState(1)
-  const [allocations, setAllocations] = useState([
-    {
-      id: 0,
-      colour: colourPallete[0],
-      percentageValue: 0,
-    },
-  ])
+const emptyAllocation = { percentageValue: 0, name: '', address: '' }
 
-  function setAllocationColour() {
-    setColour(colourPallete.slice(counter, counter + 1).toString())
-  }
+export function TokenProvider({ children }: any) {
+  const [allocations, setAllocations] = useState([emptyAllocation])
+
+  const isAllocationMaxItems = allocations.length >= colourPallete.length
 
   function addAllocation() {
-    setCounter((prev) => (prev === colourPallete.length - 1 ? 0 : prev + 1))
+    if (isAllocationMaxItems) {
+      return
+    }
 
-    let newId = parseInt(
-      allocations
-        .slice(-1)
-        .map((x) => x.id + 1)
-        .toString(),
-    )
-
-    setAllocations([
-      ...allocations,
-      {
-        id: newId,
-        colour: colour,
-        percentageValue: 0,
-      },
-    ])
+    setAllocations([...allocations, emptyAllocation])
   }
 
   function deleteAllocation(index: number) {
-    const newAllocations = allocations.filter((x) => x.id !== index || index === 0)
-    setAllocations([...newAllocations])
+    allocations.splice(index, 1)
+
+    setAllocations([...allocations])
   }
 
   return (
-    <TokenContext.Provider value={{ allocations, counter, addAllocation, setAllocationColour, deleteAllocation }}>
+    <TokenContext.Provider
+      value={{ allocations, addAllocation, deleteAllocation, colourPallete, isAllocationMaxItems }}
+    >
       {children}
     </TokenContext.Provider>
   )
@@ -55,3 +36,21 @@ export function TokenProvider({ children }: any) {
 export function useToken() {
   return useContext(TokenContext)
 }
+
+const colourPallete = [
+  '#FD0F9E',
+  '#671BC9',
+  '#FD810F',
+  '#00D0FE',
+  '#FD3A0F',
+  '#BCFE00',
+  '#FDBA0F',
+  '#0CE2AF',
+  '#FE6B00',
+  '#BD01DC',
+  '#0084FE',
+  '#7EE42D',
+  '#4F14F9',
+  '#0DB427',
+  '#0EADAD',
+]
