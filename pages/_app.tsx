@@ -1,7 +1,12 @@
 import 'tailwindcss/tailwind.css'
 import { AppProps } from 'next/app'
 import '../styles/index.scss'
+import { TokenProvider } from '@/utils/token'
 
 export default ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
-  return <Component {...pageProps} />
+  return (
+    <TokenProvider>
+      <Component {...pageProps} />
+    </TokenProvider>
+  )
 }
