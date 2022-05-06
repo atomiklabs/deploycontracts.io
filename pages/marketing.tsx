@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Container from '@/components/Container'
 import Input from '@/components/Input'
 import PrimaryButton from '@/components/buttons/PrimaryButton'
+import LinkButton from '@/components/buttons/LinkButton'
 
 export default function marketing() {
   const [logo, setLogo] = useState(false)
@@ -44,8 +45,10 @@ export default function marketing() {
               </label>
             )}
           </div>
-          <div className='my-20 flex flex-row justify-between gap-x-16 md:gap-x-[144px]'>
-            <div>Back</div>
+          <div className='my-20 flex flex-row justify-between items-center gap-x-16 md:gap-x-[144px]'>
+            <div>
+              <LinkButton href='/tokenAllocation'>Back</LinkButton>
+            </div>
             <div className='flex-1'>
               <PrimaryButton>
                 <a href='/' className='px-12 py-4 inline-block w-full h-full'>
