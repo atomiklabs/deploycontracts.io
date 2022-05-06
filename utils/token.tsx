@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 import { IToken } from '@/utils/token.d'
-
+import { useLocalStorage } from '@/utils/useLocalStorage'
 const TokenContext = createContext({} as IToken)
 
 const emptyAllocation = { percentageValue: 0, name: '', address: '' }
@@ -8,6 +8,7 @@ const emptyAllocation = { percentageValue: 0, name: '', address: '' }
 export function TokenProvider({ children }: any) {
   const [allocations, setAllocations] = useState([emptyAllocation])
   const [freeAllocationValue, setFreeAllocationValue] = useState(0)
+  const [formInputs, setFormInputs] = useLocalStorage('form', [])
 
   const isAllocationMaxItems = allocations.length >= colourPallete.length
 
