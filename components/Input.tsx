@@ -3,7 +3,7 @@ import { defaultColors } from '../consts'
 interface Props {
   label: string
   placeholder: string
-  textarea: boolean
+  textarea?: boolean
 }
 
 export default function Input({ label, placeholder, textarea }: Props) {
