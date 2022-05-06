@@ -2,35 +2,11 @@ import { useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import Container from '@/components/Container'
 import Input from '@/components/Input'
-import LoadedLogo from '@/components/marketing/LoadedLogo'
-import UploadLogo from '@/components/marketing/UploadLogo'
+import PrimaryButton from '@/components/buttons/PrimaryButton'
+import LinkButton from '@/components/buttons/LinkButton'
 
 export default function marketing() {
-  const [files, setFiles] = useState<object[]>([])
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: {
-      'image/*': [],
-    },
-    onDrop: (acceptedFiles) => {
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          }),
-        ),
-      )
-    },
-    multiple: false,
-  })
-
-  function deleteLogo() {
-    setFiles([])
-  }
-
-  useEffect(() => {
-    return () => files.forEach((file: any) => URL.revokeObjectURL(file.preview))
-  }, [])
-
+  const [logo, setLogo] = useState(false)
   return (
     <section className='mt-20'>
       <Container>
@@ -51,6 +27,18 @@ export default function marketing() {
             ) : (
               <UploadLogo getRootProps={getRootProps} getInputProps={getInputProps} />
             )}
+          </div>
+          <div className='my-20 flex flex-row justify-between items-center gap-x-16 md:gap-x-[144px]'>
+            <div>
+              <LinkButton href='/tokenAllocation'>Back</LinkButton>
+            </div>
+            <div className='flex-1'>
+              <PrimaryButton>
+                <a href='/' className='px-12 py-4 inline-block w-full h-full'>
+                  Next
+                </a>
+              </PrimaryButton>
+            </div>
           </div>
         </div>
       </Container>
