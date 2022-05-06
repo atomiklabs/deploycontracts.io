@@ -1,15 +1,12 @@
 import { useState } from 'react'
 import { defaultColors } from '../consts'
-
-export default function Input({
-  label,
-  placeholder,
-  textarea,
-}: {
+interface Props {
   label: string
   placeholder: string
   textarea?: boolean
-}) {
+}
+
+export default function Input({ label, placeholder, textarea }: Props) {
   const [error, setError] = useState(false)
   return (
     <div className='flex flex-col gap-y-2'>

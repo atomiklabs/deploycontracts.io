@@ -4,7 +4,7 @@ module.exports = {
       '/': { page: '/' },
       '/tokenDetails': { page: '/tokenDetails' },
       '/tokenAllocation': { page: '/tokenAllocation' },
-      '/marketing': { page: '/marketing' },
+      '/tokenMarketing': { page: '/tokenMarketing' },
     }
   },
 }
