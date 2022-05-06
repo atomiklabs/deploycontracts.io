@@ -7,6 +7,7 @@ const emptyAllocation = { percentageValue: 0, name: '', address: '' }
 
 export function TokenProvider({ children }: any) {
   const [allocations, setAllocations] = useState([emptyAllocation])
+  const [freeAllocationValue, setFreeAllocationValue] = useState(0)
 
   const isAllocationMaxItems = allocations.length >= colourPallete.length
 
@@ -26,7 +27,7 @@ export function TokenProvider({ children }: any) {
 
   return (
     <TokenContext.Provider
-      value={{ allocations, addAllocation, deleteAllocation, colourPallete, isAllocationMaxItems }}
+      value={{ allocations, freeAllocationValue, addAllocation, deleteAllocation, colourPallete, isAllocationMaxItems }}
     >
       {children}
     </TokenContext.Provider>

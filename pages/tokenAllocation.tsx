@@ -24,7 +24,7 @@ export default function tokenAllocation() {
   }
 
   return (
-    <section className='my-10'>
+    <section className='mt-10'>
       <Container>
         <div className='flex flex-col gap-y-[34px]'>
           <h1 className='font-space-grotesk font-bold text-xl text-white'>Token allocation</h1>
@@ -38,10 +38,6 @@ export default function tokenAllocation() {
             <AllocationCard key={i} index={i} allocation={x} colour={colourPallete[i]} />
           ))}
           <ProgressBar />
-          <SecondaryButton onClick={() => addAllocation()}>
-            <div className='px-12 py-4'>Add new</div>
-          </SecondaryButton>
-
           {!isAllocationMaxItems && (
             <SecondaryButton onClick={() => addAllocation()}>
               <div className='px-12 py-4'>Add new</div>
