@@ -5,7 +5,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head />
-        <body className='font-montserrat font-default text-base h-screen body-gradient'>
+        <body className='font-montserrat font-default text-base min-h-screen body-gradient'>
           <Main />
           <NextScript />
         </body>
