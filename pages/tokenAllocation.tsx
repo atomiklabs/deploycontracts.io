@@ -7,20 +7,16 @@ import PrimaryButton from '@/components/buttons/PrimaryButton'
 import ProgressBar from '@/components/ProgressBar'
 
 export default function tokenAllocation() {
-  const { allocations, addAllocation, colourPallete, isAllocationMaxItems } = useToken()
-  const [freeSpace, setFreeSpace] = useState(10)
-  const [disabledLink, setDisabledLink] = useState(false)
+  const { allocations, freeAllocationValue, addAllocation, colourPallete, isAllocationMaxItems } = useToken()
+  const [formError, setFormError] = useState(false)
 
   function checkFreeSpace(e: any) {
-    if (freeSpace < 100) {
+    if (freeAllocationValue < 100) {
       e.preventDefault()
-      setDisabledLink(true)
+      setFormError(true)
     } else {
-      setDisabledLink(false)
+      setFormError(false)
     }
-    setTimeout(() => {
-      setDisabledLink(false)
-    }, 3000)
   }
 
   return (
@@ -45,7 +41,7 @@ export default function tokenAllocation() {
           )}
         </div>
         <div className='relative mt-64 sm:mt-40 flex flex-col gap-y-6'>
-          {disabledLink && (
+          {formError && (
             <div className='animate-hide-div absolute bottom-[140%] md:bottom-[140%] z-20 py-4 px-6 text-base text-gray-100 flex flex-row gap-x-6 bg-[#341035] items-center justify-between rounded-3xl'>
               <img src='/assets/error.svg' alt='error icon' className='w-[24px] h-[24px]' />
               To go next step should use all off space.... Proin elementum nunc faucibus lacinia sollicitudin.
@@ -55,8 +51,8 @@ export default function tokenAllocation() {
           <div className='flex flex-row justify-between gap-x-16 md:gap-x-[144px]'>
             <div></div>
             <div className='flex-1'>
-              <PrimaryButton>
-                <a href='/' onClick={(e) => checkFreeSpace(e)} className='px-12 py-4 inline-block w-full h-full'>
+              <PrimaryButton onClick={checkFreeSpace}>
+                <a href='/' className='px-12 py-4 inline-block w-full h-full'>
                   Next
                 </a>
               </PrimaryButton>
