@@ -1,6 +1,12 @@
 import Container from '@/components/Container'
+import AllocationCard from '@/components/AllocationCard'
+import SecondaryButton from '@/components/buttons/SecondaryButton'
+import ProgressBar from '@/components/ProgressBar'
+import { useToken } from '@/utils/token'
 
 export default function tokenAllocation() {
+  const { allocations, addAllocation, colourPallete, isAllocationMaxItems } = useToken()
+
   return (
     <section className='mt-10'>
       <Container>
@@ -10,6 +16,17 @@ export default function tokenAllocation() {
             Token generations is.... consectetur adipiscing elit. Etiam pulvinar leo vitae massa congue euismod eget
             convallis tortor.
           </p>
+        </div>
+        <div className='mt-[41px] flex flex-col gap-y-9'>
+          {allocations.map((x, i) => (
+            <AllocationCard key={i} index={i} allocation={x} colour={colourPallete[i]} />
+          ))}
+          <ProgressBar />
+          {!isAllocationMaxItems && (
+            <SecondaryButton onClick={() => addAllocation()}>
+              <div className='px-12 py-4'>Add new</div>
+            </SecondaryButton>
+          )}
         </div>
       </Container>
     </section>
