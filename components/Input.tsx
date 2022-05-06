@@ -1,15 +1,12 @@
 import { useState } from 'react'
 import { defaultColors } from '../consts'
-
-export default function Input({
-  label,
-  placeholder,
-  textarea,
-}: {
+interface Props {
   label: string
   placeholder: string
   textarea?: boolean
-}) {
+}
+
+export default function Input({ label, placeholder, textarea }: Props) {
   const [error, setError] = useState(false)
   return (
     <div className='flex flex-col gap-y-2'>
@@ -17,14 +14,14 @@ export default function Input({
       {textarea ? (
         <textarea
           className='input min-h-[140px] resize-none py-4 px-5 bg-[#000B28] border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-          style={{ borderColor: error ? `${defaultColors.error}` : '' }}
+          style={{ borderColor: error ? `${defaultColors.error}` : 'none' }}
           placeholder={placeholder}
           required
         ></textarea>
       ) : (
         <input
           className='input py-4 px-5 bg-[#000B28] border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-          style={{ borderColor: error ? `${defaultColors.error}` : '' }}
+          style={{ borderColor: error ? `${defaultColors.error}` : 'none' }}
           type='text'
           placeholder={placeholder}
           required
