@@ -25,19 +25,6 @@ module.exports = {
           300: '#7A8297',
         },
       },
-      keyframes: {
-        'hide-div': {
-          to: {
-            padding: '0',
-            height: '0',
-            width: '0',
-            visibility: 'hidden',
-          },
-        },
-      },
-      animation: {
-        'hide-div': 'hide-div 0s ease-in 3s',
-      },
     },
   },
   plugins: [require('@tailwindcss/forms')],
