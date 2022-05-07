@@ -3,6 +3,7 @@ type Props = {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
   checkFreeSpace?: (e: any) => void
+  type?: 'submit' | 'button'
 }
 
 export default function PrimaryButton({ children, ...props }: Props) {
