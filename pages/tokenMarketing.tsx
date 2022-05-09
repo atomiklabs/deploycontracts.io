@@ -23,13 +23,9 @@ export default function marketing() {
     multiple: false,
   })
 
-  function deleteLogo() {
+  function onDelete() {
     setFiles([])
   }
-
-  useEffect(() => {
-    return () => files.forEach((file: any) => URL.revokeObjectURL(file.preview))
-  }, [])
 
   return (
     <section className='mt-20'>
@@ -47,7 +43,7 @@ export default function marketing() {
           <div className='flex flex-col gap-y-3'>
             <div className='text-white font-medium'>Logo</div>
             {files.length ? (
-              <LoadedLogo files={files} deleteLogo={deleteLogo} />
+              <LoadedLogo files={files} onDelete={onDelete} />
             ) : (
               <UploadLogo getRootProps={getRootProps} getInputProps={getInputProps} />
             )}
