@@ -1,9 +1,11 @@
+import { useState } from 'react'
 type Props = {
   files: object[]
-  deleteLogo: () => void
+  onDelete: () => void
 }
 
-export default function LoadedLogo({ files, deleteLogo }: Props) {
+export default function LoadedLogo({ files, onDelete }: Props) {
+  const [deleteImage, setDeleteImage] = useState('/assets/delete-default.svg')
   return (
     <>
       {files.map((file: any, idx) => {
@@ -20,12 +22,14 @@ export default function LoadedLogo({ files, deleteLogo }: Props) {
               />
               <div className='text-base text-gray-100 leading-5'>{file.name}</div>
             </div>
-            <img
-              src='/assets/delete-default.svg'
-              alt='delete icon'
-              className=' w-[22px] h-full cursor-pointer'
-              onClick={() => deleteLogo()}
-            />
+            <button
+              className='flex items-center justify-center w-[64px] h-[64px] rounded-full hover:bg-[#0F204C]'
+              onClick={() => onDelete()}
+              onMouseEnter={() => setDeleteImage('/assets/delete-active.svg')}
+              onMouseLeave={() => setDeleteImage('/assets/delete-default.svg')}
+            >
+              <img src={deleteImage} className='w-6 h-6 cursor-pointer' alt='delete button icon' />
+            </button>
           </div>
         )
       })}
