@@ -1,11 +1,18 @@
-import LinkButton from '@/components/buttons/LinkButton'
+import Navigation from '@/components/Navigation'
 
-export default function Example() {
+const navigation = [
+  { name: 'About', href: '#' },
+  { name: 'Contracts', href: '#' },
+  { name: 'Sponsors', href: '#' },
+  { name: 'Team', href: '#' },
+]
+
+export default function LandingPage() {
   return (
-    <div className='max-w-md mx-auto my-20'>
+    <>
       <main>
-        <LinkButton href='/'>Back</LinkButton>
+        <Navigation navigation={navigation} />
       </main>
-    </div>
+    </>
   )
 }
