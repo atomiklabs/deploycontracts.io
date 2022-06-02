@@ -1,10 +1,12 @@
-import Grid from '@/components/Grid'
+import Masthead from '@/components/Masthead'
 
 export default function LandingPage() {
   return (
     <>
       <main>
-        <Grid>grid test</Grid>
+        <header className='py-20'>
+          <Masthead />
+        </header>
       </main>
     </>
   )
