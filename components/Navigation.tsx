@@ -5,7 +5,14 @@ import { DeployconttractsLogo } from '@/components/DeployconttractsLogo'
 import menu from '../public/assets/menu.svg'
 import github from '../public/assets/github.svg'
 
-export default function Navigation({ navigation }: { navigation: any }) {
+const navigation = [
+  { name: 'About', href: '#' },
+  { name: 'Contracts', href: '#' },
+  { name: 'Sponsors', href: '#' },
+  { name: 'Team', href: '#' },
+]
+
+export default function Navigation() {
   return (
     <nav className='p-5'>
       <Grid className='flex items-center'>
