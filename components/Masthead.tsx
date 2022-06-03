@@ -21,6 +21,9 @@ export default function Masthead() {
             </h1>
           </H1>
         </div>
+        <div className='col-span-full hidden lg:flex order-3 mt-14 justify-center'>
+          <img src='/assets/ellipse.svg' alt='ellipse icon' />
+        </div>
       </Grid>
     </>
   )
