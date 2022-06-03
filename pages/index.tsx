@@ -1,10 +1,10 @@
-import Grid from '@/components/Grid'
+import H1 from '@/components/H1'
 
 export default function LandingPage() {
   return (
     <>
       <main>
-        <Grid>grid test</Grid>
+        <H1>Customize & Deploy</H1>
       </main>
     </>
   )

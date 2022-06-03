@@ -12,6 +12,7 @@ module.exports = {
         base: ['1.125rem', '2rem'], // 18px 32px
         lg: ['1.5rem', '1.914rem'], // 24px 30.62px
         xl: ['3rem', '3.828rem'], // 48px 61.25px
+        h1: ['4rem', '5.1rem'], //64px 81.68px
       },
       weight: {
         normal: 400,
