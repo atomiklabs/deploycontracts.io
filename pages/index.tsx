@@ -1,11 +1,13 @@
 import ComingSoon from '@/components/ComingSoon'
+import AvailableText from '@/components/AvailableText'
 
-export default function Example() {
+export default function LandingPage() {
   return (
-    <div className='max-w-md mx-auto my-20'>
+    <>
       <main>
         <ComingSoon />
+        <AvailableText />
       </main>
-    </div>
+    </>
   )
 }
