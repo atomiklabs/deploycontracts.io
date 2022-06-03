@@ -1,12 +1,10 @@
-import ComingSoon from '@/components/ComingSoon'
-import AvailableText from '@/components/AvailableText'
+import Contracts from '@/components/Contracts'
 
 export default function LandingPage() {
   return (
     <>
       <main>
-        <ComingSoon />
-        <AvailableText />
+        <Contracts />
       </main>
     </>
   )
