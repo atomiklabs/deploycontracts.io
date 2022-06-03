@@ -1,5 +1,5 @@
 import { NonOptimizedImage } from './NonOptimizedImage'
-import Grid from '@/components/Grid'
+import GridContainer from '@/components/GridContainer'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import { DeployconttractsLogo } from '@/components/DeployconttractsLogo'
 import menu from '../public/assets/menu.svg'
@@ -15,7 +15,7 @@ const navigation = [
 export default function Navigation() {
   return (
     <nav className='p-5'>
-      <Grid>
+      <GridContainer>
         <div className='col-span-3 md:col-start-2 md:order-2 lg:col-start-1 flex items-center'>
           <DeployconttractsLogo className='w-56 h-7 md:w-72 md:h-9 cursor-pointer' />
         </div>
@@ -41,7 +41,7 @@ export default function Navigation() {
             </SecondaryButton>
           </li>
         </ul>
-      </Grid>
+      </GridContainer>
     </nav>
   )
 }
