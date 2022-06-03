@@ -1,7 +1,3 @@
 export default function H2({ children }: { children: any }) {
-  return (
-    <span className='text-[40px] leading-[48px] md:text-[56px] md:leading-[64px] text-white font-space-grotesk font-bold'>
-      {children}
-    </span>
-  )
+  return <span className='text-h2-sm md:text-h2-md text-white font-space-grotesk font-bold'>{children}</span>
 }
