@@ -1,6 +1,6 @@
 import H1 from '@/components/headings/H1'
 import H2 from '@/components/headings/H2'
-import H3 from '@/components/H3'
+import H3 from '@/components/headings/H3'
 
 export default function LandingPage() {
   return (
