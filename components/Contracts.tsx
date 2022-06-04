@@ -95,18 +95,20 @@ export default function Contracts() {
               )
             })}
 
-            <div className='col-span-full lg:col-span-6 flex flex-col gap-y-5 bg-[linear-gradient(115.82deg,#671BC9_5.15%,#FD0F9E_108.88%)] rounded-2xl p-6 md:p-12 lg:p-16'>
-              <H3>
-                <h3>Custom contract</h3>
-              </H3>
-              <div className='text-gray-100 tracking-[-0.02rem]'>
-                Do you need more complex contract? Please contact us and we would see how we can help.
+            <div className='col-span-full lg:col-span-6 flex flex-col justify-between gap-y-5 bg-[linear-gradient(115.82deg,#671BC9_5.15%,#FD0F9E_108.88%)] rounded-2xl p-6 md:p-12 lg:p-16'>
+              <div>
+                <H3>
+                  <h3>Custom contract</h3>
+                </H3>
+                <div className='text-gray-100 tracking-[-0.02rem]'>
+                  Do you need more complex contract? Please contact us and we would see how we can help.
+                </div>
               </div>
-              <div className=''>
-                <PrimaryButton>
-                  <div className='py-3 px-11 whitespace-nowrap bg-white text-black'>Create new token</div>
-                </PrimaryButton>
-              </div>
+              <PrimaryButton>
+                <a href='/' className='py-3 px-11 w-full h-full inline-block whitespace-nowrap rounded-2xl bg-white'>
+                  <span className='gradient-text'>Contact with Us</span>
+                </a>
+              </PrimaryButton>
             </div>
           </Grid>
         </div>
