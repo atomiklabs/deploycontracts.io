@@ -1,10 +1,10 @@
-import Grid from '@/components/Grid'
+import GridContainer from '@/components/GridContainer'
 import H1 from '@/components/headings/H1'
 
 export default function Masthead() {
   return (
     <>
-      <Grid>
+      <GridContainer>
         <div className='col-span-full lg:col-start-7 lg:col-span-6 lg:order-2 flex justify-center'>
           <div className='h-full w-[270px] md:w-[410px] lg:w-[487px] flex shrink-0'>
             <img src='/assets/masthead.svg' alt='masthead image' />
@@ -24,7 +24,7 @@ export default function Masthead() {
         <div className='col-span-full hidden lg:flex order-3 mt-14 justify-center'>
           <img src='/assets/ellipse.svg' alt='ellipse icon' />
         </div>
-      </Grid>
+      </GridContainer>
     </>
   )
 }
