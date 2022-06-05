@@ -1,12 +1,10 @@
-import ComingSoon from '@/components/ComingSoon'
-import AvailableText from '@/components/AvailableText'
+import Navigation from '@/components/Navigation'
 
 export default function LandingPage() {
   return (
     <>
       <main>
-        <ComingSoon />
-        <AvailableText />
+        <Navigation />
       </main>
     </>
   )
