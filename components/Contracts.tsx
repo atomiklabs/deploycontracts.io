@@ -16,7 +16,7 @@ const contracts = [
     title: 'SNIP-20 contract',
     text: 'SNIP-20 contract. Cras feugiat rhoncus augue, nec mattis ligula aliquet et. Morbi non porta lorem, aliquam suscipit leo. Maecenas blandit non sem vel blandit.',
     available: true,
-    image: '/assets/disks.svg',
+    image: '/assets/coins.svg',
   },
   {
     title: 'Vesting contract',
@@ -37,7 +37,7 @@ const contracts = [
 
 export default function Contracts() {
   return (
-    <section>
+    <section className='mt-20 md:mt-32 lg:mt-36'>
       <GridContainer>
         <div className='col-span-full text-center'>
           <H2>
