@@ -1,4 +1,4 @@
-import Grid from '@/components/Grid'
+import GridContainer from '@/components/GridContainer'
 import H2 from '@/components/headings/H2'
 import H3 from '@/components/headings/H3'
 import AvailableText from '@/components/AvailableText'
@@ -38,7 +38,7 @@ const contracts = [
 export default function Contracts() {
   return (
     <section>
-      <Grid>
+      <GridContainer>
         <div className='col-span-full text-center'>
           <H2>
             <h2>Available contracts</h2>
@@ -59,7 +59,7 @@ export default function Contracts() {
         </div>
 
         <div className='col-span-full mt-20'>
-          <Grid className='px-0 gap-y-6'>
+          <GridContainer className='px-0 gap-y-6'>
             {contracts.map((x, i) => {
               return (
                 <React.Fragment key={i}>
@@ -107,9 +107,9 @@ export default function Contracts() {
                 </a>
               </PrimaryButton>
             </div>
-          </Grid>
+          </GridContainer>
         </div>
-      </Grid>
+      </GridContainer>
     </section>
   )
 }
