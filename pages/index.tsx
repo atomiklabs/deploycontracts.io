@@ -1,10 +1,12 @@
+import Navigation from '@/components/Navigation'
 import Masthead from '@/components/Masthead'
 
 export default function LandingPage() {
   return (
     <>
       <main>
-        <header className='py-20'>
+        <Navigation />
+        <header>
           <Masthead />
         </header>
       </main>
