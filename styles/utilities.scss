@@ -59,3 +59,10 @@
     background: linear-gradient(115.82deg, #671bc9 5.15%, #fd0f9e 108.88%);
   }
 }
+
+.gradient-text {
+  position: relative;
+  background: linear-gradient(115.82deg, #671bc9 5.15%, #fd0f9e 108.88%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
