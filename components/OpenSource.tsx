@@ -4,10 +4,10 @@ import SecondaryButton from '@/components/buttons/SecondaryButton'
 
 export default function OpenSource() {
   return (
-    <section className='relative z-0 mt-20 lg:mt-60'>
-      <GridContainer>
+    <section className='mt-20 lg:mt-60'>
+      <GridContainer className='relative z-0'>
         <div className='absolute hidden md:inline-block -z-10 md:top-[-5%] lg:top-[-20%] col-span-full'>
-          <div className='h-full w-full flex shrink-0'>
+          <div className='h-full w-full'>
             <img src='/assets/open-source-title.svg' alt='open source title image' />
           </div>
         </div>
