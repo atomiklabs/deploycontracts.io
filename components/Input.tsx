@@ -13,6 +13,8 @@ interface Props {
 }
 
 export default function Input({ name, type, label, placeholder, step, className, error, touched }: Props) {
+  const hasError = touched && error
+
   return (
     <div className={`${className} flex flex-col gap-y-2`}>
       <label htmlFor={name} className='text-white font-medium'>
@@ -21,7 +23,7 @@ export default function Input({ name, type, label, placeholder, step, className,
 
       <Field
         className='input py-4 px-5 bg-[#000B28] border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-        style={{ borderColor: error ? `${defaultColors.error}` : '' }}
+        style={{ borderColor: hasError ? `${defaultColors.error}` : '' }}
         id={name}
         name={name}
         type={type}
@@ -30,7 +32,7 @@ export default function Input({ name, type, label, placeholder, step, className,
         step={step}
       />
 
-      {touched && error && (
+      {hasError && (
         <div className='flex flex-row gap-x-2 items-center'>
           <img src='/assets/error.svg' width={14} height={16} />
           <span className='text-xs font-medium text-[#FC0E47]'>{error}</span>

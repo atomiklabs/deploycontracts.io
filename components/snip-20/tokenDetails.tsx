@@ -1,11 +1,11 @@
 import PrimaryButton from '@/components/buttons/PrimaryButton'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import Input from '@/components/Input'
-import { useSnip20 } from '@/utils/snip20Provider'
+import { useSnip20, snip20ValidationSchema } from '@/utils/snip20Provider'
 import { Formik } from 'formik'
 
 export default function tokenDetails() {
-  const { step1, step1ValidationSchema, onNextStep } = useSnip20()
+  const { onNextStep, snip20FormData } = useSnip20()
 
   return (
     <>
@@ -23,7 +23,11 @@ export default function tokenDetails() {
         <SecondaryButton>Connect your wallet</SecondaryButton>
       </div>
 
-      <Formik initialValues={step1} validationSchema={step1ValidationSchema} onSubmit={onNextStep}>
+      <Formik
+        initialValues={snip20FormData.step1}
+        validationSchema={snip20ValidationSchema.fields.step1}
+        onSubmit={onNextStep}
+      >
         {({ errors, touched, submitForm, isValid }) => {
           return (
             <>
