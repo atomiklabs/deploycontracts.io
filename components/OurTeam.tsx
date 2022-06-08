@@ -2,9 +2,9 @@ import GirdContainer from '@/components/GridContainer'
 import H2 from '@/components/headings/H2'
 
 const team = [
-  { name: 'Lincoln Donin', img: '' },
-  { name: 'Alfredo Press', img: '' },
-  { name: 'Jaylon Vaccaro', img: '' },
+  { name: 'Nick Zbiegien', img: '/assets/team-nick.png' },
+  { name: 'Rafal Korzewski', img: '/assets/team-raf.png' },
+  { name: 'Tomasz Kopacki', img: '/assets/team-tko.png' },
 ]
 
 export default function OurTeam() {
@@ -29,8 +29,8 @@ export default function OurTeam() {
                 key={i}
                 className='flex flex-row lg:flex-col items-center gap-x-4 lg:gap-y-6 py-6 first-of-type:border-t border-b lg:border-0 lg:first-of-type:border-0 border-[#455378]'
               >
-                <div>
-                  <img src='/assets/polygon.svg' alt='polygon img' />
+                <div className='w-14 h-14 md:w-[72px] md:h-[72px] lg:w-[120px] lg:h-[120px]'>
+                  <img src={x.img} alt={`${x.name} img`} />
                 </div>
                 <div className='flex flex-row lg:flex-col lg:gap-y-6 lg:items-center justify-between w-full text-lg text-white font-space-grotesk font-bold'>
                   {x.name}
