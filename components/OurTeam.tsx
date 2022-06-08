@@ -11,7 +11,7 @@ export default function OurTeam() {
   return (
     <section className='mt-24'>
       <GirdContainer>
-        <div className='col-span-full lg:col-start-3 lg:col-span-8 flex flex-col text-center gap-y-4'>
+        <div className='col-span-full lg:col-start-3 lg:col-span-8 flex flex-col text-center gap-y-4 md:gap-y-6'>
           <H2>
             <h2 className='text-center'>
               Team <span className='gradient-text'>atomiklabs.io</span>
@@ -29,7 +29,7 @@ export default function OurTeam() {
                 key={i}
                 className='flex flex-row lg:flex-col items-center gap-x-4 lg:gap-y-6 py-6 first-of-type:border-t border-b lg:border-0 lg:first-of-type:border-0 border-[#455378]'
               >
-                <div className='w-14 h-14 md:w-[72px] md:h-[72px] lg:w-[120px] lg:h-[120px]'>
+                <div className='w-14 h-full md:w-[72px] lg:w-[120px]'>
                   <img src={x.img} alt={`${x.name} img`} />
                 </div>
                 <div className='flex flex-row lg:flex-col lg:gap-y-6 lg:items-center justify-between w-full text-lg text-white font-space-grotesk font-bold'>
