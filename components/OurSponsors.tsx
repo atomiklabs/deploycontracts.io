@@ -13,7 +13,7 @@ export default function OurSponsors() {
           <div className='text-gray-100 tracking-[-0.002rem]'>This project is founded by multiple grant programs.</div>
         </div>
         <div className='col-span-full lg:col-span-6 lg:col-start-7 flex flex-col gap-y-6 md:flex-row lg:flex-col md:mt-9 lg:pl-14 lg:py-6 lg:mt-0 lg:border-l-[1px] lg:border-[#455378]'>
-          <div className='flex mt-11 md:mt-0 md:items-center md:justify-center lg:justify-start order-1 md:w-[40%] lg:w-full'>
+          <div className='flex mt-11 md:mt-0 md:items-center justify-center lg:justify-start order-1 md:w-[40%] lg:w-full'>
             <div>
               <img src='/assets/secret-network.svg' alt='secret network logo' />
             </div>
