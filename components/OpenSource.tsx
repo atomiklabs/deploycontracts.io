@@ -1,5 +1,5 @@
 import GridContainer from '@/components/GridContainer'
-import GithubButton from '@/components/GithubButton'
+import GithubButton from '@/components/buttons/GithubButton'
 import H2 from '@/components/headings/H2'
 
 export default function OpenSource() {

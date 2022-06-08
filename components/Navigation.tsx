@@ -1,5 +1,5 @@
 import GridContainer from '@/components/GridContainer'
-import GithubButton from '@/components/GithubButton'
+import GithubButton from '@/components/buttons/GithubButton'
 import { DeployconttractsLogo } from '@/components/DeployconttractsLogo'
 
 const navigation = [
