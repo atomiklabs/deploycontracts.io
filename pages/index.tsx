@@ -1,6 +1,7 @@
 import Navigation from '@/components/Navigation'
 import Masthead from '@/components/Masthead'
 import Contracts from '@/components/Contracts'
+import OpenSource from '@/components/OpenSource'
 
 export default function LandingPage() {
   return (
@@ -11,6 +12,7 @@ export default function LandingPage() {
           <Masthead />
         </header>
         <Contracts />
+        <OpenSource />
       </main>
     </>
   )
