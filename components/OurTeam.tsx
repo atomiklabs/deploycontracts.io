@@ -2,19 +2,19 @@ import GirdContainer from '@/components/GridContainer'
 import H2 from '@/components/headings/H2'
 
 const team = [
-  { name: 'Lincoln Donin', img: '', linkedInIcon: '/assets/linkedIn.svg' },
-  { name: 'Alfredo Press', img: '', linkedInIcon: '/assets/linkedIn.svg' },
-  { name: 'Jaylon Vaccaro', img: '', linkedInIcon: '/assets/linkedIn.svg' },
+  { name: 'Lincoln Donin', img: '' },
+  { name: 'Alfredo Press', img: '' },
+  { name: 'Jaylon Vaccaro', img: '' },
 ]
 
 export default function OurTeam() {
   return (
     <section className='mt-24'>
       <GirdContainer>
-        <div className='col-span-full flex flex-col gap-y-4'>
+        <div className='col-span-full lg:col-start-3 lg:col-span-8 flex flex-col text-center gap-y-4'>
           <H2>
             <h2 className='text-center'>
-              Team <span className='gradient-text'> atomiklabs.io</span>
+              Team <span className='gradient-text'>atomiklabs.io</span>
             </h2>
           </H2>
           <div className='text-gray-100 tracking-[-0.002rem]'>
@@ -22,7 +22,26 @@ export default function OurTeam() {
             suscipit leo. Maecenas blandit non sem vel blandit.
           </div>
         </div>
-        <div className='col-span-full'>ss</div>
+        <div className='col-span-full flex flex-col lg:flex-row lg:justify-evenly mt-8'>
+          {team.map((x, i) => {
+            return (
+              <div
+                key={i}
+                className='flex flex-row lg:flex-col items-center gap-x-4 lg:gap-y-6 py-6 first-of-type:border-t border-b lg:border-0 lg:first-of-type:border-0 border-[#455378]'
+              >
+                <div>
+                  <img src='/assets/polygon.svg' alt='polygon img' />
+                </div>
+                <div className='flex flex-row lg:flex-col lg:gap-y-6 lg:items-center justify-between w-full text-lg text-white font-space-grotesk font-bold'>
+                  {x.name}
+                  <span className='justify-self-end'>
+                    <img src='/assets/linkedIn.svg' alt='linkedIn icon' />
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
       </GirdContainer>
     </section>
   )
