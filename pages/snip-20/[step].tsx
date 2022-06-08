@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import TokenDetails from '@/components/snip-20/tokenDetails'
 import TokenAllocation from '@/components/snip-20/tokenAllocation'
 import TokenMarketing from '@/components/snip-20/tokenMarketing'
+import { Snip20Provider } from '@/utils/snip20Provider'
 
 import { useEffect, useState } from 'react'
 import { ParsedUrlQuery } from 'querystring'
@@ -32,7 +33,11 @@ export default function Step() {
     return
   }
 
-  return <Snip20 step={currentStep.step} component={currentStep.component} />
+  return (
+    <Snip20Provider>
+      <Snip20 step={currentStep.step} component={currentStep.component} />
+    </Snip20Provider>
+  )
 }
 
 function getCurrentStep(routerQuery: ParsedUrlQuery) {

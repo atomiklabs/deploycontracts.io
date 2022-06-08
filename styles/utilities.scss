@@ -32,6 +32,11 @@
     background-clip: padding-box, border-box;
     box-shadow: none;
   }
+
+  &[type=number]::-webkit-inner-spin-button, 
+  &[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+  }
 }
 
 .custom-tooltip {
