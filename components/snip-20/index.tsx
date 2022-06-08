@@ -1,12 +1,19 @@
 import Container from '@/components/snip-20/Container'
 import { Steps } from '@/components/steps'
+import { useSnip20 } from '@/utils/snip20Provider'
 
-export default function Snip20({ step, component }: { step: number; component: JSX.Element }) {
+export default function Snip20() {
+  const { currentStep } = useSnip20()
+
+  if (!currentStep) {
+    return null
+  }
+
   return (
     <Container className='pt-20'>
-      <Steps activeStep={step} />
+      <Steps activeStep={currentStep.index} />
 
-      <section className='mt-10'>{component}</section>
+      <section className='mt-10'>{currentStep.component}</section>
     </Container>
   )
 }
