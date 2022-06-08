@@ -1,5 +1,5 @@
 import GridContainer from '@/components/GridContainer'
-import SecondaryButton from '@/components/buttons/SecondaryButton'
+import GithubButton from '@/components/GithubButton'
 import { DeployconttractsLogo } from '@/components/DeployconttractsLogo'
 
 const navigation = [
@@ -30,14 +30,7 @@ export default function Navigation() {
             )
           })}
           <li className='hidden md:block'>
-            <SecondaryButton>
-              <a href='#' className='md:py-3 md:px-8 lg:px-12 flex flex-1 items-center gap-x-[10px]'>
-                <div className='w-6 h-7 flex justify-center'>
-                  <img src='/assets/github.svg' alt='github logo' />
-                </div>
-                Github
-              </a>
-            </SecondaryButton>
+            <GithubButton className='md:py-3 md:px-8 lg:px-12' />
           </li>
         </ul>
       </GridContainer>

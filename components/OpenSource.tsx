@@ -1,6 +1,6 @@
 import GridContainer from '@/components/GridContainer'
+import GithubButton from '@/components/GithubButton'
 import H2 from '@/components/headings/H2'
-import SecondaryButton from '@/components/buttons/SecondaryButton'
 
 export default function OpenSource() {
   return (
@@ -24,14 +24,7 @@ export default function OpenSource() {
             All code at deploycontract.io is open source. mattis ligula aliquet et. Morbi non porta lorem, aliquam
             suscipit leo. Maecenas blandit non sem vel blandit.
           </div>
-          <SecondaryButton>
-            <a href='#' className='py-4 px-8 flex flex-row justify-center items-center gap-x-[10px]'>
-              <div className='w-6 h-7 flex justify-center'>
-                <img src='/assets/github.svg' alt='github logo' />
-              </div>
-              Github
-            </a>
-          </SecondaryButton>
+          <GithubButton className='py-4 px-8' />
         </div>
       </GridContainer>
     </section>
