@@ -12,12 +12,12 @@ export default function LandingPage() {
       <main>
         <Navigation />
         <header>
-          <Masthead />
+          <Masthead id='about' />
         </header>
-        <Contracts />
-        <OpenSource />
-        <OurSponsors />
-        <OurTeam />
+        <Contracts id='available-contracts' />
+        <OpenSource id='open-source' />
+        <OurSponsors id='our-sponsors' />
+        <OurTeam id='our-team' />
         <footer>
           <Footer />
         </footer>

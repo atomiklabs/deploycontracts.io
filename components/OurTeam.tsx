@@ -7,9 +7,9 @@ const team = [
   { name: 'Tomasz Kopacki', img: '/assets/team-tko.png' },
 ]
 
-export default function OurTeam() {
+export default function OurTeam({ id }: { id: string }) {
   return (
-    <section className='mt-24'>
+    <section id={id} className='mt-24'>
       <GirdContainer>
         <div className='col-span-full lg:col-start-3 lg:col-span-8 flex flex-col text-center gap-y-4 md:gap-y-6'>
           <H2>

@@ -1,12 +1,13 @@
 import GridContainer from '@/components/GridContainer'
 import GithubButton from '@/components/buttons/GithubButton'
 import { DeployconttractsLogo } from '@/components/DeployconttractsLogo'
+import { landingPageUrl } from 'consts'
 
 const navigation = [
-  { name: 'About', href: '#' },
-  { name: 'Contracts', href: '#' },
-  { name: 'Sponsors', href: '#' },
-  { name: 'Team', href: '#' },
+  { name: 'Contracts', href: landingPageUrl.contracts },
+  { name: 'Open Source', href: landingPageUrl.openSource },
+  { name: 'Sponsors', href: landingPageUrl.sponsors },
+  { name: 'Team', href: landingPageUrl.team },
 ]
 
 export default function Navigation() {
@@ -14,7 +15,9 @@ export default function Navigation() {
     <nav className='py-5'>
       <GridContainer>
         <div className='col-span-3 md:col-start-2 md:order-2 lg:col-start-1 flex items-center'>
-          <DeployconttractsLogo className='w-56 h-full md:w-72 md:h-9 cursor-pointer shrink-0' />
+          <a href={landingPageUrl.navbarLogo}>
+            <DeployconttractsLogo className='w-56 h-full md:w-72 md:h-9 cursor-pointer shrink-0' />
+          </a>
         </div>
         <div className='col-span-1 md:col-start-1 md:order-1 lg:hidden flex justify-end md:justify-start'>
           <div className='w-8 h-full cursor-pointer flex items-center shrink-0'>
@@ -30,7 +33,7 @@ export default function Navigation() {
             )
           })}
           <li className='hidden md:block'>
-            <GithubButton className='md:py-3 md:px-8 lg:px-12' />
+            <GithubButton className='md:py-3 md:px-8 lg:px-12' href={landingPageUrl.github} />
           </li>
         </ul>
       </GridContainer>

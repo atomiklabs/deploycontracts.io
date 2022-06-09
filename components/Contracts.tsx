@@ -35,9 +35,9 @@ const contracts = [
   },
 ]
 
-export default function Contracts() {
+export default function Contracts({ id }: { id: string }) {
   return (
-    <section className='mt-20 md:mt-32 lg:mt-36'>
+    <section id={id} className='mt-20 md:mt-32 lg:mt-36'>
       <GridContainer>
         <div className='col-span-full text-center'>
           <H2>

@@ -2,9 +2,9 @@ import GridContainer from '@/components/GridContainer'
 import LinkButton from '@/components/buttons/LinkButton'
 import H2 from '@/components/headings/H2'
 
-export default function OurSponsors() {
+export default function OurSponsors({ id }: { id: string }) {
   return (
-    <section className=' mt-20'>
+    <section id={id} className=' mt-20'>
       <GridContainer>
         <div className='col-span-full lg:col-span-6 flex flex-col gap-y-4 items-center lg:items-start lg:justify-center'>
           <H2>
