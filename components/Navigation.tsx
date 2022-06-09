@@ -28,7 +28,12 @@ export default function Navigation() {
           {navigation.map((x: any, i: number) => {
             return (
               <li key={i} className='hidden lg:block leading-6'>
-                <a href={x.href}>{x.name}</a>
+                <a
+                  href={x.href}
+                  className='bg-clip-text hover:text-transparent hover:bg-[linear-gradient(98.98deg,#671BC9_-83.86%,#FD0F9E_85.88%)]'
+                >
+                  {x.name}
+                </a>
               </li>
             )
           })}
