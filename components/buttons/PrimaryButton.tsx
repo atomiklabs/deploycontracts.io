@@ -1,11 +1,10 @@
-type Props = {
-  children: any
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
-  disabled?: boolean
-  className?: string
-}
+import { ComponentProps, ReactNode } from 'react'
 
-export default function PrimaryButton({ children, className, ...props }: Props) {
+export default function PrimaryButton({
+  children,
+  className,
+  ...props
+}: { children: ReactNode; className?: string } & ComponentProps<'button'>) {
   return (
     <button
       className={`

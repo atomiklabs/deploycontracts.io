@@ -9,12 +9,6 @@ import TokenMarketing from '@/components/snip-20/tokenMarketing'
 
 const LocalContext = createContext({} as TSnip20Provider)
 
-const initialSnip20FormData: TSnip20FormData = {
-  step1: { tokenName: '', tokenTotalSupply: 1_000_000 },
-  step2: { abc: '' },
-  step3: { xyz: '' },
-}
-
 export function Snip20Provider({ children }: any) {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState<{ index: number; component: JSX.Element }>()
@@ -107,6 +101,12 @@ function getCurrentStep(routerQuery: ParsedUrlQuery) {
   }
 
   return errorResponse
+}
+
+const initialSnip20FormData: TSnip20FormData = {
+  step1: { tokenName: '', tokenTotalSupply: 1_000_000 },
+  step2: { abc: '' },
+  step3: { xyz: '' },
 }
 
 export const snip20ValidationSchema = yup.object({

@@ -2,7 +2,7 @@ import PrimaryButton from '@/components/buttons/PrimaryButton'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import Input from '@/components/Input'
 import { useSnip20, snip20ValidationSchema } from '@/utils/snip20Provider'
-import { Formik } from 'formik'
+import { Form, Formik } from 'formik'
 
 export default function tokenDetails() {
   const { onNextStep, snip20FormData } = useSnip20()
@@ -28,38 +28,17 @@ export default function tokenDetails() {
         validationSchema={snip20ValidationSchema.fields.step1}
         onSubmit={onNextStep}
       >
-        {({ errors, touched, submitForm, isValid }) => {
-          return (
-            <>
-              <Input
-                className='mt-14'
-                name='tokenName'
-                type='text'
-                label='Token name'
-                placeholder='XYZ'
-                error={errors.tokenName}
-                touched={touched.tokenName}
-              />
+        <Form>
+          <Input className='mt-14' name='tokenName' type='text' label='Token symbol' placeholder='SCRT' required />
 
-              {/* TODO: Display big numbers with spaces eg. '1 000 000' */}
-              <Input
-                className='mt-14'
-                name='tokenTotalSupply'
-                type='number'
-                step={1}
-                label='Total supply'
-                error={errors.tokenTotalSupply}
-                touched={touched.tokenTotalSupply}
-              />
+          {/* TODO: Display big numbers with spaces eg. '1 000 000' */}
+          <Input className='mt-14' name='tokenTotalSupply' type='number' step={1} label='Total supply' required />
 
-              {/* TODO: Add error paragraph when submited with errors */}
-
-              <PrimaryButton className='mt-20' disabled={!isValid} onClick={() => submitForm()}>
-                Next
-              </PrimaryButton>
-            </>
-          )
-        }}
+          {/* TODO: Add error paragraph when submited with errors */}
+          <PrimaryButton className='mt-20' type='submit'>
+            Next
+          </PrimaryButton>
+        </Form>
       </Formik>
     </>
   )

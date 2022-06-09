@@ -1,41 +1,34 @@
-import { Field } from 'formik'
+import { ComponentProps } from 'react'
+import { useField } from 'formik'
 import { defaultColors } from '../consts'
 
-interface Props {
+interface InputProps extends ComponentProps<'input'> {
   name: string
-  type: string
   label: string
-  className?: string
-  placeholder?: string
-  error?: string | false
-  touched?: boolean
-  step?: number
 }
 
-export default function Input({ name, type, label, placeholder, step, className, error, touched }: Props) {
-  const hasError = touched && error
+export default function Input({ label, className, ...props }: { label: string; className: string } & InputProps) {
+  const [field, meta] = useField(props)
+  const hasError = meta.touched && !!meta.error
 
   return (
     <div className={`${className} flex flex-col gap-y-2`}>
-      <label htmlFor={name} className='text-white font-medium'>
+      <label htmlFor={props.name} className='text-white font-medium'>
         {label}
       </label>
 
-      <Field
+      <input
         className='input py-4 px-5 bg-[#000B28] border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
         style={{ borderColor: hasError ? `${defaultColors.error}` : '' }}
-        id={name}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        required
-        step={step}
+        id={props.name}
+        {...field}
+        {...props}
       />
 
       {hasError && (
         <div className='flex flex-row gap-x-2 items-center'>
           <img src='/assets/error.svg' width={14} height={16} />
-          <span className='text-xs font-medium text-[#FC0E47]'>{error}</span>
+          <span className='text-xs font-medium text-[#FC0E47]'>{meta.error}</span>
         </div>
       )}
     </div>
