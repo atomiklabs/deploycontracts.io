@@ -5,10 +5,11 @@ import PrimaryButton from '@/components/buttons/PrimaryButton'
 import ProgressBar from '@/components/ProgressBar'
 import { FieldArray, Form, Formik } from 'formik'
 import { useSnip20, initialStepsFormData } from '@/utils/snip20Provider'
+import LinkButton from '../buttons/LinkButton'
 
 export default function tokenAllocation() {
   const { colourPallete, isAllocationMaxItems } = useToken()
-  const { onNextStep, getFormData } = useSnip20()
+  const { onNextStep, getFormData, goBack } = useSnip20()
   const stepIndex = 2
   const { initialValues, validationSchema } = getFormData(stepIndex)
 
@@ -70,7 +71,16 @@ export default function tokenAllocation() {
                 </div>
               )}
               <div className='flex flex-row justify-between gap-x-16 md:gap-x-[144px]'>
-                <div></div>
+                <div>
+                  <LinkButton
+                    onClick={(e) => {
+                      e.preventDefault()
+                      goBack()
+                    }}
+                  >
+                    Back
+                  </LinkButton>
+                </div>
                 <div className='flex-1 '>
                   <PrimaryButton type='submit' className='inline-block w-full h-full'>
                     Next

@@ -67,9 +67,22 @@ export function Snip20Provider({ children }: any) {
     router.push(nextStepPath)
   }
 
+  function goBack() {
+    if (!currentStepData) {
+      return console.error('--- currentStepData is not defined')
+    }
+
+    const prevStepIndex = currentStepData.stepIndex - 1
+    if (prevStepIndex < 1) {
+      return console.error('--- goBack prevStepIndex', prevStepIndex)
+    }
+
+    const prevStepPath = `step-${prevStepIndex}`
+    router.push(prevStepPath)
+  }
+
   function updateCurrentStepData() {
     const updatedCurrentStep = getStepData(router.query)
-    console.log({ updatedCurrentStep })
 
     if (!updatedCurrentStep.component) {
       return console.error('--- updateCurrentStepData error')
@@ -81,7 +94,7 @@ export function Snip20Provider({ children }: any) {
   function getFormData(stepIndex: number): TFormDataReturnValue {
     return {
       // @ts-ignore
-      initialValues: initialStepsFormData[stepIndex - 1],
+      initialValues: snip20FormData[stepIndex - 1],
       // @ts-ignore
       validationSchema: stepsValidationSchema[stepIndex - 1],
     }
@@ -91,7 +104,11 @@ export function Snip20Provider({ children }: any) {
     return null
   }
 
-  return <LocalContext.Provider value={{ currentStepData, getFormData, onNextStep }}>{children}</LocalContext.Provider>
+  return (
+    <LocalContext.Provider value={{ currentStepData, getFormData, onNextStep, goBack }}>
+      {children}
+    </LocalContext.Provider>
+  )
 }
 
 export function useSnip20() {
@@ -169,6 +186,7 @@ const stepsValidationSchema = [
 type TSnip20Provider = {
   currentStepData: TCurrentStepData
   onNextStep: (data: {}) => void
+  goBack: () => void
   getFormData: (stepIndex: number) => {
     initialValues: typeof initialStepsFormData
     validationSchema: typeof stepsValidationSchema
