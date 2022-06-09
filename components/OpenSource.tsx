@@ -13,7 +13,7 @@ export default function OpenSource() {
         </div>
         <div className='col-span-full lg:col-start-7 lg:col-span-6 flex justify-center lg:order-2'>
           <div className='h-full w-[270px] md:w-[410px] lg:w-[487px] flex shrink-0'>
-            <img src='/assets/open-source.svg' alt='open-source image' />
+            <img src='/assets/open-source.png' alt='open-source image' />
           </div>
         </div>
         <div className='col-span-full lg:col-start-1 lg:col-span-6 flex flex-col gap-y-6 md:items-center lg:items-start lg:order-1'>
