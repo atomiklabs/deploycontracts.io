@@ -93,9 +93,7 @@ export function Snip20Provider({ children }: any) {
 
   function getFormData(stepIndex: number): TFormDataReturnValue {
     return {
-      // @ts-ignore
       initialValues: snip20FormData[stepIndex - 1],
-      // @ts-ignore
       validationSchema: stepsValidationSchema[stepIndex - 1],
     }
   }
@@ -168,8 +166,7 @@ const stepsValidationSchema = [
       .min(1, 'You must have at least 1 allocation')
       .max(15, 'Maximum allocations limit is 15')
       .test({
-        test: (arrayValues, context) => {
-          console.log({ arrayValues })
+        test: (arrayValues) => {
           const sum = arrayValues?.reduce((prev, acc) => prev + (acc.value ?? 0), 0)
           return sum === 100
         },
@@ -187,15 +184,12 @@ type TSnip20Provider = {
   currentStepData: TCurrentStepData
   onNextStep: (data: {}) => void
   goBack: () => void
-  getFormData: (stepIndex: number) => {
-    initialValues: typeof initialStepsFormData
-    validationSchema: typeof stepsValidationSchema
-  }
+  getFormData: (stepIndex: number) => TFormDataReturnValue
 }
 
 type TFormDataReturnValue = {
-  initialValues: typeof initialStepsFormData
-  validationSchema: typeof stepsValidationSchema
+  initialValues: typeof initialStepsFormData[0]
+  validationSchema: typeof stepsValidationSchema[0]
 }
 
 type TCurrentStepData = { stepIndex: number; component: JSX.Element }
