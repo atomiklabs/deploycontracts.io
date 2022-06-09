@@ -3,6 +3,7 @@ import Masthead from '@/components/Masthead'
 import Contracts from '@/components/Contracts'
 import OpenSource from '@/components/OpenSource'
 import OurSponsors from '@/components/OurSponsors'
+import OurTeam from '@/components/OurTeam'
 import Footer from '@/components/Footer'
 
 export default function LandingPage() {
@@ -16,6 +17,7 @@ export default function LandingPage() {
         <Contracts />
         <OpenSource />
         <OurSponsors />
+        <OurTeam />
         <footer>
           <Footer />
         </footer>
