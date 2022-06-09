@@ -10,9 +10,11 @@ export default function LandingPage() {
   return (
     <>
       <main>
-        <Navigation />
+        <aside className='sticky top-0 z-50 backdrop-blur'>
+          <Navigation />
+        </aside>
         <header>
-          <Masthead id='about' />
+          <Masthead id='welcome' />
         </header>
         <Contracts id='available-contracts' />
         <OpenSource id='open-source' />
