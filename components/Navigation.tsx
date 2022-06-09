@@ -43,7 +43,9 @@ export default function Navigation() {
               )
             })}
             <li className='hidden md:block'>
-              <GithubButton className='md:py-3 md:px-8 lg:px-12' href={landingPageUrl.github} />
+              <a href={landingPageUrl.github} target='_blank'>
+                <GithubButton className='md:py-3 md:px-8 lg:px-12' />
+              </a>
             </li>
           </ul>
 
@@ -79,7 +81,9 @@ export default function Navigation() {
                     )
                   })}
                   <li className='block md:hidden'>
-                    <GithubButton className='px-4 py-2 md:py-3 md:px-8 lg:px-12' href={landingPageUrl.github} />
+                    <a href={landingPageUrl.github}>
+                      <GithubButton className='px-4 py-2 md:py-3 md:px-8 lg:px-12' />
+                    </a>
                   </li>
                 </ul>
               </GridContainer>

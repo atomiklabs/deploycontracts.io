@@ -25,7 +25,9 @@ export default function OpenSource({ id }: { id: string }) {
             All code at deploycontract.io is open source. mattis ligula aliquet et. Morbi non porta lorem, aliquam
             suscipit leo. Maecenas blandit non sem vel blandit.
           </div>
-          <GithubButton className='py-4 px-8' href={landingPageUrl.github} />
+          <a href={landingPageUrl.github} target='_blank'>
+            <GithubButton className='py-4 px-8' />
+          </a>
         </div>
       </GridContainer>
     </section>
