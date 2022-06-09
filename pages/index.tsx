@@ -9,12 +9,12 @@ import Footer from '@/components/Footer'
 export default function LandingPage() {
   return (
     <>
-      <main>
+      <main id='welcome'>
         <aside className='sticky top-0 z-50 backdrop-blur'>
           <Navigation />
         </aside>
         <header>
-          <Masthead id='welcome' />
+          <Masthead />
         </header>
         <Contracts id='available-contracts' />
         <OpenSource id='open-source' />
