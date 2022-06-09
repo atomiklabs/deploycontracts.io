@@ -1,36 +1,45 @@
 import { useState } from 'react'
-import { useToken } from '@/utils/token'
 import Input from '@/components/Input'
-import { AllocationCard } from '@/utils/token.d'
+import { FieldArrayRenderProps } from 'formik'
 
 export default function AllocationCardComponent({
   colour,
-  allocation,
   index,
+  arrayHelpers,
 }: {
   colour: string
-  allocation: AllocationCard
   index: number
+  arrayHelpers: FieldArrayRenderProps
 }) {
-  const { deleteAllocation } = useToken()
   const [deleteImage, setDeleteImage] = useState('/assets/delete-default.svg')
 
   return (
     <div className='relative flex flex-col gap-y-9 bg-[#0F204D] rounded-3xl p-8'>
       <div className='flex flex-col md:flex-row gap-y-4 md:gap-x-5 lg:gap-x-[26px]'>
-        <div className='w-full md:w-[80%] xl:w-[85%] whitespace-nowrap'>
-          {/* TODO: Add onChange logic */}
-          <Input label='Name of your allocation' placeholder='eg. Team' />
+        <div className='w-full md:w-[70%] xl:w-[85%] whitespace-nowrap'>
+          <Input
+            name={`allocations.${index}.name`}
+            label='Name of your allocation'
+            placeholder='eg. Team'
+            autoComplete='off'
+            autoFocus
+            required
+          />
         </div>
 
-        <div className='w-full md:w-[20%] xl:w-[15%]'>
-          {/* TODO: Add onChange logic */}
-          <Input label='Value' placeholder='15%' />
+        <div className='w-full md:w-[30%] xl:w-[15%]'>
+          <Input
+            name={`allocations.${index}.value`}
+            type='number'
+            label='Value (%)'
+            placeholder='100%'
+            autoComplete='off'
+            required
+          />
         </div>
       </div>
 
-      {/* TODO: Add onChange logic */}
-      <Input label='Address' placeholder='hv423jl5v3h52v123klbn41klb14' />
+      <Input name={`allocations.${index}.address`} label='Secret address' placeholder='' required autoComplete='off' />
 
       {colour && (
         <div
@@ -39,10 +48,13 @@ export default function AllocationCardComponent({
         ></div>
       )}
 
-      {!!index && (
+      {index > 0 && (
         <button
           className='md:absolute md:top-0 md:bottom-0 m-auto md:right-[-70px] w-[64px] h-[64px] hover:bg-[#0F204C] rounded-full flex items-center justify-center'
-          onClick={() => deleteAllocation(index)}
+          onClick={(e) => {
+            e.preventDefault()
+            arrayHelpers.remove(index)
+          }}
           onMouseEnter={() => setDeleteImage('/assets/delete-active.svg')}
           onMouseLeave={() => setDeleteImage('/assets/delete-default.svg')}
         >

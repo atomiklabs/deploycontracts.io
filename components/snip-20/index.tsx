@@ -3,17 +3,17 @@ import { Steps } from '@/components/steps'
 import { useSnip20 } from '@/utils/snip20Provider'
 
 export default function Snip20() {
-  const { currentStep } = useSnip20()
+  const { currentStepData } = useSnip20()
 
-  if (!currentStep) {
+  if (!currentStepData) {
     return null
   }
 
   return (
     <Container className='pt-20'>
-      <Steps activeStep={currentStep.index} />
+      <Steps activeStep={currentStepData.stepIndex} />
 
-      <section className='mt-10'>{currentStep.component}</section>
+      <section className='mt-10'>{currentStepData.component}</section>
     </Container>
   )
 }

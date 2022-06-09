@@ -31,6 +31,7 @@
     background-origin: border-box;
     background-clip: padding-box, border-box;
     box-shadow: none;
+    outline: none;
   }
 
   &[type=number]::-webkit-inner-spin-button, 

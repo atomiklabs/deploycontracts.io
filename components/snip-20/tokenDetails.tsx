@@ -1,11 +1,13 @@
 import PrimaryButton from '@/components/buttons/PrimaryButton'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import Input from '@/components/Input'
-import { useSnip20, snip20ValidationSchema } from '@/utils/snip20Provider'
+import { useSnip20 } from '@/utils/snip20Provider'
 import { Form, Formik } from 'formik'
 
 export default function tokenDetails() {
-  const { onNextStep, snip20FormData } = useSnip20()
+  const { onNextStep, getFormData } = useSnip20()
+  const stepIndex = 1
+  const { initialValues, validationSchema } = getFormData(stepIndex)
 
   return (
     <>
@@ -23,18 +25,29 @@ export default function tokenDetails() {
         <SecondaryButton>Connect your wallet</SecondaryButton>
       </div>
 
-      <Formik
-        initialValues={snip20FormData.step1}
-        validationSchema={snip20ValidationSchema.fields.step1}
-        onSubmit={onNextStep}
-      >
+      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onNextStep}>
         <Form>
-          <Input className='mt-14' name='tokenName' type='text' label='Token symbol' placeholder='SCRT' required />
+          <Input
+            className='mt-14'
+            name='tokenName'
+            type='text'
+            label='Token symbol'
+            placeholder='SCRT'
+            required
+            autoComplete='off'
+          />
 
           {/* TODO: Display big numbers with spaces eg. '1 000 000' */}
-          <Input className='mt-14' name='tokenTotalSupply' type='number' step={1} label='Total supply' required />
+          <Input
+            className='mt-14'
+            name='tokenTotalSupply'
+            type='number'
+            step={1}
+            label='Total supply'
+            required
+            autoComplete='off'
+          />
 
-          {/* TODO: Add error paragraph when submited with errors */}
           <PrimaryButton className='mt-20' type='submit'>
             Next
           </PrimaryButton>

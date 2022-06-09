@@ -11,72 +11,95 @@ const LocalContext = createContext({} as TSnip20Provider)
 
 export function Snip20Provider({ children }: any) {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState<{ index: number; component: JSX.Element }>()
-  const [snip20FormData, setSnip20FormData] = useLocalStorage<TSnip20FormData>(`snip20FormData`, initialSnip20FormData)
+  const [isRouterReady, setIsRouterReady] = useState(false)
+  const [currentStepData, setCurrentStepData] = useState<TCurrentStepData>()
+  const [snip20FormData, setSnip20FormData] = useLocalStorage(`snip20FormData`, initialStepsFormData)
 
   useEffect(() => {
-    if (router.isReady) {
-      routerIsReady()
+    if (router.isReady && !isRouterReady) {
+      onRouterReady()
+      setIsRouterReady(true)
     }
-  }, [router.isReady, router.query])
+  }, [router.isReady])
 
-  async function routerIsReady() {
-    const currentStep = getCurrentStep(router.query)
-
-    if (!currentStep.component) {
-      console.warn('--- Error: wrong query param step. Redirecting to the first step')
-      return router.replace('/snip-20/step-1')
+  useEffect(() => {
+    if (isRouterReady) {
+      updateCurrentStepData()
     }
+  }, [router.query])
 
-    try {
-      await snip20ValidationSchema.validate(snip20FormData)
-    } catch (e) {
-      console.warn('--- localstorage snip20FormData schema is wrong, reset to default values', e)
-      setSnip20FormData(initialSnip20FormData)
-    }
+  async function onRouterReady() {
+    console.log('--- onRouterReady')
 
-    setCurrentStep({ ...currentStep })
+    const firstInvalidStepIndex = await validateAllSteps()
+    router.replace(`/snip-20/step-${firstInvalidStepIndex}`)
   }
 
-  if (!currentStep) {
-    return null
+  async function validateAllSteps() {
+    let firstInvalidStepIndex = stepsValidationSchema.length
+
+    for (let i = 0; i < stepsValidationSchema.length; i++) {
+      const stepIndex = i + 1
+
+      try {
+        await stepsValidationSchema[i].validate(snip20FormData[i])
+      } catch (e) {
+        firstInvalidStepIndex = stepIndex
+        console.warn(`--- validateAllSteps validation error at step ${stepIndex}`, e)
+        break
+      }
+    }
+
+    return firstInvalidStepIndex
   }
 
-  async function onNextStep(data: {}) {
-    console.log('--- onNextStep: ', data)
+  async function onNextStep(validatedData: any) {
+    console.log('--- onNextStep: ', validatedData)
 
-    if (!currentStep) {
-      console.error('--- currentStep is not defined')
-      return
+    if (!currentStepData) {
+      return console.error('--- currentStepData is not defined')
     }
 
-    const updatedSnip20FormData = {
-      ...snip20FormData,
-      [`step${currentStep.index}`]: {
-        ...data,
-      },
-    }
+    snip20FormData[currentStepData.stepIndex - 1] = { ...validatedData }
+    setSnip20FormData([...snip20FormData])
 
-    try {
-      await snip20ValidationSchema.validate(updatedSnip20FormData)
-      setSnip20FormData(updatedSnip20FormData)
-    } catch (e) {
-      console.error('--- snip20ValidationSchema', e)
-    }
-
-    const nextStepPath = `step-${currentStep.index + 1}`
+    const nextStepPath = `step-${currentStepData.stepIndex + 1}`
     router.push(nextStepPath)
   }
 
-  return <LocalContext.Provider value={{ currentStep, snip20FormData, onNextStep }}>{children}</LocalContext.Provider>
+  function updateCurrentStepData() {
+    const updatedCurrentStep = getStepData(router.query)
+    console.log({ updatedCurrentStep })
+
+    if (!updatedCurrentStep.component) {
+      return console.error('--- updateCurrentStepData error')
+    }
+
+    setCurrentStepData(updatedCurrentStep)
+  }
+
+  function getFormData(stepIndex: number): TFormDataReturnValue {
+    return {
+      // @ts-ignore
+      initialValues: initialStepsFormData[stepIndex - 1],
+      // @ts-ignore
+      validationSchema: stepsValidationSchema[stepIndex - 1],
+    }
+  }
+
+  if (!currentStepData) {
+    return null
+  }
+
+  return <LocalContext.Provider value={{ currentStepData, getFormData, onNextStep }}>{children}</LocalContext.Provider>
 }
 
 export function useSnip20() {
   return useContext(LocalContext)
 }
 
-function getCurrentStep(routerQuery: ParsedUrlQuery) {
-  const errorResponse = { index: -1, component: undefined }
+function getStepData(routerQuery: ParsedUrlQuery) {
+  const errorResponse = { stepIndex: -1, component: undefined }
 
   if (typeof routerQuery.step !== 'string') {
     return errorResponse
@@ -85,17 +108,17 @@ function getCurrentStep(routerQuery: ParsedUrlQuery) {
   switch (routerQuery.step) {
     case 'step-1':
       return {
-        index: 1,
+        stepIndex: 1,
         component: <TokenDetails />,
       }
     case 'step-2':
       return {
-        index: 2,
+        stepIndex: 2,
         component: <TokenAllocation />,
       }
     case 'step-3':
       return {
-        index: 3,
+        stepIndex: 3,
         component: <TokenMarketing />,
       }
   }
@@ -103,29 +126,58 @@ function getCurrentStep(routerQuery: ParsedUrlQuery) {
   return errorResponse
 }
 
-const initialSnip20FormData: TSnip20FormData = {
-  step1: { tokenName: '', tokenTotalSupply: 1_000_000 },
-  step2: { abc: '' },
-  step3: { xyz: '' },
-}
+export const initialStepsFormData = [
+  { tokenName: '', tokenTotalSupply: 1_000_000 },
+  { allocations: [{ name: '', value: 100, address: '' }] },
+  { xyz: '' },
+]
 
-export const snip20ValidationSchema = yup.object({
-  step1: yup.object({
-    tokenName: yup.string().required(),
-    tokenTotalSupply: yup.number().min(1).required(),
+const stepsValidationSchema = [
+  // step1
+  yup.object({
+    tokenName: yup.string().required('Required'),
+    tokenTotalSupply: yup.number().min(1).required('Required'),
   }),
-  step2: yup.object({
-    abc: yup.string(),
+  // step2
+  yup.object({
+    allocations: yup
+      .array(
+        yup.object({
+          name: yup.string().required('Required'),
+          value: yup.number().min(0.01, 'Min value is 0.01').max(100, 'Max value is 100').required(),
+          address: yup.string().required('Required'),
+        }),
+      )
+      .min(1, 'You must have at least 1 allocation')
+      .max(15, 'Maximum allocations limit is 15')
+      .test({
+        test: (arrayValues, context) => {
+          console.log({ arrayValues })
+          const sum = arrayValues?.reduce((prev, acc) => prev + (acc.value ?? 0), 0)
+          return sum === 100
+        },
+        message: 'Sum of allocation values must be equal to 100%',
+      })
+      .required('Required'),
   }),
-  step3: yup.object({
+  // step3
+  yup.object({
     xyz: yup.string(),
   }),
-})
+]
 
 type TSnip20Provider = {
-  currentStep: { index: number; component: JSX.Element }
-  snip20FormData: TSnip20FormData
+  currentStepData: TCurrentStepData
   onNextStep: (data: {}) => void
+  getFormData: (stepIndex: number) => {
+    initialValues: typeof initialStepsFormData
+    validationSchema: typeof stepsValidationSchema
+  }
 }
 
-type TSnip20FormData = yup.TypeOf<typeof snip20ValidationSchema>
+type TFormDataReturnValue = {
+  initialValues: typeof initialStepsFormData
+  validationSchema: typeof stepsValidationSchema
+}
+
+type TCurrentStepData = { stepIndex: number; component: JSX.Element }
