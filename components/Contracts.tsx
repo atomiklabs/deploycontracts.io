@@ -8,7 +8,7 @@ import React from 'react'
 
 const data = [
   { text: 'No smart contract developers required', icon: '/assets/hand.svg', iconName: 'hand' },
-  { text: "Fill up the form and submit, that's it", icon: '/assets/form.svg', iconName: 'form' },
+  { text: "Fill up the form and submit, that's it", icon: '/assets/list.svg', iconName: 'form' },
 ]
 
 const contracts = [
