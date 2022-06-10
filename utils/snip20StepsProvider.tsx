@@ -28,24 +28,24 @@ export function Snip20StepsProvider({ children }: any) {
     }
   }, [router.query])
 
-  async function onRouterReady() {
+  function onRouterReady() {
     console.log('--- onRouterReady')
 
-    const firstInvalidStepIndex = await validateAllSteps()
+    const firstInvalidStepIndex = validateAllSteps()
     router.replace(`/snip-20/step-${firstInvalidStepIndex}`)
   }
 
-  async function validateAllSteps() {
+  function validateAllSteps() {
     let firstInvalidStepIndex = stepsValidationSchema.length
 
     for (let i = 0; i < stepsValidationSchema.length; i++) {
       const stepIndex = i + 1
 
       try {
-        await stepsValidationSchema[i].validate(snip20FormData[i])
+        stepsValidationSchema[i].validateSync(snip20FormData[i])
       } catch (e) {
         firstInvalidStepIndex = stepIndex
-        console.warn(`--- validateAllSteps validation error at step ${stepIndex}`, e)
+        console.warn(`--- validateAllSteps validation error at step ${stepIndex}`)
         break
       }
     }
@@ -53,7 +53,7 @@ export function Snip20StepsProvider({ children }: any) {
     return firstInvalidStepIndex
   }
 
-  async function onNextStep(validatedData: any) {
+  function onNextStep(validatedData: any) {
     console.log('--- onNextStep: ', validatedData)
 
     if (!currentStepData) {
