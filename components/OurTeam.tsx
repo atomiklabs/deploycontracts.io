@@ -2,9 +2,14 @@ import GirdContainer from '@/components/GridContainer'
 import H2 from '@/components/headings/H2'
 
 const team = [
-  { name: 'Nick Zbiegien', img: '/assets/team-nick.png' },
-  { name: 'Rafal Korzewski', img: '/assets/team-raf.png' },
-  { name: 'Tomasz Kopacki', img: '/assets/team-tko.png' },
+  { name: 'Nick Zbiegien', img: '/assets/team-nick.png', href: 'https://www.linkedin.com/in/zbiegien/' },
+  {
+    name: 'Rafal Korzewski',
+    img: '/assets/team-raf.png',
+    href: 'https://www.linkedin.com/in/rafal-korzewski-b4a37b99/',
+  },
+  { name: 'Szymon Gos', img: '/assets/team-szymon.png', href: 'https://www.linkedin.com/in/szymon-gos777' },
+  { name: 'Tomasz Kopacki', img: '/assets/team-tko.png', href: 'https://www.linkedin.com/in/tkopacki/' },
 ]
 
 export default function OurTeam() {
@@ -35,9 +40,9 @@ export default function OurTeam() {
                 </div>
                 <div className='flex flex-row lg:flex-col lg:gap-y-6 lg:items-center justify-between w-full text-lg text-white font-space-grotesk font-bold'>
                   {x.name}
-                  <span className='justify-self-end'>
+                  <a href={x.href} className='justify-self-end' target='_blank'>
                     <img src='/assets/linkedIn.svg' alt='linkedIn icon' />
-                  </span>
+                  </a>
                 </div>
               </div>
             )
