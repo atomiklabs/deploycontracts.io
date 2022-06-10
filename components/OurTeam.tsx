@@ -10,7 +10,7 @@ const team = [
 export default function OurTeam() {
   return (
     <section className='relative mt-24'>
-      <div id='our-team' className='absolute -top-24'></div>
+      <div id='our-team' className='absolute -top-24' />
       <GirdContainer>
         <div className='col-span-full lg:col-start-3 lg:col-span-8 flex flex-col text-center gap-y-4 md:gap-y-6'>
           <H2>

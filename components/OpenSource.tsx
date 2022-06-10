@@ -8,7 +8,7 @@ export default function OpenSource() {
     <section className='mt-20 lg:mt-60'>
       <GridContainer className='relative z-0'>
         <div className='absolute hidden md:inline-block -z-10 md:top-[-5%] lg:top-[-20%] col-span-full'>
-          <div id='open-source' className='absolute -top-24'></div>
+          <div id='open-source' className='absolute -top-24' />
           <div className='h-full w-full'>
             <img src='/assets/open-source-title.svg' alt='open source title image' />
           </div>
