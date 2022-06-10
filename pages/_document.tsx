@@ -4,7 +4,9 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <title>deploycontracts.io</title>
+        </Head>
         <body className='font-montserrat font-default text-base min-h-screen body-gradient'>
           <Main />
           <NextScript />
