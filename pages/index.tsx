@@ -16,10 +16,10 @@ export default function LandingPage() {
         <header>
           <Masthead />
         </header>
-        <Contracts id='available-contracts' />
-        <OpenSource id='open-source' />
-        <OurSponsors id='our-sponsors' />
-        <OurTeam id='our-team' />
+        <Contracts />
+        <OpenSource />
+        <OurSponsors />
+        <OurTeam />
         <footer>
           <Footer />
         </footer>

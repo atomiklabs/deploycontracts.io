@@ -3,9 +3,10 @@ import GithubButton from '@/components/buttons/GithubButton'
 import H2 from '@/components/headings/H2'
 import { landingPageUrl } from 'consts'
 
-export default function OpenSource({ id }: { id: string }) {
+export default function OpenSource() {
   return (
-    <section id={id} className='mt-20 lg:mt-60'>
+    <section className='relative mt-20 lg:mt-60'>
+      <div id='open-source' className='absolute -top-24'></div>
       <GridContainer className='relative z-0'>
         <div className='absolute hidden md:inline-block -z-10 md:top-[-5%] lg:top-[-20%] col-span-full'>
           <div className='h-full w-full'>
