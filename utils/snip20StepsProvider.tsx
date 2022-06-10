@@ -11,29 +11,24 @@ const LocalContext = createContext({} as TSnip20StepsProvider)
 
 export function Snip20StepsProvider({ children }: any) {
   const router = useRouter()
-  const [isRouterReady, setIsRouterReady] = useState(false)
+  const [isRouterInitialized, setIsRouterInitialized] = useState(false)
   const [currentStepData, setCurrentStepData] = useState<TCurrentStepData>()
   const [snip20FormData, setSnip20FormData] = useLocalStorage(`snip20FormData`, initialStepsFormData)
 
   useEffect(() => {
-    if (router.isReady && !isRouterReady) {
-      onRouterReady()
-      setIsRouterReady(true)
+    if (router.isReady) {
+      const firstInvalidStepIndex = validateAllSteps()
+      router.replace(`/snip-20/step-${firstInvalidStepIndex}`)
+
+      setIsRouterInitialized(true)
     }
   }, [router.isReady])
 
   useEffect(() => {
-    if (isRouterReady) {
+    if (isRouterInitialized) {
       updateCurrentStepData()
     }
   }, [router.query])
-
-  function onRouterReady() {
-    console.log('--- onRouterReady')
-
-    const firstInvalidStepIndex = validateAllSteps()
-    router.replace(`/snip-20/step-${firstInvalidStepIndex}`)
-  }
 
   function validateAllSteps() {
     let firstInvalidStepIndex = stepsValidationSchema.length
