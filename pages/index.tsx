@@ -9,8 +9,10 @@ import Footer from '@/components/Footer'
 export default function LandingPage() {
   return (
     <>
-      <main>
-        <Navigation />
+      <main id='welcome'>
+        <aside className='sticky top-0 z-50 backdrop-blur'>
+          <Navigation />
+        </aside>
         <header>
           <Masthead />
         </header>

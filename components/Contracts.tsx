@@ -37,7 +37,8 @@ const contracts = [
 
 export default function Contracts() {
   return (
-    <section className='mt-20 md:mt-32 lg:mt-36'>
+    <section className='relative mt-20 md:mt-32 lg:mt-36'>
+      <div id='available-contracts' className='absolute -top-24' />
       <GridContainer>
         <div className='col-span-full text-center'>
           <H2>

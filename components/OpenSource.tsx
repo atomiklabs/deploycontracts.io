@@ -1,12 +1,14 @@
 import GridContainer from '@/components/GridContainer'
 import GithubButton from '@/components/buttons/GithubButton'
 import H2 from '@/components/headings/H2'
+import { landingPageUrl } from 'consts'
 
 export default function OpenSource() {
   return (
     <section className='mt-20 lg:mt-60'>
       <GridContainer className='relative z-0'>
         <div className='absolute hidden md:inline-block -z-10 md:top-[-5%] lg:top-[-20%] col-span-full'>
+          <div id='open-source' className='absolute -top-24' />
           <div className='h-full w-full'>
             <img src='/assets/open-source-title.svg' alt='open source title image' />
           </div>
@@ -24,7 +26,9 @@ export default function OpenSource() {
             All code at deploycontract.io is open source. mattis ligula aliquet et. Morbi non porta lorem, aliquam
             suscipit leo. Maecenas blandit non sem vel blandit.
           </div>
-          <GithubButton className='py-4 px-8' />
+          <a href={landingPageUrl.github} target='_blank'>
+            <GithubButton className='py-4 px-8' />
+          </a>
         </div>
       </GridContainer>
     </section>
