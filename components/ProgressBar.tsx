@@ -15,7 +15,7 @@ export default function ProgressBar({ allocations }: { allocations: { name: stri
           return (
             <div key={i} className='relative' style={{ width: `${x.value}%` }}>
               <div
-                className='h-full cursor-pointer'
+                className='h-full'
                 style={{
                   backgroundColor: allocationColors[i],
                   borderTopLeftRadius: firstItem ? '4px' : '0',
