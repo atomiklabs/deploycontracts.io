@@ -1,14 +1,13 @@
 import AllocationCard from '@/components/AllocationCard'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
-import PrimaryButton from '@/components/buttons/PrimaryButton'
 import ProgressBar from '@/components/ProgressBar'
 import { FieldArray, Form, Formik } from 'formik'
 import { useSnip20Steps } from '@/utils/snip20StepsProvider'
-import LinkButton from '../buttons/LinkButton'
 import { allocationColors, initialStepsFormData } from '@/utils/snip20Form'
+import StepsNavigation from '@/components/snip-20/StepsNavigation'
 
 export default function tokenAllocation() {
-  const { onNextStep, getFormData, goToPrevStep } = useSnip20Steps()
+  const { onNextStep, getFormData } = useSnip20Steps()
   const stepIndex = 2
   const { initialValues, validationSchema } = getFormData(stepIndex)
 
@@ -69,25 +68,9 @@ export default function tokenAllocation() {
                   {errors.allocations}
                 </div>
               )}
-
-              <div className='mt-6 flex flex-row flex-wrap sm:flex-nowrap items-center justify-between gap-16'>
-                <div className='basis-full sm:basis-1/4 text-center sm:text-left'>
-                  <LinkButton
-                    onClick={(e) => {
-                      e.preventDefault()
-                      goToPrevStep()
-                    }}
-                  >
-                    Back
-                  </LinkButton>
-                </div>
-                <div className='basis-full sm:basis-3/4 -order-1 sm:-order-none'>
-                  <PrimaryButton type='submit' className='w-full h-full m-auto'>
-                    Next
-                  </PrimaryButton>
-                </div>
-              </div>
             </div>
+
+            <StepsNavigation className='mt-6' />
           </Form>
         )}
       </Formik>

@@ -1,8 +1,8 @@
-import PrimaryButton from '@/components/buttons/PrimaryButton'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import Input from '@/components/Input'
 import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import { Form, Formik } from 'formik'
+import StepsNavigation from './StepsNavigation'
 
 export default function tokenDetails() {
   const { onNextStep, getFormData } = useSnip20Steps()
@@ -48,9 +48,7 @@ export default function tokenDetails() {
             autoComplete='off'
           />
 
-          <PrimaryButton className='mt-20' type='submit'>
-            Next
-          </PrimaryButton>
+          <StepsNavigation className='mt-20' />
         </Form>
       </Formik>
     </>

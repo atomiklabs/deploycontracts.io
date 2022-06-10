@@ -3,7 +3,7 @@ import * as yup from 'yup'
 export const initialStepsFormData = [
   { tokenName: '', tokenTotalSupply: 1_000_000 },
   { allocations: [{ name: '', value: 100, address: '' }] },
-  { xyz: '' },
+  { projectName: '', projectDescription: '', imageUrl: '' },
 ]
 
 export const stepsValidationSchema = [
@@ -18,7 +18,7 @@ export const stepsValidationSchema = [
       .array(
         yup.object({
           name: yup.string().required('Required'),
-          value: yup.number().min(0.01, 'Min value is 0.01').max(100, 'Max value is 100').required(),
+          value: yup.number().min(0.01, 'Min value is 0.01').max(100, 'Max value is 100').required('Required'),
           address: yup.string().required('Required'),
         }),
       )
@@ -35,7 +35,9 @@ export const stepsValidationSchema = [
   }),
   // step3
   yup.object({
-    xyz: yup.string(),
+    projectName: yup.string().required('Required'),
+    projectDescription: yup.string().required('Required'),
+    imageUrl: yup.string(),
   }),
 ]
 
