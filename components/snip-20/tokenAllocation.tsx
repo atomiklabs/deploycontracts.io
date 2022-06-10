@@ -1,4 +1,3 @@
-import { useToken } from '@/utils/token'
 import AllocationCard from '@/components/AllocationCard'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import PrimaryButton from '@/components/buttons/PrimaryButton'
@@ -6,10 +5,9 @@ import ProgressBar from '@/components/ProgressBar'
 import { FieldArray, Form, Formik } from 'formik'
 import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import LinkButton from '../buttons/LinkButton'
-import { initialStepsFormData } from '@/utils/snip20Form'
+import { allocationColors, initialStepsFormData } from '@/utils/snip20Form'
 
 export default function tokenAllocation() {
-  const { colourPallete, isAllocationMaxItems } = useToken()
   const { onNextStep, getFormData, goToPrevStep } = useSnip20Steps()
   const stepIndex = 2
   const { initialValues, validationSchema } = getFormData(stepIndex)
@@ -31,48 +29,49 @@ export default function tokenAllocation() {
               <FieldArray
                 name='allocations'
                 render={(arrayHelpers) => {
-                  // TODO: Fix types
                   const allocations = values.allocations
 
                   return (
                     <>
                       {allocations?.map((x, i) => (
-                        <AllocationCard key={i} index={i} colour={colourPallete[i]} arrayHelpers={arrayHelpers} />
+                        <AllocationCard key={i} index={i} colour={allocationColors[i]} arrayHelpers={arrayHelpers} />
                       ))}
 
-                      {allocations && allocations.length > 0 && <ProgressBar />}
+                      {allocations && allocations.length > 0 && <ProgressBar allocations={values.allocations} />}
 
-                      {!isAllocationMaxItems && (
-                        <SecondaryButton
-                          onClick={(e) => {
-                            e.preventDefault()
-                            const newAllocation = initialStepsFormData[stepIndex - 1].allocations
-                            if (!newAllocation || newAllocation.length < 1) {
-                              return
-                            }
+                      <SecondaryButton
+                        className='mt-10'
+                        onClick={(e) => {
+                          e.preventDefault()
+                          const newAllocation = initialStepsFormData[stepIndex - 1].allocations
+                          if (!newAllocation || newAllocation.length < 1) {
+                            return
+                          }
 
-                            arrayHelpers.push(newAllocation[0])
-                          }}
-                        >
-                          <div className='px-12 py-4'>Add new</div>
-                        </SecondaryButton>
-                      )}
+                          arrayHelpers.push(newAllocation[0])
+                        }}
+                      >
+                        Add new
+                      </SecondaryButton>
                     </>
                   )
                 }}
               />
             </div>
 
-            <div className='relative mt-64 sm:mt-40 flex flex-col gap-y-6'>
+            <div className='mt-20'>
               {typeof errors.allocations === 'string' && (
-                <div className='animate-hide-div absolute bottom-[140%] md:bottom-[140%] z-20 py-4 px-6 text-base text-gray-100 flex flex-row gap-x-6 bg-[#341035] items-center justify-between rounded-3xl'>
+                <div
+                  className='relative flex flex-row gap-x-6 items-center py-4 px-6 text-base text-gray-100 rounded-3xl bg-[#341035]
+                after:absolute after:left-[50%] after:translate-x-[-50%] after:-bottom-0 after:translate-y-[50%] after:rotate-45 after:w-2 after:h-2 after:bg-[#341035]'
+                >
                   <img src='/assets/error.svg' alt='error icon' className='w-[24px] h-[24px]' />
                   {errors.allocations}
-                  <div className='absolute bottom-[-5px] -z-10 right-[calc(50%-50px)] md:right-[calc(50%-100px)] w-10 h-10 bg-[#341035] rotate-45'></div>
                 </div>
               )}
-              <div className='flex flex-row justify-between gap-x-16 md:gap-x-[144px]'>
-                <div>
+
+              <div className='mt-6 flex flex-row flex-wrap sm:flex-nowrap items-center justify-between gap-16'>
+                <div className='basis-full sm:basis-1/4 text-center sm:text-left'>
                   <LinkButton
                     onClick={(e) => {
                       e.preventDefault()
@@ -82,8 +81,8 @@ export default function tokenAllocation() {
                     Back
                   </LinkButton>
                 </div>
-                <div className='flex-1 '>
-                  <PrimaryButton type='submit' className='inline-block w-full h-full'>
+                <div className='basis-full sm:basis-3/4 -order-1 sm:-order-none'>
+                  <PrimaryButton type='submit' className='w-full h-full m-auto'>
                     Next
                   </PrimaryButton>
                 </div>

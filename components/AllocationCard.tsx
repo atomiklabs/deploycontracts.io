@@ -15,8 +15,8 @@ export default function AllocationCardComponent({
 
   return (
     <div className='relative flex flex-col gap-y-9 bg-[#0F204D] rounded-3xl p-8'>
-      <div className='flex flex-col md:flex-row gap-y-4 md:gap-x-5 lg:gap-x-[26px]'>
-        <div className='w-full md:w-[70%] xl:w-[85%] whitespace-nowrap'>
+      <div className='flex flex-col md:flex-row gap-y-9 md:gap-x-5 lg:gap-x-[26px]'>
+        <div className='w-full md:w-[70%] whitespace-nowrap'>
           <Input
             name={`allocations.${index}.name`}
             label='Name of your allocation'
@@ -27,7 +27,7 @@ export default function AllocationCardComponent({
           />
         </div>
 
-        <div className='w-full md:w-[30%] xl:w-[15%]'>
+        <div className='w-full md:w-[30%]'>
           <Input
             name={`allocations.${index}.value`}
             type='number'

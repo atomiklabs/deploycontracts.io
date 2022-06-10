@@ -29,7 +29,7 @@ export const stepsValidationSchema = [
           const sum = arrayValues?.reduce((prev, acc) => prev + (acc.value ?? 0), 0)
           return sum === 100
         },
-        message: 'Sum of allocation values must be equal to 100%',
+        message: 'Total allocation must be equal to 100%',
       })
       .required('Required'),
   }),
@@ -37,4 +37,22 @@ export const stepsValidationSchema = [
   yup.object({
     xyz: yup.string(),
   }),
+]
+
+export const allocationColors = [
+  '#FD0F9E',
+  '#671BC9',
+  '#FD810F',
+  '#00D0FE',
+  '#FD3A0F',
+  '#BCFE00',
+  '#FDBA0F',
+  '#0CE2AF',
+  '#FE6B00',
+  '#BD01DC',
+  '#0084FE',
+  '#7EE42D',
+  '#4F14F9',
+  '#0DB427',
+  '#0EADAD',
 ]
