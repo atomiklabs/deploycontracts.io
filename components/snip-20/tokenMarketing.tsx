@@ -1,8 +1,8 @@
-import { useSnip20 } from '@/utils/snip20Provider'
+import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import LinkButton from '@/components/buttons/LinkButton'
 
 export default function tokenMarketing() {
-  const { goBack } = useSnip20()
+  const { goBack } = useSnip20Steps()
 
   return (
     <div className='flex flex-col gap-y-[34px]'>

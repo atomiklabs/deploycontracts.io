@@ -1,15 +1,15 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useLocalStorage } from './useLocalStorage'
-import * as yup from 'yup'
 import { useRouter } from 'next/router'
 import { ParsedUrlQuery } from 'querystring'
 import TokenDetails from '@/components/snip-20/tokenDetails'
 import TokenAllocation from '@/components/snip-20/tokenAllocation'
 import TokenMarketing from '@/components/snip-20/tokenMarketing'
+import { initialStepsFormData, stepsValidationSchema } from '@/utils/snip20Form'
 
-const LocalContext = createContext({} as TSnip20Provider)
+const LocalContext = createContext({} as TSnip20StepsProvider)
 
-export function Snip20Provider({ children }: any) {
+export function Snip20StepsProvider({ children }: any) {
   const router = useRouter()
   const [isRouterReady, setIsRouterReady] = useState(false)
   const [currentStepData, setCurrentStepData] = useState<TCurrentStepData>()
@@ -109,7 +109,7 @@ export function Snip20Provider({ children }: any) {
   )
 }
 
-export function useSnip20() {
+export function useSnip20Steps() {
   return useContext(LocalContext)
 }
 
@@ -141,46 +141,7 @@ function getStepData(routerQuery: ParsedUrlQuery) {
   return errorResponse
 }
 
-export const initialStepsFormData = [
-  { tokenName: '', tokenTotalSupply: 1_000_000 },
-  { allocations: [{ name: '', value: 100, address: '' }] },
-  { xyz: '' },
-]
-
-const stepsValidationSchema = [
-  // step1
-  yup.object({
-    tokenName: yup.string().required('Required'),
-    tokenTotalSupply: yup.number().min(1).required('Required'),
-  }),
-  // step2
-  yup.object({
-    allocations: yup
-      .array(
-        yup.object({
-          name: yup.string().required('Required'),
-          value: yup.number().min(0.01, 'Min value is 0.01').max(100, 'Max value is 100').required(),
-          address: yup.string().required('Required'),
-        }),
-      )
-      .min(1, 'You must have at least 1 allocation')
-      .max(15, 'Maximum allocations limit is 15')
-      .test({
-        test: (arrayValues) => {
-          const sum = arrayValues?.reduce((prev, acc) => prev + (acc.value ?? 0), 0)
-          return sum === 100
-        },
-        message: 'Sum of allocation values must be equal to 100%',
-      })
-      .required('Required'),
-  }),
-  // step3
-  yup.object({
-    xyz: yup.string(),
-  }),
-]
-
-type TSnip20Provider = {
+type TSnip20StepsProvider = {
   currentStepData: TCurrentStepData
   onNextStep: (data: {}) => void
   goBack: () => void

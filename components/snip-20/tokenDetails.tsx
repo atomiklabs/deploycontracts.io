@@ -1,11 +1,11 @@
 import PrimaryButton from '@/components/buttons/PrimaryButton'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import Input from '@/components/Input'
-import { useSnip20 } from '@/utils/snip20Provider'
+import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import { Form, Formik } from 'formik'
 
 export default function tokenDetails() {
-  const { onNextStep, getFormData } = useSnip20()
+  const { onNextStep, getFormData } = useSnip20Steps()
   const stepIndex = 1
   const { initialValues, validationSchema } = getFormData(stepIndex)
 

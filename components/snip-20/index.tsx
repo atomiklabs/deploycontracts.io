@@ -1,9 +1,9 @@
 import Container from '@/components/snip-20/Container'
 import { Steps } from '@/components/steps'
-import { useSnip20 } from '@/utils/snip20Provider'
+import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 
 export default function Snip20() {
-  const { currentStepData } = useSnip20()
+  const { currentStepData } = useSnip20Steps()
 
   if (!currentStepData) {
     return null

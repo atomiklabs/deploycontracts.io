@@ -4,12 +4,13 @@ import SecondaryButton from '@/components/buttons/SecondaryButton'
 import PrimaryButton from '@/components/buttons/PrimaryButton'
 import ProgressBar from '@/components/ProgressBar'
 import { FieldArray, Form, Formik } from 'formik'
-import { useSnip20, initialStepsFormData } from '@/utils/snip20Provider'
+import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import LinkButton from '../buttons/LinkButton'
+import { initialStepsFormData } from '@/utils/snip20Form'
 
 export default function tokenAllocation() {
   const { colourPallete, isAllocationMaxItems } = useToken()
-  const { onNextStep, getFormData, goBack } = useSnip20()
+  const { onNextStep, getFormData, goBack } = useSnip20Steps()
   const stepIndex = 2
   const { initialValues, validationSchema } = getFormData(stepIndex)
 
