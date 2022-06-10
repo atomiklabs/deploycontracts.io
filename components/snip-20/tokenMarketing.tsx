@@ -2,7 +2,7 @@ import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import LinkButton from '@/components/buttons/LinkButton'
 
 export default function tokenMarketing() {
-  const { goBack } = useSnip20Steps()
+  const { goToPrevStep } = useSnip20Steps()
 
   return (
     <div className='flex flex-col gap-y-[34px]'>
@@ -15,7 +15,7 @@ export default function tokenMarketing() {
       <LinkButton
         onClick={(e) => {
           e.preventDefault()
-          goBack()
+          goToPrevStep()
         }}
       >
         Back

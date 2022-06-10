@@ -17,7 +17,7 @@ export function Snip20StepsProvider({ children }: any) {
 
   useEffect(() => {
     if (router.isReady) {
-      const firstInvalidStepIndex = validateAllSteps()
+      const firstInvalidStepIndex = getLastInvalidStepIndex()
       router.replace(`/snip-20/step-${firstInvalidStepIndex}`)
 
       setIsRouterInitialized(true)
@@ -30,7 +30,7 @@ export function Snip20StepsProvider({ children }: any) {
     }
   }, [router.query])
 
-  function validateAllSteps() {
+  function getLastInvalidStepIndex() {
     let firstInvalidStepIndex = stepsValidationSchema.length
 
     for (let i = 0; i < stepsValidationSchema.length; i++) {
@@ -40,7 +40,7 @@ export function Snip20StepsProvider({ children }: any) {
         stepsValidationSchema[i].validateSync(snip20FormData[i])
       } catch (e) {
         firstInvalidStepIndex = stepIndex
-        console.warn(`--- validateAllSteps validation error at step ${stepIndex}`)
+        console.warn(`--- getLastInvalidStepIndex validation error at step ${stepIndex}`)
         break
       }
     }
@@ -49,8 +49,6 @@ export function Snip20StepsProvider({ children }: any) {
   }
 
   function onNextStep(validatedData: any) {
-    console.log('--- onNextStep: ', validatedData)
-
     if (!currentStepData) {
       return console.error('--- currentStepData is not defined')
     }
@@ -62,14 +60,14 @@ export function Snip20StepsProvider({ children }: any) {
     router.push(nextStepPath)
   }
 
-  function goBack() {
+  function goToPrevStep() {
     if (!currentStepData) {
       return console.error('--- currentStepData is not defined')
     }
 
     const prevStepIndex = currentStepData.stepIndex - 1
     if (prevStepIndex < 1) {
-      return console.error('--- goBack prevStepIndex', prevStepIndex)
+      return console.error('--- goToPrevStep prevStepIndex', prevStepIndex)
     }
 
     const prevStepPath = `step-${prevStepIndex}`
@@ -98,7 +96,7 @@ export function Snip20StepsProvider({ children }: any) {
   }
 
   return (
-    <LocalContext.Provider value={{ currentStepData, getFormData, onNextStep, goBack }}>
+    <LocalContext.Provider value={{ currentStepData, getFormData, onNextStep, goToPrevStep }}>
       {children}
     </LocalContext.Provider>
   )
@@ -139,7 +137,7 @@ function getStepData(routerQuery: ParsedUrlQuery) {
 type TSnip20StepsProvider = {
   currentStepData: TCurrentStepData
   onNextStep: (data: {}) => void
-  goBack: () => void
+  goToPrevStep: () => void
   getFormData: (stepIndex: number) => TFormDataReturnValue
 }
 

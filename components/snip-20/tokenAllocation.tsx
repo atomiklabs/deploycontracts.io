@@ -10,7 +10,7 @@ import { initialStepsFormData } from '@/utils/snip20Form'
 
 export default function tokenAllocation() {
   const { colourPallete, isAllocationMaxItems } = useToken()
-  const { onNextStep, getFormData, goBack } = useSnip20Steps()
+  const { onNextStep, getFormData, goToPrevStep } = useSnip20Steps()
   const stepIndex = 2
   const { initialValues, validationSchema } = getFormData(stepIndex)
 
@@ -76,7 +76,7 @@ export default function tokenAllocation() {
                   <LinkButton
                     onClick={(e) => {
                       e.preventDefault()
-                      goBack()
+                      goToPrevStep()
                     }}
                   >
                     Back
