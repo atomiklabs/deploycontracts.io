@@ -31,7 +31,7 @@ export default function tokenSummary() {
               <OutputDataRow title='Address' data={allocation.address} />
             </div>
           ))}
-          <ProgressBar allocations={snip20FormData[1].allocations} />
+          <ProgressBar allocations={snip20FormData[1].allocations!} />
         </SummaryCardWrapper>
 
         <SummaryCardWrapper img='/assets/step3-visited.svg' title='Marketing details'>
