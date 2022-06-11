@@ -5,6 +5,7 @@ import { ParsedUrlQuery } from 'querystring'
 import TokenDetails from '@/components/snip-20/tokenDetails'
 import TokenAllocation from '@/components/snip-20/tokenAllocation'
 import TokenMarketing from '@/components/snip-20/tokenMarketing'
+import TokenSummary from '@/components/snip-20/tokenSummary'
 import { initialStepsFormData, stepsValidationSchema } from '@/utils/snip20Form'
 
 const LocalContext = createContext({} as TSnip20StepsProvider)
@@ -31,9 +32,10 @@ export function Snip20StepsProvider({ children }: any) {
   }, [router.query])
 
   function getLastInvalidStepIndex() {
-    let firstInvalidStepIndex = stepsValidationSchema.length
+    const lastStepIndex = 4
+    let firstInvalidStepIndex = lastStepIndex
 
-    for (let i = 0; i < stepsValidationSchema.length; i++) {
+    for (let i = 0; i < lastStepIndex; i++) {
       const stepIndex = i + 1
 
       try {
@@ -96,7 +98,7 @@ export function Snip20StepsProvider({ children }: any) {
   }
 
   return (
-    <LocalContext.Provider value={{ currentStepData, getFormData, onNextStep, goToPrevStep }}>
+    <LocalContext.Provider value={{ currentStepData, snip20FormData, getFormData, onNextStep, goToPrevStep }}>
       {children}
     </LocalContext.Provider>
   )
@@ -129,6 +131,11 @@ function getStepData(routerQuery: ParsedUrlQuery) {
         stepIndex: 3,
         component: <TokenMarketing />,
       }
+    case 'step-4':
+      return {
+        stepIndex: 4,
+        component: <TokenSummary />,
+      }
   }
 
   return errorResponse
@@ -136,6 +143,7 @@ function getStepData(routerQuery: ParsedUrlQuery) {
 
 type TSnip20StepsProvider = {
   currentStepData: TCurrentStepData
+  snip20FormData: typeof initialStepsFormData
   onNextStep: (data: {}) => void
   goToPrevStep: () => void
   getFormData: (stepIndex: number) => TFormDataReturnValue
