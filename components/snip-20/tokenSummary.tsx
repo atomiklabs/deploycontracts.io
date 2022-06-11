@@ -1,4 +1,5 @@
 import { useSnip20Steps } from '@/utils/snip20StepsProvider'
+import StepsNavigation from './StepsNavigation'
 
 export default function tokenSummary() {
   const { snip20FormData } = useSnip20Steps()
@@ -37,6 +38,8 @@ export default function tokenSummary() {
           </div>
         </div>
       </div>
+
+      <StepsNavigation className='mt-20' />
     </>
   )
 }
