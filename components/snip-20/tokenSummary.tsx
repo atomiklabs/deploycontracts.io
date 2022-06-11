@@ -25,15 +25,13 @@ export default function tokenSummary() {
 
         <SummaryCardWrapper img='/assets/step2-visited.svg' title='Token allocation'>
           {snip20FormData[1].allocations?.map((allocation, i) => (
-            <>
-              <div key={i} className='flex flex-col gap-y-6 pb-4 border-b border-[#31437B]'>
-                <OutputDataRow colour={allocationColors[i]} title='Name of your allocation' data={allocation.name} />
-                <OutputDataRow title='Value' value={allocation.value} />
-                <OutputDataRow title='Address' data={allocation.address} />
-              </div>
-              {/* <ProgressBar allocations={[allocation.name, allocation.value]} /> */}
-            </>
+            <div key={i} className='flex flex-col gap-y-6 pb-4 border-b border-[#31437B]'>
+              <OutputDataRow colour={allocationColors[i]} title='Name of your allocation' data={allocation.name} />
+              <OutputDataRow title='Value' value={allocation.value} />
+              <OutputDataRow title='Address' data={allocation.address} />
+            </div>
           ))}
+          <ProgressBar allocations={snip20FormData[1].allocations} />
         </SummaryCardWrapper>
 
         <SummaryCardWrapper img='/assets/step3-visited.svg' title='Marketing details'>
