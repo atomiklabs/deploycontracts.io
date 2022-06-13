@@ -1,5 +1,5 @@
 import Container from '@/components/snip-20/Container'
-import { Steps } from '@/components/steps'
+import StepsBreadcrumb from '@/components/snip-20/StepsBreadcrumb'
 import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 
 export default function Snip20() {
@@ -11,7 +11,7 @@ export default function Snip20() {
 
   return (
     <Container className='pt-20'>
-      <Steps activeStep={currentStepData.stepIndex} />
+      <StepsBreadcrumb activeStep={currentStepData.stepIndex} />
 
       <section className='mt-10 pb-20'>{currentStepData.component}</section>
     </Container>

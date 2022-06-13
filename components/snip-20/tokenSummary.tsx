@@ -42,7 +42,11 @@ export default function tokenSummary() {
         </SummaryCardWrapper>
       </div>
 
-      <StepsNavigation className='mt-20' />
+      <StepsNavigation
+        className='mt-20'
+        submitText='Create token'
+        onClick={() => console.log('--- create token: ', snip20FormData)}
+      />
     </>
   )
 }

@@ -69,7 +69,7 @@ export function Snip20StepsProvider({ children }: any) {
 
     const prevStepIndex = currentStepData.stepIndex - 1
     if (prevStepIndex < 1) {
-      return console.error('--- goToPrevStep prevStepIndex', prevStepIndex)
+      return router.push('/')
     }
 
     const prevStepPath = `step-${prevStepIndex}`
