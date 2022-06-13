@@ -15,12 +15,11 @@ export function Steps({ activeStep }: StepsProps) {
 
   return (
     <section>
-      <div className='flex flex-row gap-x-2 md:gap-x-4'>
+      <div className='flex flex-row gap-x-4'>
         {[...Array(4)].map((_, idx) => (
           <div
             key={`step-icon-${idx}`}
-            className='flex items-center gap-x-4'
-            style={{ flex: activeStep === idx ? '1 0 0%' : 'none' }}
+            className={`flex items-center ${activeStep === idx ? 'sm:flex-1' : ''} gap-x-4`}
           >
             <div
               className='w-12 h-12 cursor-pointer'
@@ -30,11 +29,13 @@ export function Steps({ activeStep }: StepsProps) {
             >
               <img src={useStepIcon(idx, activeStep)?.step} alt='step icon' />
             </div>
+
             {activeStep === idx && (
-              <span className='text-gray-100 text-sm font-medium whitespace-nowrap tracking-[.2rem]'>
+              <span className='hidden sm:block text-gray-100 text-sm font-medium whitespace-nowrap tracking-[.2rem]'>
                 STEP {`${activeStep + 1}/${stepTitles.length}`}
               </span>
             )}
+
             <ReactTooltip
               id='custom-class'
               className='custom-tooltip'
@@ -46,6 +47,10 @@ export function Steps({ activeStep }: StepsProps) {
             />
           </div>
         ))}
+      </div>
+
+      <div className='sm:hidden mt-3 text-gray-100 text-sm font-medium whitespace-nowrap tracking-[.2rem]'>
+        STEP {`${activeStep + 1}/${stepTitles.length}`}
       </div>
     </section>
   )

@@ -1,14 +1,13 @@
 type Props = {
   title: string
   data?: any
-  value?: number
   colour?: string
   imageUrl?: string
 }
 
-export default function OutputDataRow({ title, data, value, colour, imageUrl }: Props) {
+export default function OutputDataRow({ title, data, colour, imageUrl }: Props) {
   return (
-    <div className='flex flex-col gap-y-1'>
+    <div className='flex flex-col break-words'>
       <div className='text-gray-100'>{title}</div>
 
       {colour ? (
@@ -19,8 +18,6 @@ export default function OutputDataRow({ title, data, value, colour, imageUrl }: 
       ) : (
         <div className='text-white font-bold'>{data}</div>
       )}
-
-      {value && <div className='text-white font-bold'>{value}%</div>}
 
       {imageUrl && (
         <div className='flex items-center'>
