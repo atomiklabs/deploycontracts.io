@@ -15,7 +15,7 @@ export function Steps({ activeStep }: StepsProps) {
 
   return (
     <section>
-      <div className='flex flex-row gap-x-4'>
+      <div className='flex flex-row gap-x-2 md:gap-x-4'>
         {[...Array(4)].map((_, idx) => (
           <div
             key={`step-icon-${idx}`}
