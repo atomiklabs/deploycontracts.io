@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react'
+import { ComponentProps, ReactNode } from 'react'
 import { useField } from 'formik'
 import { defaultColors } from '../consts'
 
@@ -7,7 +7,12 @@ interface InputProps extends ComponentProps<'input'> {
   label: string
 }
 
-export default function Input({ label, className, ...props }: { label: string; className?: string } & InputProps) {
+export default function Input({
+  label,
+  className,
+  children,
+  ...props
+}: { label: string; className?: string; children?: ReactNode } & InputProps) {
   const [field, meta] = useField(props)
   const hasError = meta.touched && !!meta.error
 
@@ -26,6 +31,8 @@ export default function Input({ label, className, ...props }: { label: string; c
         // @ts-ignore
         onClick={(e) => e.target.select()}
       />
+
+      {children}
 
       {hasError && (
         <div className='flex flex-row gap-x-2 items-center'>

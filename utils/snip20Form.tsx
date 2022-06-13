@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 export const initialStepsFormData = [
-  { tokenName: '', tokenTotalSupply: 1_000_000 },
+  { minterAddress: '', tokenName: '', tokenTotalSupply: 1_000_000 },
   { allocations: [{ name: '', value: 100, address: '' }] },
   { projectName: '', projectDescription: '', imageUrl: '' },
 ]
@@ -9,9 +9,11 @@ export const initialStepsFormData = [
 export const stepsValidationSchema = [
   // step1
   yup.object({
+    minterAddress: yup.string().required('Required. Please connect your wallet'),
     tokenName: yup.string().required('Required'),
     tokenTotalSupply: yup.number().min(1).required('Required'),
   }),
+
   // step2
   yup.object({
     allocations: yup
@@ -33,10 +35,11 @@ export const stepsValidationSchema = [
       })
       .required('Required'),
   }),
+
   // step3
   yup.object({
-    projectName: yup.string().required('Required'),
-    projectDescription: yup.string().required('Required'),
+    projectName: yup.string(),
+    projectDescription: yup.string(),
     imageUrl: yup.string(),
   }),
 ]

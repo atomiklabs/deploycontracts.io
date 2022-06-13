@@ -19,37 +19,49 @@ export default function tokenDetails() {
         </p>
       </div>
 
-      <div className='mt-9 flex flex-col gap-y-[14px]'>
-        <div className='text-white font-medium'>Minter adress</div>
-
-        <SecondaryButton>Connect your wallet</SecondaryButton>
-      </div>
-
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onNextStep}>
-        <Form>
-          <Input
-            className='mt-14'
-            name='tokenName'
-            type='text'
-            label='Token symbol'
-            placeholder='SCRT'
-            required
-            autoComplete='off'
-          />
+        {({ setFieldValue, values }) => (
+          <Form>
+            <Input className='mt-9' label='Minter address' type='hidden' name='minterAddress'>
+              {values.minterAddress ? (
+                <div className='text-gray-200'>{values.minterAddress}</div>
+              ) : (
+                <SecondaryButton
+                  onClick={(e) => {
+                    e.preventDefault()
+                    console.log('--- Connect your wallet')
+                    setFieldValue('minterAddress', 'secret1djskfhjsekf_example_address')
+                  }}
+                >
+                  Connect your wallet
+                </SecondaryButton>
+              )}
+            </Input>
 
-          {/* TODO: Display big numbers with spaces eg. '1 000 000' */}
-          <Input
-            className='mt-14'
-            name='tokenTotalSupply'
-            type='number'
-            step={1}
-            label='Total supply'
-            required
-            autoComplete='off'
-          />
+            <Input
+              className='mt-14'
+              name='tokenName'
+              type='text'
+              label='Token symbol'
+              placeholder='SCRT'
+              required
+              autoComplete='off'
+            />
 
-          <StepsNavigation className='mt-20' />
-        </Form>
+            {/* TODO: Display big numbers with spaces eg. '1 000 000' */}
+            <Input
+              className='mt-14'
+              name='tokenTotalSupply'
+              type='number'
+              step={1}
+              label='Total supply'
+              required
+              autoComplete='off'
+            />
+
+            <StepsNavigation className='mt-20' />
+          </Form>
+        )}
       </Formik>
     </>
   )
