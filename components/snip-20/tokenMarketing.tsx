@@ -5,6 +5,7 @@ import { Form, Formik } from 'formik'
 import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import StepsNavigation from './StepsNavigation'
 import { initialStepsFormData } from '@/utils/snip20Form'
+import axios from 'axios'
 
 export default function tokenMarketing() {
   const { onNextStep, getFormData } = useSnip20Steps()
@@ -14,11 +15,24 @@ export default function tokenMarketing() {
 
   async function onDrop(setFieldValue: (field: string, value: any) => void, files: File[]) {
     setIsUploading(true)
+    const file = files[0]
 
+    const formData = new FormData()
+    formData.append('image', file)
+
+    const response = await axios.post('http://127.0.0.1:8787', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+
+    console.log({ response })
+
+    // TODO: replace with CID
     setTimeout(() => {
       setFieldValue('projectLogo', {
-        name: files[0].name,
-        preview: URL.createObjectURL(files[0]),
+        name: file.name,
+        preview: URL.createObjectURL(file),
         ipfsUrl: 'ipfs_url',
       })
       setIsUploading(false)
