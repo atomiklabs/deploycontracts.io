@@ -49,19 +49,12 @@ export default function tokenMarketing() {
             name='projectName'
             label='Name of the project'
             placeholder='Project name'
-            required
             autoFocus
             autoComplete='off'
           />
 
           {/* TODO: Change to textarea */}
-          <Input
-            name='projectDescription'
-            label='Description'
-            placeholder='Short description'
-            required
-            autoComplete='off'
-          />
+          <Input name='projectDescription' label='Description' placeholder='Short description' autoComplete='off' />
 
           <div className='flex flex-col gap-y-3'>
             <div className='text-white font-medium'>Logo</div>
