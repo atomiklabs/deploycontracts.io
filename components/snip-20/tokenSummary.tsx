@@ -38,7 +38,7 @@ export default function tokenSummary() {
         <SummaryCardWrapper linkUrl='step-3' img='/assets/step3-visited.svg' title='Marketing details'>
           <OutputDataRow title='Project name' data={snip20FormData[2].projectName} />
           <OutputDataRow title='Description' data={snip20FormData[2].projectDescription} />
-          <OutputDataRow title='Logo' imageUrl='/assets/github.svg' />
+          <OutputDataRow title='Logo' projectLogo='/assets/github.svg' />
         </SummaryCardWrapper>
       </div>
 

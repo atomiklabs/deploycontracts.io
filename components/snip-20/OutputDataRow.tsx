@@ -2,10 +2,10 @@ type Props = {
   title: string
   data?: any
   colour?: string
-  imageUrl?: string
+  projectLogo?: string
 }
 
-export default function OutputDataRow({ title, data, colour, imageUrl }: Props) {
+export default function OutputDataRow({ title, data, colour, projectLogo }: Props) {
   return (
     <div className='flex flex-col break-words'>
       <div className='text-gray-100'>{title}</div>
@@ -19,7 +19,7 @@ export default function OutputDataRow({ title, data, colour, imageUrl }: Props) 
         <div className='text-white font-bold'>{data}</div>
       )}
 
-      {imageUrl && (
+      {projectLogo && (
         <div className='flex items-center'>
           <img src='/assets/github.svg' alt='logo image' />
         </div>
