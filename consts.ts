@@ -1,4 +1,4 @@
-export const defaultColors = {error: '#FC0E47'}
+export const defaultColors = { error: '#FC0E47' }
 
 export const landingPageUrl = {
   contracts: '#available-contracts',

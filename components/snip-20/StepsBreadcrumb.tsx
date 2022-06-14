@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import { useStepIcon } from '@/components/steps/useStepIcon'
+import { useStepIcon } from '@/components/snip-20/useStepIcon'
 type StepsProps = {
   activeStep: number
 }
@@ -10,29 +10,27 @@ const ReactTooltip = dynamic(() => import('react-tooltip'), {
 
 const stepTitles = ['Token Details', 'Token Allocation', 'Marketing details', 'Summary']
 
-export function Steps({ activeStep }: StepsProps) {
+export default function StepsBreadcrumb({ activeStep }: StepsProps) {
+  activeStep -= 1
+
   return (
     <section>
       <div className='flex flex-row gap-x-4'>
-        {[...Array(4)].map((_, idx) => (
+        {stepTitles.map((x, idx) => (
           <div
             key={`step-icon-${idx}`}
-            className='flex items-center gap-x-4'
-            style={{ flex: activeStep === idx ? '1 0 0%' : 'none' }}
+            className={`flex items-center ${activeStep === idx ? 'sm:flex-1' : ''} gap-x-4`}
           >
-            <div
-              className='w-12 h-12 cursor-pointer'
-              data-for='custom-class'
-              data-tip={stepTitles.slice(idx, idx + 1)}
-              {...useStepIcon(idx, activeStep)}
-            >
+            <div className='w-12 h-12' data-for='custom-class' data-tip={x}>
               <img src={useStepIcon(idx, activeStep)?.step} alt='step icon' />
             </div>
+
             {activeStep === idx && (
-              <span className='text-gray-100 text-sm font-medium whitespace-nowrap tracking-[.2rem]'>
+              <span className='hidden sm:block text-gray-100 text-sm font-medium whitespace-nowrap tracking-[.2rem]'>
                 STEP {`${activeStep + 1}/${stepTitles.length}`}
               </span>
             )}
+
             <ReactTooltip
               id='custom-class'
               className='custom-tooltip'
@@ -44,6 +42,10 @@ export function Steps({ activeStep }: StepsProps) {
             />
           </div>
         ))}
+      </div>
+
+      <div className='sm:hidden mt-3 text-gray-100 text-sm font-medium whitespace-nowrap tracking-[.2rem]'>
+        STEP {`${activeStep + 1}/${stepTitles.length}`}
       </div>
     </section>
   )

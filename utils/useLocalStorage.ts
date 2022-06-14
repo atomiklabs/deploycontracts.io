@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 
 function getStorageValue(key: string, defaultValue: any) {
   if (typeof window === 'undefined') {
@@ -10,8 +10,8 @@ function getStorageValue(key: string, defaultValue: any) {
   return initial
 }
 
-export const useLocalStorage = (key: string, defaultValue: any) => {
-  const [value, setValue] = useState(() => {
+export const useLocalStorage = <T>(key: string, defaultValue: T) => {
+  const [value, setValue] = useState<T>(() => {
     return getStorageValue(key, defaultValue)
   })
 
@@ -19,5 +19,5 @@ export const useLocalStorage = (key: string, defaultValue: any) => {
     localStorage.setItem(key, JSON.stringify(value))
   }, [key, value])
 
-  return [value, setValue]
+  return [value, setValue] as [T, Dispatch<SetStateAction<T>>]
 }

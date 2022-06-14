@@ -1,4 +1,4 @@
-import { StepState } from '@/components/steps'
+import { StepState } from '@/components/snip-20/StepsBreadcrumb'
 
 export function useStepIcon(currentStepIdx: number, activeStepIdx: number) {
   function getStepState(currentStepIdx: number, activeStepIdx: number): StepState {

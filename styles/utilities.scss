@@ -31,12 +31,31 @@
     background-origin: border-box;
     background-clip: padding-box, border-box;
     box-shadow: none;
+    outline: none;
+  }
+
+  &[type=number]::-webkit-inner-spin-button, 
+  &[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
   }
 }
 
 .custom-tooltip {
   padding: 0px 12px !important;
   border-radius: 8px !important;
+}
+
+.gradient-underline {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(115.82deg, #671bc9 5.15%, #fd0f9e 108.88%);
+  }
 }
 
 .link-button {
