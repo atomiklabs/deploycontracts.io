@@ -8,7 +8,7 @@ import React from 'react'
 
 const data = [
   { text: 'No smart contract developers required', icon: '/assets/hand.svg', iconName: 'hand' },
-  { text: "Fill up the form and submit, that's it", icon: '/assets/form.svg', iconName: 'form' },
+  { text: "Fill up the form and submit, that's it", icon: '/assets/list.svg', iconName: 'form' },
 ]
 
 const contracts = [
@@ -37,7 +37,8 @@ const contracts = [
 
 export default function Contracts() {
   return (
-    <section className='mt-20 md:mt-32 lg:mt-36'>
+    <section className='relative mt-20 md:mt-32 lg:mt-36'>
+      <div id='available-contracts' className='absolute -top-24' />
       <GridContainer>
         <div className='col-span-full text-center'>
           <H2>

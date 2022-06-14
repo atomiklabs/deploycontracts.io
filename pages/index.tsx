@@ -1,16 +1,28 @@
 import Navigation from '@/components/Navigation'
 import Masthead from '@/components/Masthead'
 import Contracts from '@/components/Contracts'
+import OpenSource from '@/components/OpenSource'
+import OurSponsors from '@/components/OurSponsors'
+import OurTeam from '@/components/OurTeam'
+import Footer from '@/components/Footer'
 
 export default function LandingPage() {
   return (
     <>
-      <main>
-        <Navigation />
+      <main id='welcome'>
+        <aside className='sticky top-0 z-50 backdrop-blur'>
+          <Navigation />
+        </aside>
         <header>
           <Masthead />
         </header>
         <Contracts />
+        <OpenSource />
+        <OurSponsors />
+        <OurTeam />
+        <footer>
+          <Footer />
+        </footer>
       </main>
     </>
   )
