@@ -5,6 +5,7 @@ import { Form, Formik } from 'formik'
 import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import StepsNavigation from './StepsNavigation'
 import { initialStepsFormData } from '@/utils/snip20Form'
+import { WORKERS_URL } from 'consts'
 
 export default function tokenMarketing() {
   const { onNextStep, getFormData } = useSnip20Steps()
@@ -20,37 +21,43 @@ export default function tokenMarketing() {
       const formData = new FormData()
       formData.append('image', file)
 
-      const workerUrl = 'http://127.0.0.1:8787'
-
-      const response = await fetch(workerUrl, {
+      const response = await fetch(WORKERS_URL, {
         method: 'POST',
         body: formData,
       })
-
       const result = await response.json()
 
-      console.log({ result })
-    } catch (err) {
-      console.error('--- catch: ', err)
-    }
+      if (result.error) {
+        return onUploadError(result.error)
+      }
 
-    // TODO: replace with CID
-    setTimeout(() => {
-      setFieldValue('projectLogo', {
-        name: file.name,
-        preview: URL.createObjectURL(file),
-        ipfsUrl: 'ipfs_url',
-      })
+      setFieldValue('projectLogoCID', result.value.cid)
       setIsUploading(false)
-    }, 1000)
+    } catch (err) {
+      onUploadError(err)
+    }
+  }
+
+  function onUploadError(err: any) {
+    setIsUploading(false)
+
+    // TODO: Improve error handling
+    alert('Ups... something went wrong')
+    console.error('--- catch: ', err)
   }
 
   function onDelete(setFieldValue: (field: string, value: any) => void) {
-    setFieldValue('projectLogo', initialStepsFormData[2].projectLogo)
+    setFieldValue('projectLogoCID', initialStepsFormData[2].projectLogoCID)
   }
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onNextStep}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(formValues) => {
+        !isUploading && onNextStep(formValues)
+      }}
+    >
       {({ setFieldValue, values }) => (
         <Form>
           <div className='flex flex-col gap-y-[34px]'>
@@ -77,7 +84,7 @@ export default function tokenMarketing() {
             <div className='flex flex-col gap-y-3'>
               <div className='text-white font-medium'>Logo</div>
               <UploadLogo
-                fileData={values.projectLogo}
+                imageCID={values.projectLogoCID}
                 isUploading={isUploading}
                 onDrop={(files) => onDrop(setFieldValue, files)}
                 onDelete={(e) => {

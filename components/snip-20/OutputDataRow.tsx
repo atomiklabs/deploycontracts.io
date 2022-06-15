@@ -1,11 +1,13 @@
+import { getImageFromCID } from '@/utils/ipfs'
+
 type Props = {
   title: string
   data?: any
   colour?: string
-  projectLogo?: string
+  projectLogoCID?: string
 }
 
-export default function OutputDataRow({ title, data, colour, projectLogo }: Props) {
+export default function OutputDataRow({ title, data, colour, projectLogoCID }: Props) {
   return (
     <div className='flex flex-col break-words'>
       <div className='text-gray-100'>{title}</div>
@@ -19,9 +21,9 @@ export default function OutputDataRow({ title, data, colour, projectLogo }: Prop
         <div className='text-white font-bold'>{data}</div>
       )}
 
-      {projectLogo && (
-        <div className='flex items-center'>
-          <img src='/assets/github.svg' alt='logo image' />
+      {projectLogoCID && (
+        <div className='max-w-xs flex items-center'>
+          <img src={getImageFromCID(projectLogoCID)} alt='logo image' />
         </div>
       )}
     </div>
