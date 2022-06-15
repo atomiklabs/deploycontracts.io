@@ -1,26 +1,22 @@
-// Replace with @aws-sdk
+import { responseError, responseSuccess } from './utils'
 
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+export async function uploadToIPFS(request: Request) {
+  const formData = await request.formData()
+  const imageFile = formData.get('image')
 
-const client = new S3Client({
-  apiVersion: '2006-03-01',
-  endpoint: 'https://s3.filebase.com',
-  region: 'us-east-1',
-  credentials: {
-    accessKeyId: FILEBASE_KEY,
-    secretAccessKey: FILEBASE_SECRET,
-  },
-  // s3ForcePathStyle: true,
-})
+  if (typeof imageFile === 'string') {
+    return responseError('imageFile is a string instead of File')
+  }
 
-export async function uploadToFilebase(file: File) {
-  const command = new PutObjectCommand({
-    Bucket: 'deploycontracts',
-    Key: `snip-20-project-logo/${Date.now()}-${file.name}`,
-    Body: file,
-    ContentType: file.type,
-    ACL: 'public-read',
+  const response = await fetch('https://api.nft.storage/upload', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${NFT_STORAGE_API}`,
+    },
+    body: imageFile,
   })
 
-  return client.send(command)
+  const result = await response.json()
+
+  return responseSuccess(result)
 }
