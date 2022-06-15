@@ -24,7 +24,7 @@ export default function OurSponsors() {
             <div className='text-gray-100 tracking-[-0.002rem]'>
               Founding for Applications, Ecosystem, Tooling and Network Imorovements.
             </div>
-            <LinkButton href='#'>Visit webpage</LinkButton>
+            <LinkButton>Visit webpage</LinkButton>
           </div>
         </div>
       </GridContainer>
