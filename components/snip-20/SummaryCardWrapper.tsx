@@ -1,4 +1,4 @@
-import LinkButton from '@/components/buttons/LinkButton'
+import GradientText from '@/components/buttons/GradientText'
 import { useRouter } from 'next/router'
 
 type Props = {
@@ -21,9 +21,9 @@ export default function SummaryCardWrapper({ children, img, title, linkUrl }: Pr
           <div className='text-lg text-white font-space-grotesk font-bold'>{title}</div>
         </div>
 
-        <LinkButton className='mt-5 sm:mt-0' onClick={() => router.push(linkUrl)}>
+        <GradientText className='mt-5 sm:mt-0' onClick={() => router.push(linkUrl)}>
           Edit
-        </LinkButton>
+        </GradientText>
       </div>
 
       {children}

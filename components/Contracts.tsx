@@ -3,34 +3,35 @@ import H2 from '@/components/headings/H2'
 import H3 from '@/components/headings/H3'
 import AvailableText from '@/components/AvailableText'
 import ComingSoon from '@/components/ComingSoon'
-import PrimaryButton from '@/components/buttons/PrimaryButton'
 import React from 'react'
+import PrimaryLink from './buttons/PrimaryLink'
+import { landingPageUrl } from 'consts'
 
 const data = [
   { text: 'No smart contract developers required', icon: '/assets/hand.svg', iconName: 'hand' },
-  { text: "Fill up the form and submit, that's it", icon: '/assets/list.svg', iconName: 'form' },
+  { text: `Fill up the form and submit. That's it!`, icon: '/assets/list.svg', iconName: 'form' },
 ]
 
 const contracts = [
   {
     title: 'SNIP-20 contract',
-    text: 'SNIP-20 contract. Cras feugiat rhoncus augue, nec mattis ligula aliquet et. Morbi non porta lorem, aliquam suscipit leo. Maecenas blandit non sem vel blandit.',
+    text: 'Creator allows you to deploy token contract to Secret Network within minutes. Assign initial token allocation and provide marketing details if required',
     available: true,
     image: '/assets/coins.svg',
   },
   {
     title: 'Vesting contract',
-    text: 'Lock your token for investors or individuals. Cras feugiat rhoncus augue, nec mattis ligula aliquet et. Morbi non porta lorem, aliquam suscipit leo. Maecenas blandit non sem vel blandit.',
+    text: `This contract allow to distribute tokens based on time schedules for investors or individuals. Assign tokens to your users and decide when they could claim them. It's a common practice to avoid selling pressure, followed by a rapid token price drop right after IDOs`,
     available: false,
   },
   {
-    title: 'IDO/liquidity pool contract',
-    text: 'Add real value for your token, and get ready for the market. Cras feugiat rhoncus augue, nec mattis ligula aliquet et. Morbi non porta lorem, aliquam suscipit leo. Maecenas blandit non sem vel blandit.',
+    title: 'IDO / liquidity pool contract',
+    text: 'Add a real value for your token and get ready for the market. This tool helps to begin community engagement by providing initial liquidity pool for decentralised exchanges',
     available: false,
   },
   {
     title: 'Staking contract',
-    text: 'Lock your token for investors or individuals. Cras feugiat rhoncus augue, nec mattis ligula aliquet et. Morbi non porta lorem, aliquam suscipit leo. Maecenas blandit non sem vel blandit.',
+    text: 'Grow your community and their engagement with staking contract. Incentivizing users by staking mechanisms is a common practice, reward them with extra tokens',
     available: false,
   },
 ]
@@ -53,7 +54,7 @@ export default function Contracts() {
                 className='flex flex-row max-w-xs md:text-lg text-white leading-[23px] gap-x-8 font-space-grotesk font-bold'
               >
                 <img src={x.icon} alt={`${x.iconName} icon`} />
-                <span>{x.text}</span>
+                <strong>{x.text}</strong>
               </div>
             )
           })}
@@ -75,9 +76,7 @@ export default function Contracts() {
                           <h3>{x.title}</h3>
                         </H3>
                         <div className='text-gray-100 tracking-[-0.02rem]'>{x.text}</div>
-                        <PrimaryButton>
-                          <div className='py-3 px-11 whitespace-nowrap'>Create new token</div>
-                        </PrimaryButton>
+                        <PrimaryLink href={landingPageUrl.createNewToken}>Create new token</PrimaryLink>
                       </div>
                     </div>
                   ) : (
@@ -99,14 +98,15 @@ export default function Contracts() {
                   <h3>Custom contract</h3>
                 </H3>
                 <div className='text-gray-100 tracking-[-0.02rem]'>
-                  Do you need more complex contract? Please contact us and we would see how we can help.
+                  Do you need smart contract for your business? We're happy to help
                 </div>
               </div>
-              <PrimaryButton>
-                <a href='/' className='py-3 px-11 w-full h-full inline-block whitespace-nowrap rounded-2xl bg-white'>
-                  <span className='gradient-text'>Contact with Us</span>
-                </a>
-              </PrimaryButton>
+              <PrimaryLink
+                href={landingPageUrl.atomikLabs}
+                className='rounded-2xl bg-white !bg-none hover:bg-[#FDBA0F]'
+              >
+                <span className='gradient-text'>Contact with Us</span>
+              </PrimaryLink>
             </div>
           </GridContainer>
         </div>

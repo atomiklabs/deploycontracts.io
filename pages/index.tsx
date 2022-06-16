@@ -5,24 +5,28 @@ import OpenSource from '@/components/OpenSource'
 import OurSponsors from '@/components/OurSponsors'
 import OurTeam from '@/components/OurTeam'
 import Footer from '@/components/Footer'
+import Head from 'next/head'
 
-export default function LandingPage() {
+export default function Homepage() {
   return (
     <>
-      <main id='welcome'>
-        <aside className='sticky top-0 z-50 backdrop-blur'>
-          <Navigation />
-        </aside>
-        <header>
-          <Masthead />
-        </header>
+      <Head>
+        <title>Create and deploy smart contracts to Secret Network</title>
+        <meta
+          name='description'
+          content='Deploy Secret network smart contracts within minutes. No developers are required, just fill up the form and submit'
+        />
+      </Head>
+
+      <Navigation />
+
+      <main>
+        <Masthead />
         <Contracts />
         <OpenSource />
         <OurSponsors />
         <OurTeam />
-        <footer>
-          <Footer />
-        </footer>
+        <Footer />
       </main>
     </>
   )
