@@ -5,6 +5,7 @@ import { Form, Formik } from 'formik'
 import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import StepsNavigation from './StepsNavigation'
 import { initialStepsFormData } from '@/utils/snip20Form'
+import { WORKERS_URL } from 'consts'
 
 export default function tokenMarketing() {
   const { onNextStep, getFormData } = useSnip20Steps()
@@ -14,31 +15,60 @@ export default function tokenMarketing() {
 
   async function onDrop(setFieldValue: (field: string, value: any) => void, files: File[]) {
     setIsUploading(true)
+    const file = files[0]
 
-    setTimeout(() => {
-      setFieldValue('projectLogo', {
-        name: files[0].name,
-        preview: URL.createObjectURL(files[0]),
-        ipfsUrl: 'ipfs_url',
+    try {
+      const formData = new FormData()
+      formData.append('image', file)
+
+      const response = await fetch(WORKERS_URL, {
+        method: 'POST',
+        body: formData,
       })
+      const result = await response.json()
+
+      if (result.error) {
+        return onUploadError(result.error)
+      }
+
+      setFieldValue('projectLogoCID', result.value.cid)
       setIsUploading(false)
-    }, 1000)
+    } catch (err) {
+      onUploadError(err)
+    }
+  }
+
+  function onUploadError(err: any) {
+    setIsUploading(false)
+
+    // TODO: Improve error handling
+    alert('Ups... something went wrong')
+    console.error('--- catch: ', err)
   }
 
   function onDelete(setFieldValue: (field: string, value: any) => void) {
-    setFieldValue('projectLogo', initialStepsFormData[2].projectLogo)
+    setFieldValue('projectLogoCID', initialStepsFormData[2].projectLogoCID)
   }
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onNextStep}>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(formValues) => {
+        !isUploading && onNextStep(formValues)
+      }}
+    >
       {({ setFieldValue, values }) => (
         <Form>
           <div className='flex flex-col gap-y-[34px]'>
             <h1 className='font-space-grotesk font-bold text-xl text-white'>Marketing details</h1>
 
             <p className='text-gray-100'>
-              Token generations is.... consectetur adipiscing elit. Etiam pulvinar leo vitae massa congue euismod eget
-              convallis tortor.
+              This is an optional step. Marketing details would be stored on the smart contract directly. Logo is
+              uploaded to IPFS via{' '}
+              <a href='https://nft.storage' target='_blank'>
+                https://nft.storage
+              </a>
             </p>
           </div>
 
@@ -52,12 +82,12 @@ export default function tokenMarketing() {
             />
 
             {/* TODO: Change to textarea */}
-            <Input name='projectDescription' label='Description' placeholder='Short description' autoComplete='off' />
+            <Input name='projectDescription' label='Short description' placeholder='Description' autoComplete='off' />
 
             <div className='flex flex-col gap-y-3'>
               <div className='text-white font-medium'>Logo</div>
               <UploadLogo
-                fileData={values.projectLogo}
+                imageCID={values.projectLogoCID}
                 isUploading={isUploading}
                 onDrop={(files) => onDrop(setFieldValue, files)}
                 onDelete={(e) => {

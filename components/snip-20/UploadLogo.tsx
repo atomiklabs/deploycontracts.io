@@ -1,14 +1,14 @@
 import { ReactNode } from 'react'
 import { useDropzone } from 'react-dropzone'
-import UploadedLogo, { TLogoFileData } from './UploadedLogo'
+import UploadedLogo from './UploadedLogo'
 
 export default function UploadLogo({
   isUploading,
-  fileData,
+  imageCID,
   onDrop,
   onDelete,
 }: {
-  fileData?: TLogoFileData
+  imageCID?: string
   onDrop: (files: File[]) => void
   onDelete: (e: any) => void
   isUploading: boolean
@@ -21,8 +21,8 @@ export default function UploadLogo({
 
   return (
     <>
-      {fileData?.preview ? (
-        <UploadedLogo file={fileData} onDelete={onDelete} />
+      {imageCID ? (
+        <UploadedLogo imageCID={imageCID} onDelete={onDelete} />
       ) : (
         <DropBox>
           <label

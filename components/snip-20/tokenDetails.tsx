@@ -12,10 +12,11 @@ export default function tokenDetails() {
   return (
     <>
       <div className='flex flex-col gap-y-[34px]'>
-        <h1 className='font-space-grotesk font-bold text-xl text-white'>Token details</h1>
+        <h1 className='font-space-grotesk font-bold text-xl text-white'>SNIP-20 Token details</h1>
+
         <p className='text-gray-100'>
-          Token generations is.... consectetur adipiscing elit. Etiam pulvinar leo vitae massa congue euismod eget
-          convallis tortor.
+          Fill up the form to create and deploy new <span className='whitespace-nowrap'>SNIP-20</span> smart contract.
+          This would take only few minutes and it's completely free.
         </p>
       </div>
 

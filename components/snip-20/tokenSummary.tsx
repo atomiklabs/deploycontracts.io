@@ -12,9 +12,10 @@ export default function tokenSummary() {
     <>
       <div className='flex flex-col gap-y-8'>
         <h1 className='font-space-grotesk font-bold text-xl text-white'>Summary</h1>
+
         <p className='text-gray-100'>
-          Token generations is.... consectetur adipiscing elit. Etiam pulvinar leo vitae massa congue euismod eget
-          convallis tortor.
+          Final confirmation, please check all the details below. Once token contract is deployed this coudn't be
+          changed.
         </p>
 
         <SummaryCardWrapper linkUrl='step-1' img='/assets/step1-visited.svg' title='Token details'>
@@ -38,7 +39,7 @@ export default function tokenSummary() {
         <SummaryCardWrapper linkUrl='step-3' img='/assets/step3-visited.svg' title='Marketing details'>
           <OutputDataRow title='Project name' data={snip20FormData[2].projectName} />
           <OutputDataRow title='Description' data={snip20FormData[2].projectDescription} />
-          <OutputDataRow title='Logo' projectLogo='/assets/github.svg' />
+          <OutputDataRow title='Logo' projectLogoCID={snip20FormData[2].projectLogoCID} />
         </SummaryCardWrapper>
       </div>
 

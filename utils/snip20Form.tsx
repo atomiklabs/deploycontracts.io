@@ -3,7 +3,7 @@ import * as yup from 'yup'
 export const initialStepsFormData = [
   { minterAddress: '', tokenName: '', tokenTotalSupply: 1_000_000 },
   { allocations: [{ name: '', value: 100, address: '' }] },
-  { projectName: '', projectDescription: '', projectLogo: { name: '', preview: '', ipfsUrl: '' } },
+  { projectName: '', projectDescription: '', projectLogoCID: '' },
 ]
 
 export const stepsValidationSchema = [
@@ -40,11 +40,7 @@ export const stepsValidationSchema = [
   yup.object({
     projectName: yup.string(),
     projectDescription: yup.string(),
-    projectLogo: yup.object({
-      name: yup.string(),
-      preview: yup.string(),
-      ipfsUrl: yup.string(),
-    }),
+    projectLogoCID: yup.string(),
   }),
 ]
 
