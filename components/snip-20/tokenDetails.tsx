@@ -56,6 +56,7 @@ export default function tokenDetails() {
               type='number'
               step={1}
               label='Total supply'
+              placeholder='1 000 000'
               required
               autoComplete='off'
             />

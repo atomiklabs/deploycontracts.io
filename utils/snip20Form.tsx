@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 export const initialStepsFormData = [
-  { minterAddress: '', tokenName: '', tokenTotalSupply: 1_000_000 },
+  { minterAddress: '', tokenName: '', tokenTotalSupply: undefined },
   { allocations: [{ name: '', value: 100, address: '' }] },
   { projectName: '', projectDescription: '', projectLogoCID: '' },
 ]
