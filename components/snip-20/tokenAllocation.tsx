@@ -15,10 +15,7 @@ export default function tokenAllocation() {
     <>
       <div className='flex flex-col gap-y-[34px]'>
         <h1 className='font-space-grotesk font-bold text-xl text-white'>Token allocation</h1>
-        <p className='text-gray-100'>
-          Token generations is.... consectetur adipiscing elit. Etiam pulvinar leo vitae massa congue euismod eget
-          convallis tortor.
-        </p>
+        <p className='text-gray-100'>Distribute your initial token allocation between different wallet addresses.</p>
       </div>
 
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onNextStep}>

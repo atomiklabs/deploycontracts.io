@@ -14,10 +14,10 @@ export default function Masthead() {
         <div className='col-span-full lg:col-start-1 lg:col-span-6 lg:order-1 mt-9 text-white text-center lg:text-left '>
           <H1>
             <h1>
-              Create + deploy smarts contracts on{' '}
-              <strong className='relative z-10 sm:whitespace-nowrap'>
-                <span className='w-full h-[30%] bottom-[5%] absolute -z-10 sm:bg-[linear-gradient(115.82deg,#671BC9_5.15%,#FD0F9E_108.88%)]'></span>
-                Secret Network
+              Create + deploy smarts contracts on Secret Network{' '}
+              <strong className='relative z-10 whitespace-nowrap'>
+                <span className='w-full h-[30%] bottom-[5%] absolute -z-10 bg-[linear-gradient(115.82deg,#671BC9_5.15%,#FD0F9E_108.88%)]'></span>
+                for free
               </strong>
             </h1>
           </H1>

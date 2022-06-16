@@ -64,8 +64,11 @@ export default function tokenMarketing() {
             <h1 className='font-space-grotesk font-bold text-xl text-white'>Marketing details</h1>
 
             <p className='text-gray-100'>
-              Token generations is.... consectetur adipiscing elit. Etiam pulvinar leo vitae massa congue euismod eget
-              convallis tortor.
+              This is an optional step. Marketing details would be stored on the smart contract directly. Logo is
+              uploaded to IPFS via{' '}
+              <a href='https://nft.storage' target='_blank'>
+                https://nft.storage
+              </a>
             </p>
           </div>
 
@@ -79,7 +82,7 @@ export default function tokenMarketing() {
             />
 
             {/* TODO: Change to textarea */}
-            <Input name='projectDescription' label='Description' placeholder='Short description' autoComplete='off' />
+            <Input name='projectDescription' label='Short description' placeholder='Description' autoComplete='off' />
 
             <div className='flex flex-col gap-y-3'>
               <div className='text-white font-medium'>Logo</div>
