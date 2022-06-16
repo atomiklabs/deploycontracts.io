@@ -20,7 +20,7 @@ export default function Step() {
 
 export async function getStaticPaths() {
   const paths = [...Array(4)].map((x, i) => `/snip-20/step-${i + 1}`)
-  return { paths, fallback: true }
+  return { paths, fallback: false }
 }
 
 export async function getStaticProps() {
