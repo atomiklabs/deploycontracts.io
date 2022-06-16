@@ -1,3 +1,4 @@
+// TODO: block production requests from other domains than
 const corsHeaders = {
   'Access-Control-Allow-Headers': '*',
   'Access-Control-Allow-Methods': 'POST',

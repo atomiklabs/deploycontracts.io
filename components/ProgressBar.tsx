@@ -31,6 +31,7 @@ export default function ProgressBar({
                 }}
               />
 
+              {/* TODO: Fix long tooltip text */}
               <TooltipText className='hidden sm:block'>{x.name}</TooltipText>
             </div>
           )

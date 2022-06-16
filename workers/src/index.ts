@@ -1,6 +1,7 @@
 import { uploadToIPFS } from './ipfs'
 import { responseError, responseSuccess } from './utils'
 
+// TODO: Add routing - https://developers.cloudflare.com/pages/tutorials/build-an-api-with-workers
 addEventListener('fetch', (event) => {
   event.respondWith(handleRequest(event.request))
 })
