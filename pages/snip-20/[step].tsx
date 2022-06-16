@@ -17,3 +17,7 @@ export default function Step() {
     </Snip20StepsProvider>
   )
 }
+
+export async function getStaticPaths() {
+  return { fallback: true }
+}
