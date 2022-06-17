@@ -15,7 +15,7 @@ const team = [
 
 export default function OurTeam() {
   return (
-    <section className='relative mt-24'>
+    <section className='relative mt-32'>
       <div id='our-team' className='absolute -top-24' />
 
       <GirdContainer>
@@ -30,7 +30,7 @@ export default function OurTeam() {
           </H2>
 
           <div className='text-gray-100 tracking-[-0.002rem]'>
-            Those people were deeply involved into this project. Let us know what you think?
+            Those people are deeply involved into this project. Let us know what you think?
           </div>
         </div>
 

@@ -5,7 +5,7 @@ import { landingPageUrl } from 'consts'
 
 export default function OpenSource() {
   return (
-    <section className='mt-20 lg:mt-60'>
+    <section className='mt-20 lg:mt-52'>
       <GridContainer className='relative z-0'>
         <div className='absolute hidden md:inline-block -z-10 md:top-[-5%] lg:top-[-20%] col-span-full'>
           <div id='open-source' className='absolute -top-24' />
