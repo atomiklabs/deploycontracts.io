@@ -16,7 +16,7 @@ export default function UploadLogo({
   const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/*': [] }, onDrop, multiple: false })
 
   if (isUploading) {
-    return <DropBox className='p-7'>Uploading to IPFS...</DropBox>
+    return <DropBox className='p-7'>Uploading to IPFS... (it may take a few minutes)</DropBox>
   }
 
   return (

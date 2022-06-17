@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import GridContainer from '@/components/GridContainer'
-import GithubButton from '@/components/buttons/GithubButton'
+import GithubLink from '@/components/buttons/GithubLink'
 import { DeployconttractsLogo } from '@/components/DeployconttractsLogo'
 import { Popover, Transition } from '@headlessui/react'
 import { landingPageUrl } from 'consts'
@@ -26,9 +26,7 @@ export default function Navigation() {
 
             <div className='col-span-1 md:col-start-1 md:order-1 xl:hidden flex justify-end md:justify-start'>
               <Popover.Button>
-                <div className='w-8 h-full cursor-pointer flex items-center shrink-0'>
-                  <img src='/assets/menu.svg' alt='menu icon' />
-                </div>
+                <img src='/assets/menu.svg' alt='menu icon' />
               </Popover.Button>
             </div>
 
@@ -47,9 +45,7 @@ export default function Navigation() {
               })}
 
               <li className='hidden md:block'>
-                <a href={landingPageUrl.github} target='_blank'>
-                  <GithubButton className='md:py-3 md:px-8 lg:px-12' />
-                </a>
+                <GithubLink className='md:py-3 md:px-8 lg:px-12' />
               </li>
             </ul>
 
@@ -87,9 +83,7 @@ export default function Navigation() {
                     })}
 
                     <li className='block md:hidden'>
-                      <a href={landingPageUrl.github}>
-                        <GithubButton className='px-4 py-2 md:py-3 md:px-8 lg:px-12' />
-                      </a>
+                      <GithubLink className='px-4 py-2 md:py-3 md:px-8 lg:px-12' />
                     </li>
                   </ul>
                 </GridContainer>
