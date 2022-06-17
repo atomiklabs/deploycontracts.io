@@ -1,5 +1,5 @@
 import GridContainer from '@/components/GridContainer'
-import GithubButton from '@/components/buttons/GithubButton'
+import GithubLink from '@/components/buttons/GithubLink'
 import H2 from '@/components/headings/H2'
 import { landingPageUrl } from 'consts'
 
@@ -23,16 +23,14 @@ export default function OpenSource() {
 
         <div className='col-span-full lg:col-start-1 lg:col-span-6 flex flex-col gap-y-6 md:items-center lg:items-start lg:order-1'>
           <H2>
-            <h2 className='text-center'>Open source</h2>
+            <span className='text-center'>Open source</span>
           </H2>
 
           <div className='text-gray-100 tracking-[-0.002rem]'>
             All code related to this project is open source. Check out our smart contracts and web integration guides
           </div>
 
-          <a href={landingPageUrl.github} target='_blank'>
-            <GithubButton className='py-4 px-8' />
-          </a>
+          <GithubLink className='py-4 px-8' />
         </div>
       </GridContainer>
     </section>

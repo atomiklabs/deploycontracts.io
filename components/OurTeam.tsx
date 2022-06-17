@@ -21,12 +21,12 @@ export default function OurTeam() {
       <GirdContainer>
         <div className='col-span-full lg:col-start-3 lg:col-span-8 flex flex-col text-center gap-y-4 md:gap-y-6'>
           <H2>
-            <h2 className='text-center'>
+            <span className='text-center'>
               Team{' '}
               <a href={landingPageUrl.atomikLabs} target='_blank' className='gradient-text'>
                 atomiklabs.io
               </a>
-            </h2>
+            </span>
           </H2>
 
           <div className='text-gray-100 tracking-[-0.002rem]'>

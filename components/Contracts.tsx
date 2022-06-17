@@ -42,9 +42,7 @@ export default function Contracts() {
       <div id='available-contracts' className='absolute -top-24' />
       <GridContainer>
         <div className='col-span-full text-center'>
-          <H2>
-            <h2>Available contracts</h2>
-          </H2>
+          <H2>Available contracts</H2>
         </div>
         <div className='col-span-full flex flex-col md:flex-row gap-y-8 md:gap-y-0 md:gap-x-20 mt-10 md:mt-14 lg:mt-16 justify-center items-center'>
           {data.map((x, i) => {
@@ -72,9 +70,7 @@ export default function Contracts() {
                       </div>
                       <div className='flex flex-col gap-y-5 mt-7 lg:w-1/2 lg:order-1'>
                         <AvailableText />
-                        <H3>
-                          <h3>{x.title}</h3>
-                        </H3>
+                        <H3>{x.title}</H3>
                         <div className='text-gray-100 tracking-[-0.02rem]'>{x.text}</div>
                         <PrimaryLink href={landingPageUrl.createNewToken}>Create new token</PrimaryLink>
                       </div>
@@ -82,9 +78,7 @@ export default function Contracts() {
                   ) : (
                     <div className='col-span-full lg:col-span-6 flex flex-col p-6 md:p-12 lg:p-16 gap-y-5 bg-[#0F204C] rounded-2xl'>
                       <ComingSoon />
-                      <H3>
-                        <h3>{x.title}</h3>
-                      </H3>
+                      <H3>{x.title}</H3>
                       <div className='text-gray-100 tracking-[-0.02rem]'>{x.text}</div>
                     </div>
                   )}
@@ -94,9 +88,7 @@ export default function Contracts() {
 
             <div className='col-span-full lg:col-span-6 flex flex-col justify-between gap-y-5 bg-[linear-gradient(115.82deg,#671BC9_5.15%,#FD0F9E_108.88%)] rounded-2xl p-6 md:p-12 lg:p-16'>
               <div>
-                <H3>
-                  <h3>Custom contract</h3>
-                </H3>
+                <H3>Custom contract</H3>
                 <div className='text-gray-100 tracking-[-0.02rem]'>
                   Do you need smart contract for your business? We're happy to help
                 </div>

@@ -14,7 +14,7 @@ export default function Homepage() {
         <title>Create and deploy smart contracts to Secret Network</title>
         <meta
           name='description'
-          content='Deploy Secret network smart contracts within minutes. No developers are required, just fill up the form and submit'
+          content='Deploy smart contracts to Secret Network within minutes. No developers required, just fill up the form and submit'
         />
       </Head>
 

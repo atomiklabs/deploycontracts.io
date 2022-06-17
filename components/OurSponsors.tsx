@@ -10,7 +10,7 @@ export default function OurSponsors() {
       <GridContainer>
         <div className='col-span-full lg:col-span-6 flex flex-col gap-y-4 items-center lg:items-start lg:justify-center'>
           <H2>
-            <h2 className='text-center'>Our sponsor</h2>
+            <span className='text-center'>Our sponsor</span>
           </H2>
 
           <div className='text-gray-100 tracking-[-0.002rem]'>This project is founded by Secret Network</div>
