@@ -4,9 +4,25 @@ import SummaryCardWrapper from '@/components/snip-20/SummaryCardWrapper'
 import OutputDataRow from '@/components/snip-20/OutputDataRow'
 import { allocationColors } from '@/utils/snip20Form'
 import ProgressBar from '../ProgressBar'
+import { useCallback } from 'react'
+import { useRouter } from 'next/router'
 
 export default function tokenSummary() {
-  const { snip20FormData } = useSnip20Steps()
+  const router = useRouter()
+  const { snip20FormData, instantiateSnip20Contract } = useSnip20Steps()
+  const onCreateToken = useCallback(
+    () =>
+      instantiateSnip20Contract()
+        .then((contractAddress) => {
+          console.log('Congrats, token created!', contractAddress)
+          router.replace('/')
+        })
+        .catch((error) => {
+          console.error('something went wrong, try again')
+          console.error(error)
+        }),
+    [],
+  )
 
   return (
     <>
@@ -43,11 +59,7 @@ export default function tokenSummary() {
         </SummaryCardWrapper>
       </div>
 
-      <StepsNavigation
-        className='mt-20'
-        submitText='Create token'
-        onClick={() => console.log('--- create token: ', snip20FormData)}
-      />
+      <StepsNavigation className='mt-20' submitText='Create token' onClick={onCreateToken} />
     </>
   )
 }

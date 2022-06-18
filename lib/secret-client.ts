@@ -40,6 +40,54 @@ export type ChainInfo = {
   restUrl?: string
 }
 
+export type HumanAddr = string
+
+export type Uint128 = string
+
+export interface InitialBalance {
+  address: HumanAddr
+  amount: Uint128
+}
+
+export interface InitConfig {
+  /**
+   * Indicates whether burn functionality should be enabled default: False
+   */
+  enable_burn?: boolean
+  /**
+   * Indicates whether deposit functionality should be enabled default: False
+   */
+  enable_deposit?: boolean
+  /**
+   * Indicates whether mint functionality should be enabled default: False
+   */
+  enable_mint?: boolean
+  /**
+   * Indicates whether redeem functionality should be enabled default: False
+   */
+  enable_redeem?: boolean
+  /**
+   * Indicates whether the total supply is public or should be kept secret. default: False
+   */
+  public_total_supply?: boolean
+}
+
+export interface InstantiateMsg {
+  name: string
+  symbol: string
+  decimals: number
+  prng_seed: string
+  admin?: HumanAddr
+  initial_balances?: Array<InitialBalance>
+  config?: InitConfig
+  marketing_info?: {
+    project?: string
+    description?: string
+    marketing?: string
+    logo?: string
+  }
+}
+
 type CreateClientProps = Omit<CreateClientOptions, 'grpcWebUrl'> & ChainInfo
 
 type CreateClientResult = {

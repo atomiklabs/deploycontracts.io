@@ -7,10 +7,12 @@ import TokenAllocation from '@/components/snip-20/tokenAllocation'
 import TokenMarketing from '@/components/snip-20/tokenMarketing'
 import TokenSummary from '@/components/snip-20/tokenSummary'
 import { initialStepsFormData, stepsValidationSchema } from '@/utils/snip20Form'
-import { createClient, suggestAddingSecretNetworkToKeplrApp } from '@/lib/secret-client'
+import { createClient, InstantiateMsg, suggestAddingSecretNetworkToKeplrApp } from '@/lib/secret-client'
 import type { SecretNetworkExtendedClient, ChainInfo, StoredWasmBinary } from '@/lib/secret-client'
 
 const LocalContext = createContext({} as TSnip20StepsProvider)
+
+const DECIMALS = 6
 
 interface Snip20StepsProviderProps extends PropsWithChildren<unknown> {
   chainInfo: ChainInfo
@@ -25,58 +27,88 @@ export function Snip20StepsProvider({ chainInfo, contractInfo, children }: Snip2
   const [snip20FormData, setSnip20FormData] = useLocalStorage(`snip20FormData`, initialStepsFormData)
 
   const connectWallet = useCallback(async (): Promise<string> => {
-    return createClient({
-      chainId: chainInfo.chainId,
-      grpcUrl: chainInfo.grpcUrl,
-    })
-      .then(({ client }) => {
+    console.log('[snip20SetpsProvider]: connectWallet ->')
+
+    try {
+      const { client } = await createClient({
+        chainId: chainInfo.chainId,
+        grpcUrl: chainInfo.grpcUrl,
+      })
+
+      setSecretClient(client)
+
+      console.log('[snip20SetpsProvider]: connectWallet <-')
+      return client.address
+    } catch (error: any) {
+      console.error(error)
+
+      if (error.message === `There is no chain info for ${chainInfo.chainId}`) {
+        await suggestAddingSecretNetworkToKeplrApp(chainInfo)
+
+        const { client } = await createClient({
+          chainId: chainInfo.chainId,
+          grpcUrl: chainInfo.grpcUrl,
+        })
+
         setSecretClient(client)
+
+        console.log('[snip20SetpsProvider]: connectWallet <-')
         return client.address
-      })
-      .catch(async (error) => {
-        console.error(error)
-
-        if (error.message === `There is no chain info for ${chainInfo.chainId}`) {
-          await suggestAddingSecretNetworkToKeplrApp(chainInfo)
-
-          const { client } = await createClient({
-            chainId: chainInfo.chainId,
-            grpcUrl: chainInfo.grpcUrl,
-          })
-
-          setSecretClient(client)
-          return client.address
-        }
-
-        return ''
-      })
-  }, [suggestAddingSecretNetworkToKeplrApp])
-
-  const instantiateSnip20Contract = useCallback(
-    async function instantiateSnip20Contract() {
-      if (!secretClient) {
-        throw new Error('Cannot instantiate contract, missing Secret Network client instance')
       }
 
-      const initMsg = createInstantiateMsg({
-        name: 'Test token',
-        symbol: 'TTX',
-        marketing_info: {
-          project: `Atomik Labs #${window.crypto.randomUUID()}`,
-        },
+      console.log('[snip20SetpsProvider]: connectWallet <-')
+      return ''
+    }
+  }, [suggestAddingSecretNetworkToKeplrApp])
+
+  const instantiateSnip20Contract = useCallback(async (): Promise<string> => {
+    if (!secretClient) {
+      throw new Error('Cannot instantiate contract, missing Secret Network client instance')
+    }
+
+    let initMsg: InstantiateMsg
+
+    // TODO: validate form data before sending the InitMsg
+
+    try {
+      const name = snip20FormData[0].tokenName!
+      const symbol = name.substring(0, 3).toUpperCase()
+      const tokenTotalSupply = BigInt(snip20FormData[0].tokenTotalSupply!)
+      const initialBalances = snip20FormData[1].allocations?.map(({ value, address }) => ({
+        amount: (((BigInt(value) * tokenTotalSupply) / BigInt(100)) * BigInt(10 ** DECIMALS)).toString(),
+        address,
+      }))
+      const admin = snip20FormData[0].minterAddress
+
+      initMsg = createInstantiateMsg({
+        initial_balances: initialBalances,
+        symbol,
+        name,
+        admin,
       })
 
-      const { contractAddress } = await secretClient.instantiateContract({
-        codeId: contractInfo.codeId,
-        codeHash: contractInfo.codeHash,
-        label: `SNIP-20 token #${Math.random() * 1000}`,
-        initMsg,
-      })
+      console.log({ initMsg })
+    } catch (error) {
+      console.error(error)
+      return
+    }
 
+    const { contractAddress } = await secretClient.instantiateContract({
+      codeId: contractInfo.codeId,
+      codeHash: contractInfo.codeHash,
+      label: `SNIP-20 token #${globalThis.crypto.randomUUID()}`,
+      initMsg,
+    })
+
+    try {
       await window.keplr!.suggestToken(chainInfo.chainId, contractAddress)
-    },
-    [secretClient, chainInfo, contractInfo],
-  )
+    } catch (error) {
+      // the user didn't want to add token to Keplr tokens list
+      console.error(error)
+    }
+
+    return contractAddress
+  }, [secretClient, chainInfo, contractInfo])
 
   const connectedWalletAddress = useMemo(() => (secretClient ? secretClient.address : undefined), [secretClient])
 
@@ -223,7 +255,7 @@ type TSnip20StepsProvider = {
   goToPrevStep: () => void
   getFormData: (stepIndex: number) => TFormDataReturnValue
   connectWallet: () => Promise<string>
-  instantiateSnip20Contract: () => void
+  instantiateSnip20Contract: () => Promise<string>
   connectedWalletAddress: string | undefined
 }
 
@@ -234,25 +266,15 @@ type TFormDataReturnValue = {
 
 type TCurrentStepData = { stepIndex: number; component: JSX.Element }
 
-interface InstantiateMsg {
-  name: string
-  symbol: string
-  decimals: number
-  prng_seed: string
-  marketing_info?: {
-    project?: string
-    description?: string
-    marketing?: string
-    logo?: string
-  }
-}
-
 type CreateInstantiateMsgProps = Omit<InstantiateMsg, 'decimals' | 'prng_seed'>
 
-function createInstantiateMsg(tokenInfo: CreateInstantiateMsgProps): InstantiateMsg {
+export function createInstantiateMsg(tokenInfo: CreateInstantiateMsgProps): InstantiateMsg {
   return {
-    decimals: 6,
+    decimals: DECIMALS,
     prng_seed: btoa(window.crypto.randomUUID()),
+    config: {
+      public_total_supply: true,
+    },
     ...tokenInfo,
   }
 }
