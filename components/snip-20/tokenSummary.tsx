@@ -12,7 +12,7 @@ export default function tokenSummary() {
   const { snip20FormData, instantiateSnip20Contract } = useSnip20Steps()
   const onCreateToken = useCallback(
     () =>
-      instantiateSnip20Contract()
+      instantiateSnip20Contract(snip20FormData)
         .then((contractAddress) => {
           console.log('Congrats, token created!', contractAddress)
           router.replace('/')
@@ -21,7 +21,7 @@ export default function tokenSummary() {
           console.error('something went wrong, try again')
           console.error(error)
         }),
-    [],
+    [snip20FormData],
   )
 
   return (

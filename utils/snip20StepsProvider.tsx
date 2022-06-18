@@ -61,46 +61,49 @@ export function Snip20StepsProvider({ chainInfo, contractInfo, children }: Snip2
     }
   }, [suggestAddingSecretNetworkToKeplrApp])
 
-  const instantiateSnip20Contract = useCallback(async (): Promise<string> => {
-    if (!secretClient) {
-      throw new Error('Cannot instantiate contract, missing Secret Network client instance')
-    }
+  const instantiateSnip20Contract = useCallback(
+    async (snip20FormData: typeof initialStepsFormData): Promise<string> => {
+      if (!secretClient) {
+        throw new Error('Cannot instantiate contract, missing Secret Network client instance')
+      }
 
-    let initMsg: InstantiateMsg
+      let initMsg: InstantiateMsg
 
-    // TODO: validate form data before sending the InitMsg
-    const name = snip20FormData[0].tokenName!
-    const symbol = name.substring(0, 3).toUpperCase()
-    const tokenTotalSupply = BigInt(snip20FormData[0].tokenTotalSupply!)
-    const initialBalances = snip20FormData[1].allocations?.map(({ value, address }) => ({
-      amount: (((BigInt(value) * tokenTotalSupply) / BigInt(100)) * BigInt(10 ** DECIMALS)).toString(),
-      address,
-    }))
-    const admin = snip20FormData[0].minterAddress
+      // TODO: validate form data before sending the InitMsg
+      const name = snip20FormData[0].tokenName!
+      const symbol = name.substring(0, 3).toUpperCase()
+      const tokenTotalSupply = BigInt(snip20FormData[0].tokenTotalSupply!)
+      const initialBalances = snip20FormData[1].allocations?.map(({ value, address }) => ({
+        amount: (((BigInt(value) * tokenTotalSupply) / BigInt(100)) * BigInt(10 ** DECIMALS)).toString(),
+        address,
+      }))
+      const admin = snip20FormData[0].minterAddress
 
-    initMsg = createInstantiateMsg({
-      initial_balances: initialBalances,
-      symbol,
-      name,
-      admin,
-    })
+      initMsg = createInstantiateMsg({
+        initial_balances: initialBalances,
+        symbol,
+        name,
+        admin,
+      })
 
-    const { contractAddress } = await secretClient.instantiateContract({
-      codeId: contractInfo.codeId,
-      codeHash: contractInfo.codeHash,
-      label: `SNIP-20 token #${globalThis.crypto.randomUUID()}`,
-      initMsg,
-    })
+      const { contractAddress } = await secretClient.instantiateContract({
+        codeId: contractInfo.codeId,
+        codeHash: contractInfo.codeHash,
+        label: `SNIP-20 token #${globalThis.crypto.randomUUID()}`,
+        initMsg,
+      })
 
-    try {
-      await window.keplr!.suggestToken(chainInfo.chainId, contractAddress)
-    } catch (error) {
-      // the user didn't want to add token to Keplr tokens list
-      console.error(error)
-    }
+      try {
+        await window.keplr!.suggestToken(chainInfo.chainId, contractAddress)
+      } catch (error) {
+        // the user didn't want to add token to Keplr tokens list
+        console.error(error)
+      }
 
-    return contractAddress
-  }, [secretClient, chainInfo, contractInfo])
+      return contractAddress
+    },
+    [secretClient, chainInfo, contractInfo],
+  )
 
   const connectedWalletAddress = useMemo(() => (secretClient ? secretClient.address : undefined), [secretClient])
 
@@ -247,7 +250,7 @@ type TSnip20StepsProvider = {
   goToPrevStep: () => void
   getFormData: (stepIndex: number) => TFormDataReturnValue
   connectWallet: () => Promise<string>
-  instantiateSnip20Contract: () => Promise<string>
+  instantiateSnip20Contract: (snip20FormData: any) => Promise<string>
   connectedWalletAddress: string | undefined
 }
 
