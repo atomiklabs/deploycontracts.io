@@ -8,9 +8,9 @@ export function checkAllowedOrigins(request: Request) {
     return true
   }
 
-  const localDevApiKey = request.headers.get('x-local-dev-api-key')
-  if (localDevApiKey === LOCAL_DEV_API_KEY) {
-    return true
+  if (LOCAL_DEV_API_KEY) {
+    const localDevApiKey = request.headers.get('x-local-dev-api-key')
+    return localDevApiKey === LOCAL_DEV_API_KEY
   }
 }
 
