@@ -5,7 +5,7 @@ import { Form, Formik } from 'formik'
 import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import StepsNavigation from './StepsNavigation'
 import { initialStepsFormData } from '@/utils/snip20Form'
-import { WORKERS_URL } from 'consts'
+import { LOCAL_DEV_API_KEY, WORKERS_URL } from 'consts'
 
 export default function tokenMarketing() {
   const { onNextStep, getFormData } = useSnip20Steps()
@@ -24,6 +24,9 @@ export default function tokenMarketing() {
       const response = await fetch(WORKERS_URL, {
         method: 'POST',
         body: formData,
+        headers: {
+          'x-local-dev-api-key': LOCAL_DEV_API_KEY || '',
+        },
       })
       const result = await response.json()
 
