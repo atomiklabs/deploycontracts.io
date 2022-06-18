@@ -69,29 +69,21 @@ export function Snip20StepsProvider({ chainInfo, contractInfo, children }: Snip2
     let initMsg: InstantiateMsg
 
     // TODO: validate form data before sending the InitMsg
+    const name = snip20FormData[0].tokenName!
+    const symbol = name.substring(0, 3).toUpperCase()
+    const tokenTotalSupply = BigInt(snip20FormData[0].tokenTotalSupply!)
+    const initialBalances = snip20FormData[1].allocations?.map(({ value, address }) => ({
+      amount: (((BigInt(value) * tokenTotalSupply) / BigInt(100)) * BigInt(10 ** DECIMALS)).toString(),
+      address,
+    }))
+    const admin = snip20FormData[0].minterAddress
 
-    try {
-      const name = snip20FormData[0].tokenName!
-      const symbol = name.substring(0, 3).toUpperCase()
-      const tokenTotalSupply = BigInt(snip20FormData[0].tokenTotalSupply!)
-      const initialBalances = snip20FormData[1].allocations?.map(({ value, address }) => ({
-        amount: (((BigInt(value) * tokenTotalSupply) / BigInt(100)) * BigInt(10 ** DECIMALS)).toString(),
-        address,
-      }))
-      const admin = snip20FormData[0].minterAddress
-
-      initMsg = createInstantiateMsg({
-        initial_balances: initialBalances,
-        symbol,
-        name,
-        admin,
-      })
-
-      console.log({ initMsg })
-    } catch (error) {
-      console.error(error)
-      return
-    }
+    initMsg = createInstantiateMsg({
+      initial_balances: initialBalances,
+      symbol,
+      name,
+      admin,
+    })
 
     const { contractAddress } = await secretClient.instantiateContract({
       codeId: contractInfo.codeId,
