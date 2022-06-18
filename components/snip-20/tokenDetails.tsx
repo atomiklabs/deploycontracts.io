@@ -2,12 +2,21 @@ import SecondaryButton from '@/components/buttons/SecondaryButton'
 import Input from '@/components/Input'
 import { useSnip20Steps } from '@/utils/snip20StepsProvider'
 import { Form, Formik } from 'formik'
+import { useCallback } from 'react'
 import StepsNavigation from './StepsNavigation'
 
 export default function tokenDetails() {
-  const { onNextStep, getFormData } = useSnip20Steps()
+  const { onNextStep, getFormData, connectWallet } = useSnip20Steps()
   const stepIndex = 1
   const { initialValues, validationSchema } = getFormData(stepIndex)
+
+  const connectWalletAndThen = useCallback(
+    async (updateMinterField: (minterAddress: string) => void) => {
+      const connectedWalletAddress = await connectWallet()
+      return updateMinterField(connectedWalletAddress!)
+    },
+    [connectWallet],
+  )
 
   return (
     <>
@@ -28,11 +37,8 @@ export default function tokenDetails() {
                 <div className='text-gray-200'>{values.minterAddress}</div>
               ) : (
                 <SecondaryButton
-                  onClick={(e) => {
-                    e.preventDefault()
-                    console.log('--- Connect your wallet')
-                    setFieldValue('minterAddress', 'secret1djskfhjsekf_example_address')
-                  }}
+                  onClick={() => connectWalletAndThen((minterAddress) => setFieldValue('minterAddress', minterAddress))}
+                  type='button'
                 >
                   Connect your wallet
                 </SecondaryButton>

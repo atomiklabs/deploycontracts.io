@@ -1,10 +1,17 @@
 import { Snip20StepsProvider } from '@/utils/snip20StepsProvider'
 import Snip20 from '@/components/snip-20'
 import Head from 'next/head'
+import type { ChainInfo, StoredWasmBinary } from '@/lib/secret-client'
+import { GetStaticProps } from 'next'
 
-export default function Step() {
+interface StepProps {
+  chainInfo: ChainInfo
+  contractInfo: StoredWasmBinary
+}
+
+export default function Step(props: StepProps) {
   return (
-    <Snip20StepsProvider>
+    <Snip20StepsProvider {...props}>
       <Head>
         <title>Deploy SNIP-20 smart contract for free</title>
         <meta
@@ -23,6 +30,45 @@ export async function getStaticPaths() {
   return { paths, fallback: false }
 }
 
-export async function getStaticProps() {
-  return { props: {} }
+export const getStaticProps: GetStaticProps<StepProps> = async function getStaticProps() {
+  // TODO: use `zod` to validate provided env vars against the expected schema
+  const chainId = process.env.CHAIN_ID
+
+  if (!chainId) {
+    throw new Error('Missing `CHAIN_ID` env var')
+  }
+
+  const grpcUrl = process.env.CHAIN_GRPC
+
+  if (!grpcUrl) {
+    throw new Error('Missing `CHAIN_GRPC` env var')
+  }
+
+  const codeId = parseInt(process.env.CODE_ID || '', 10)
+
+  if (isNaN(codeId)) {
+    throw new Error('Missing `CODE_ID` env var')
+  }
+
+  const codeHash = process.env.CODE_HASH
+
+  if (!codeHash) {
+    throw new Error('Missing `CODE_HASH` env var')
+  }
+
+  const props = {
+    chainInfo: {
+      chainName: process.env.CHAIN_NAME,
+      rpcUrl: process.env.CHAIN_RPC,
+      restUrl: process.env.CHAIN_REST,
+      chainId,
+      grpcUrl,
+    },
+    contractInfo: {
+      codeId,
+      codeHash,
+    },
+  }
+
+  return { props }
 }

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useLocalStorage } from './useLocalStorage'
 import { useRouter } from 'next/router'
 import { ParsedUrlQuery } from 'querystring'
@@ -7,14 +7,78 @@ import TokenAllocation from '@/components/snip-20/tokenAllocation'
 import TokenMarketing from '@/components/snip-20/tokenMarketing'
 import TokenSummary from '@/components/snip-20/tokenSummary'
 import { initialStepsFormData, stepsValidationSchema } from '@/utils/snip20Form'
+import { createClient, suggestAddingSecretNetworkToKeplrApp } from '@/lib/secret-client'
+import type { SecretNetworkExtendedClient, ChainInfo, StoredWasmBinary } from '@/lib/secret-client'
 
 const LocalContext = createContext({} as TSnip20StepsProvider)
 
-export function Snip20StepsProvider({ children }: any) {
+interface Snip20StepsProviderProps extends PropsWithChildren<unknown> {
+  chainInfo: ChainInfo
+  contractInfo: StoredWasmBinary
+}
+
+export function Snip20StepsProvider({ chainInfo, contractInfo, children }: Snip20StepsProviderProps) {
   const router = useRouter()
+  const [secretClient, setSecretClient] = useState<SecretNetworkExtendedClient | null>()
   const [isRouterInitialized, setIsRouterInitialized] = useState(false)
   const [currentStepData, setCurrentStepData] = useState<TCurrentStepData>()
   const [snip20FormData, setSnip20FormData] = useLocalStorage(`snip20FormData`, initialStepsFormData)
+
+  const connectWallet = useCallback(async (): Promise<string> => {
+    return createClient({
+      chainId: chainInfo.chainId,
+      grpcUrl: chainInfo.grpcUrl,
+    })
+      .then(({ client }) => {
+        setSecretClient(client)
+        return client.address
+      })
+      .catch(async (error) => {
+        console.error(error)
+
+        if (error.message === `There is no chain info for ${chainInfo.chainId}`) {
+          await suggestAddingSecretNetworkToKeplrApp(chainInfo)
+
+          const { client } = await createClient({
+            chainId: chainInfo.chainId,
+            grpcUrl: chainInfo.grpcUrl,
+          })
+
+          setSecretClient(client)
+          return client.address
+        }
+
+        return ''
+      })
+  }, [suggestAddingSecretNetworkToKeplrApp])
+
+  const instantiateSnip20Contract = useCallback(
+    async function instantiateSnip20Contract() {
+      if (!secretClient) {
+        throw new Error('Cannot instantiate contract, missing Secret Network client instance')
+      }
+
+      const initMsg = createInstantiateMsg({
+        name: 'Test token',
+        symbol: 'TTX',
+        marketing_info: {
+          project: `Atomik Labs #${window.crypto.randomUUID()}`,
+        },
+      })
+
+      const { contractAddress } = await secretClient.instantiateContract({
+        codeId: contractInfo.codeId,
+        codeHash: contractInfo.codeHash,
+        label: `SNIP-20 token #${Math.random() * 1000}`,
+        initMsg,
+      })
+
+      await window.keplr!.suggestToken(chainInfo.chainId, contractAddress)
+    },
+    [secretClient, chainInfo, contractInfo],
+  )
+
+  const connectedWalletAddress = useMemo(() => (secretClient ? secretClient.address : undefined), [secretClient])
 
   useEffect(() => {
     if (router.isReady) {
@@ -98,7 +162,18 @@ export function Snip20StepsProvider({ children }: any) {
   }
 
   return (
-    <LocalContext.Provider value={{ currentStepData, snip20FormData, getFormData, onNextStep, goToPrevStep }}>
+    <LocalContext.Provider
+      value={{
+        currentStepData,
+        snip20FormData,
+        getFormData,
+        onNextStep,
+        goToPrevStep,
+        connectWallet,
+        connectedWalletAddress,
+        instantiateSnip20Contract,
+      }}
+    >
       {children}
     </LocalContext.Provider>
   )
@@ -147,6 +222,9 @@ type TSnip20StepsProvider = {
   onNextStep: (data: {}) => void
   goToPrevStep: () => void
   getFormData: (stepIndex: number) => TFormDataReturnValue
+  connectWallet: () => Promise<string>
+  instantiateSnip20Contract: () => void
+  connectedWalletAddress: string | undefined
 }
 
 type TFormDataReturnValue = {
@@ -155,3 +233,26 @@ type TFormDataReturnValue = {
 }
 
 type TCurrentStepData = { stepIndex: number; component: JSX.Element }
+
+interface InstantiateMsg {
+  name: string
+  symbol: string
+  decimals: number
+  prng_seed: string
+  marketing_info?: {
+    project?: string
+    description?: string
+    marketing?: string
+    logo?: string
+  }
+}
+
+type CreateInstantiateMsgProps = Omit<InstantiateMsg, 'decimals' | 'prng_seed'>
+
+function createInstantiateMsg(tokenInfo: CreateInstantiateMsgProps): InstantiateMsg {
+  return {
+    decimals: 6,
+    prng_seed: btoa(window.crypto.randomUUID()),
+    ...tokenInfo,
+  }
+}
