@@ -1,8 +1,10 @@
-const allowedOrigins = ['https://deploycontracts.io']
+const allowedOrigins = ['deploycontracts.io', 'deploycontracts-io.pages.dev']
 
 export function checkAllowedOrigins(request: Request) {
-  const origin = request.headers.get('Origin')
-  const foundOrigin = allowedOrigins.find((x) => x.includes(origin))
+  const originHeader = request.headers.get('Origin')
+  const origin = new URL(originHeader).origin
+
+  const foundOrigin = allowedOrigins.find((x) => origin.endsWith(x))
 
   if (foundOrigin) {
     return true
