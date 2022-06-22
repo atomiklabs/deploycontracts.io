@@ -35,7 +35,7 @@ export default function tokenSummary() {
         </p>
 
         <SummaryCardWrapper linkUrl='step-1' img='/assets/step1-visited.svg' title='Token details'>
-          <OutputDataRow title='Minter address' data='fq412t41g41b2b34n4mn24n323' />
+          <OutputDataRow title='Minter address' data={snip20FormData[0].minterAddress} />
           <OutputDataRow title='Token name' data={snip20FormData[0].tokenName} />
           <OutputDataRow title='Total supply' data={snip20FormData[0].tokenTotalSupply} />
         </SummaryCardWrapper>
