@@ -5,7 +5,7 @@ export async function uploadToIPFS(request: Request) {
   const imageFile = formData.get('image')
 
   if (typeof imageFile === 'string') {
-    return responseError('imageFile is a string instead of File')
+    return responseError(request, 'imageFile is a string instead of File')
   }
 
   const response = await fetch('https://api.nft.storage/upload', {
@@ -15,8 +15,7 @@ export async function uploadToIPFS(request: Request) {
     },
     body: imageFile,
   })
-
   const result = await response.json()
 
-  return responseSuccess(result)
+  return responseSuccess(request, result)
 }

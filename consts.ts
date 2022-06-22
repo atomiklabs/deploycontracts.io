@@ -27,3 +27,5 @@ export const CONTRACT_INFO = {
   codeId: parseInt(process.env.NEXT_PUBLIC_CODE_ID!, 10),
   codeHash: process.env.NEXT_PUBLIC_CODE_HASH!,
 }
+
+export const LOCAL_DEV_API_KEY = process.env.NEXT_PUBLIC_LOCAL_DEV_API_KEY
