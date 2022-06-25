@@ -1,4 +1,4 @@
-import { InferType, object, string } from "yup";
+import { object, string } from "yup";
 
 export const schema = object({
   projectName: string().notOneOf(['[object File]']).optional(),
@@ -6,9 +6,13 @@ export const schema = object({
   projectLogoCID: string().notOneOf(['[object File]']).optional(),
 })
 
-type MarketingInfoEntity = InferType<typeof schema>
+export interface MarketingInfoEntity {
+  projectName?: string
+  projectDescription?: string
+  projectLogoCID?: string
+}
 
-export function createDefault(): Partial<MarketingInfoEntity> {
+export function createDefault(): MarketingInfoEntity {
   return {}
 }
 

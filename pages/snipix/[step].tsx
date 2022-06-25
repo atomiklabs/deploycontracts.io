@@ -152,23 +152,40 @@ function useSecretClient({ chainSettings, tokenFactorySettings }: UseSecretClien
   }
 }
 
+interface MetaState {
+  lastPresentedStepIdx?: number
+}
+
 interface TokenCreatorStepPageProps extends UseSecretClientProps {
-  storageKey: string
+  formStorageKey: string
+  metaStorageKey: string
 }
 
 function createDefaultProps(): TokenCreatorStepPageProps {
   return {
     ...configuration,
-    storageKey: 'snip-20-token-creator',
+    formStorageKey: 'snip-20-token-creator/form',
+    metaStorageKey: 'snip-20-token-creator/meta',
   }
 }
 
 export default function TokenCreatorStepPage(
-  { storageKey, chainSettings, tokenFactorySettings }: TokenCreatorStepPageProps = createDefaultProps(),
+  {
+    formStorageKey,
+    metaStorageKey,
+    chainSettings,
+    tokenFactorySettings,
+  }: TokenCreatorStepPageProps = createDefaultProps(),
 ) {
   const router = useRouter()
   const secretClient = useSecretClient({ chainSettings, tokenFactorySettings })
-  const [formState, setFormState] = useLocalStorage<TokenSummaryEntity>(storageKey, tokenSummaryEntity.createDefault())
+
+  const [formState, setFormState] = useLocalStorage<TokenSummaryEntity>(
+    formStorageKey,
+    tokenSummaryEntity.createDefault(),
+  )
+
+  const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, {})
 
   const isCurrentStep = useCallback(
     (step: TokenCreatorStep) => (typeof router.query.step === 'string' ? router.query.step === step : false),
@@ -207,12 +224,12 @@ export default function TokenCreatorStepPage(
           secretClient
             .instantiateSnip20Contract(formData)
             .then((contractAddress) => {
-              alert(`Congrats, token created at ${contractAddress} address`)
+              // reset form state
               console.log(`Congrats, token created at ${contractAddress} address`)
-              router.replace('/')
+              setFormState(tokenSummaryEntity.createDefault())
+              router.replace(`/snip-20-token/${contractAddress}`)
             })
             .catch((error) => {
-              console.log({ chainSettings })
               console.error('something went wrong, try again')
               console.error(error)
             })
@@ -235,6 +252,31 @@ export default function TokenCreatorStepPage(
     console.info('Requesting Secret Client connection automatically')
     secretClient.connectWallet()
   }, [secretClient])
+
+  useEffect(() => {
+    if (!metaState.lastPresentedStepIdx) {
+      return
+    }
+
+    const step = tokenCreatorSteps[metaState.lastPresentedStepIdx]
+
+    if (!step) {
+      return
+    }
+
+    navigateTo(stepPath(step))
+  }, [])
+
+  useEffect(() => {
+    setMetaState((metaState) => {
+      // don't update lastPresentedStepIdx if the current step is not the most advanced one visited so far
+      if (metaState.lastPresentedStepIdx && metaState.lastPresentedStepIdx >= currentStepIdx) {
+        return metaState
+      }
+
+      return { lastPresentedStepIdx: currentStepIdx }
+    })
+  }, [currentStepIdx])
 
   return (
     <>
