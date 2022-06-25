@@ -144,8 +144,35 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
             >
               Load
             </button>
+            {secretClient.isReadOnly && (
+              <button
+                onClick={secretClient.connectWallet}
+                type='button'
+                className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-indigo-500 shadow-sm font-medium rounded-md text-indigo-600 bg-transparent hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+              >
+                Connect wallet
+              </button>
+            )}
           </form>
-          <output className='my-10'>{JSON.stringify(tokenInfo, undefined, 2)}</output>
+
+          <div className='my-10'>
+            <h2>Secret Client Info</h2>
+            <output className='my-10'>
+              {JSON.stringify(
+                {
+                  isReadOnly: secretClient.isReadOnly,
+                  connectedWalletAddress: secretClient.connectedWalletAddress,
+                },
+                undefined,
+                2,
+              )}
+            </output>
+          </div>
+
+          <div className='my-10'>
+            <h2>Token Info</h2>
+            <output className='my-10'>{JSON.stringify(tokenInfo, undefined, 2)}</output>
+          </div>
         </div>
       </div>
     </div>

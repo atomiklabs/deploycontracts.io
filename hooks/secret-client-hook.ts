@@ -109,7 +109,9 @@ export function useSecretClient({ chainSettings, tokenFactorySettings }: UseSecr
     [secretClient],
   )
 
-  const isReady = useMemo(() => typeof secretClient !== 'undefined', [secretClient])
+  const isReady = typeof secretClient !== 'undefined'
+
+  const isReadOnly = isReady && !secretClient.address
 
   const connectedWalletAddress = useMemo(() => (secretClient ? secretClient.address : undefined), [secretClient])
 
@@ -123,6 +125,7 @@ export function useSecretClient({ chainSettings, tokenFactorySettings }: UseSecr
   return {
     inner: secretClient,
     isReady,
+    isReadOnly,
     connectWallet,
     connectedWalletAddress,
     instantiateSnip20Contract,
