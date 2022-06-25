@@ -122,71 +122,68 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
 
   return (
     <>
-    <Head>
-      <title>SNIP-20 token details | Deploy Contracts</title>
-      <meta
-        name='description'
-        content={`Use a simple web form to interact with any SNIP-20 smart contract.`}
-      />
-    </Head>
-    <div className='col-span-full m-20 '>
-      <div className='bg-white shadow sm:rounded-lg'>
-        <div className='px-4 py-5 sm:p-6'>
-          <h3 className='text-lg leading-6 font-medium text-gray-900'>SNIP-20 contract address</h3>
-          <form className='mt-5 sm:flex sm:items-center'>
-            <div className='w-full sm:max-w-xs'>
-              <label htmlFor='snip20-addr' className='sr-only'>
-                SNIP-20 address
-              </label>
-              <input
-                type='text'
-                name='token'
-                id='snip20-addr'
-                className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
-                placeholder='secret1zmanyjc75yx30ph3lnd9tk3hze5f2lm9fyp5xt'
-                defaultValue={router.query.token}
-              />
-            </div>
-            <button
-              type='submit'
-              className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
-            >
-              Load
-            </button>
-            {secretClient.isReadOnly && (
+      <Head>
+        <title>SNIP-20 token details | Deploy Contracts</title>
+        <meta name='description' content={`Use a simple web form to interact with any SNIP-20 smart contract.`} />
+      </Head>
+      <div className='col-span-full m-20 '>
+        <div className='bg-white shadow sm:rounded-lg'>
+          <div className='px-4 py-5 sm:p-6'>
+            <h3 className='text-lg leading-6 font-medium text-gray-900'>SNIP-20 contract address</h3>
+            <form className='mt-5 sm:flex sm:items-center'>
+              <div className='w-full sm:max-w-xs'>
+                <label htmlFor='snip20-addr' className='sr-only'>
+                  SNIP-20 address
+                </label>
+                <input
+                  type='text'
+                  name='token'
+                  id='snip20-addr'
+                  className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                  placeholder='secret1zmanyjc75yx30ph3lnd9tk3hze5f2lm9fyp5xt'
+                  defaultValue={router.query.token}
+                />
+              </div>
               <button
-                onClick={secretClient.connectWallet}
-                type='button'
-                className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-indigo-500 shadow-sm font-medium rounded-md text-indigo-600 bg-transparent hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+                type='submit'
+                className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
               >
-                Connect wallet
+                Load
               </button>
-            )}
-          </form>
-
-          <div className='my-10'>
-            <h2>Secret Client Info</h2>
-            <output className='my-10'>
-              {JSON.stringify(
-                {
-                  isReadOnly: secretClient.isReadOnly,
-                  connectedWalletAddress: secretClient.connectedWalletAddress,
-                },
-                undefined,
-                2,
+              {secretClient.isReadOnly && (
+                <button
+                  onClick={secretClient.connectWallet}
+                  type='button'
+                  className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-indigo-500 shadow-sm font-medium rounded-md text-indigo-600 bg-transparent hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+                >
+                  Connect wallet
+                </button>
               )}
-            </output>
-          </div>
+            </form>
 
-          <div className='my-10'>
-            <h2>Token Info</h2>
-            <output className='my-10'>{JSON.stringify(tokenInfo, undefined, 2)}</output>
+            <div className='my-10'>
+              <h2>Secret Client Info</h2>
+              <output className='my-10'>
+                {JSON.stringify(
+                  {
+                    isReadOnly: secretClient.isReadOnly,
+                    connectedWalletAddress: secretClient.connectedWalletAddress,
+                  },
+                  undefined,
+                  2,
+                )}
+              </output>
+            </div>
+
+            <div className='my-10'>
+              <h2>Token Info</h2>
+              <output className='my-10'>{JSON.stringify(tokenInfo, undefined, 2)}</output>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
-  </>
 }
 
 export function getStaticProps() {
