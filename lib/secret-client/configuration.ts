@@ -1,4 +1,4 @@
-import { object, string, TypeOf } from "yup";
+import { object, string } from "yup";
 import type { CreateClientOptions } from "secretjs";
 
 export interface ChainSettings {

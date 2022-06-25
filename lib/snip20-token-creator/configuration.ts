@@ -17,7 +17,7 @@ export const tokenFactorySettingsSchema = object({
 
 export interface Configuration {
   chainSettings: ChainSettings,
-  tokenFactorySettings: TokenFactorySettings,
+  tokenFactorySettings?: TokenFactorySettings,
 }
 
 export const configuration = Object.freeze({

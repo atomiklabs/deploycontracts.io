@@ -1,15 +1,123 @@
-import { Snip20StepsProvider, useSnip20Steps } from '@/utils/snip20StepsProvider'
-import { useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { useEffect, useMemo, useState } from 'react'
 
-function Docs() {
-  /// Snip20StepsProvider .....
+import type { GetTokenParamsResponse } from 'secretjs/dist/extensions/snip20/types'
 
-  // const { connectWallet } = useSnip20Steps()
+import { useSecretClient } from '@/hooks/secret-client-hook'
+import type { UseSecretClientProps } from '@/hooks/secret-client-hook'
 
-  // useEffect(() => {
-  //   // TODO: only call it when the user has connected walled during previous sessions
-  //   connectWallet()
-  // }, [])
+import { configuration } from '@/lib/secret-client'
+import { create as createSecretAddress } from '@/lib/snip20-token-creator/entity/secret-address'
+
+import { useLocalStorage } from '@/utils/useLocalStorage'
+
+type TokenInfo = GetTokenParamsResponse['token_info']
+
+interface MetaState {
+  connectedWalletAddress?: string
+  addressToCodeHash: {
+    [k: string]: string
+  }
+}
+
+interface DocsPageProps extends UseSecretClientProps {
+  metaStorageKey: string
+}
+
+function createDefaultProps(): DocsPageProps {
+  return {
+    ...configuration,
+    metaStorageKey: 'snip-20-docs/meta',
+  }
+}
+
+export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProps = createDefaultProps()) {
+  const router = useRouter()
+  const secretClient = useSecretClient({ chainSettings })
+  const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, { addressToCodeHash: {} })
+  const [tokenInfo, setTokenInfo] = useState<TokenInfo>()
+
+  const contractAddress = useMemo(() => {
+    if (typeof router.query.token !== 'string') {
+      return null
+    }
+    console.log('contractAddress', router.query.token)
+
+    try {
+      return createSecretAddress(router.query.token)
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+  }, [router.query.token])
+
+  const contractCodeHash = useMemo(
+    () => (contractAddress ? metaState.addressToCodeHash[contractAddress] : null),
+    [contractAddress],
+  )
+
+  // trying to connect to Keplr automatically
+  useEffect(() => {
+    if (secretClient.connectedWalletAddress) {
+      // wallet is already connected, skip
+      return
+    }
+
+    if (!metaState.connectedWalletAddress) {
+      // connected wallet address has not been stored during previous session, skip
+      return
+    }
+
+    // only call it when the user has connected walled during previous sessions
+    console.info('Requesting Secret Client connection automatically')
+    secretClient.connectWallet()
+  }, [secretClient])
+
+  // store most recently used wallet address
+  useEffect(() => {
+    setMetaState((metaState) => ({ ...metaState, connectedWalletAddress: secretClient.connectedWalletAddress }))
+  }, [secretClient.connectedWalletAddress])
+
+  // get code hash for the current contract address
+  // code hash is needed for further queries
+  useEffect(() => {
+    if (!contractAddress || !secretClient.isReady) {
+      return
+    }
+
+    secretClient.inner?.query.compute
+      .contractCodeHash(contractAddress)
+      .then((codeHash) =>
+        setMetaState(({ addressToCodeHash, ...metaState }) => ({
+          ...metaState,
+          addressToCodeHash: {
+            ...addressToCodeHash,
+            [contractAddress]: codeHash,
+          },
+        })),
+      )
+      .catch((error) => {
+        // something went wrong and code hash could not be fetched
+        // TODO: figure out what to do here
+        console.error(error)
+      })
+  }, [contractAddress, secretClient.isReady])
+
+  // query basic contract info automatically (if possible)
+  useEffect(() => {
+    if (!secretClient.isReady || !contractAddress || !contractCodeHash) {
+      return
+    }
+
+    secretClient.inner?.query.snip20
+      .getSnip20Params({ contract: { address: contractAddress, codeHash: contractCodeHash } })
+      .then(({ token_info: tokenInfo }) => setTokenInfo(tokenInfo))
+      .catch((error) => {
+        // something went wrong and contract information could not be fetched
+        // TODO: figure out what to do here
+        console.error(error)
+      })
+  }, [contractAddress, contractCodeHash, secretClient.isReady])
 
   return (
     <div className='col-span-full m-20 '>
@@ -23,10 +131,11 @@ function Docs() {
               </label>
               <input
                 type='text'
-                name='snip20-addr'
+                name='token'
                 id='snip20-addr'
                 className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
                 placeholder='secret1zmanyjc75yx30ph3lnd9tk3hze5f2lm9fyp5xt'
+                defaultValue={router.query.token}
               />
             </div>
             <button
@@ -36,10 +145,15 @@ function Docs() {
               Load
             </button>
           </form>
+          <output className='my-10'>{JSON.stringify(tokenInfo, undefined, 2)}</output>
         </div>
       </div>
     </div>
   )
 }
 
-export default Docs
+export function getStaticProps() {
+  return {
+    props: createDefaultProps(),
+  }
+}

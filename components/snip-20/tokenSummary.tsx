@@ -5,7 +5,7 @@ import SummaryCardWrapper from '@/components/snip-20/SummaryCardWrapper'
 import StepsNavigation from '@/components/snip-20/StepsNavigation'
 
 import { TokenSummaryEntity } from '@/lib/snip20-token-creator/entity/token-summary'
-import { TokenCreatorStep } from '@/pages/snipix/[step]'
+import { TokenCreatorStep } from '@/pages/snip-20/[step]'
 import { stepTitles } from './StepsBreadcrumb'
 
 interface TokenSummaryProps {

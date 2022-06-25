@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import Container from '@/components/snip-20/Container'
 import StepsBreadcrumb from '@/components/snip-20/StepsBreadcrumb'
@@ -9,11 +9,10 @@ import TokenAllocation from '@/components/snip-20/tokenAllocation'
 import TokenMarketing from '@/components/snip-20/tokenMarketing'
 import TokenSummary from '@/components/snip-20/tokenSummary'
 
-import { createBrowserSigner, createClient, suggestAddingSecretNetworkToKeplrApp } from '@/lib/secret-client'
-import type { InstantiateMsg, SecretNetworkExtendedClient } from '@/lib/secret-client'
+import { useSecretClient } from '@/hooks/secret-client-hook'
+import type { UseSecretClientProps } from '@/hooks/secret-client-hook'
 
 import { configuration } from '@/lib/snip20-token-creator'
-import type { Configuration } from '@/lib/snip20-token-creator'
 
 import {
   BasicTokenInfoEntity,
@@ -24,7 +23,6 @@ import { MarketingInfoEntity, schema as marketingInfoSchema } from '@/lib/snip20
 import * as tokenSummaryEntity from '@/lib/snip20-token-creator/entity/token-summary'
 import type { TokenSummaryEntity } from '@/lib/snip20-token-creator/entity/token-summary'
 
-import { getImageFromCID } from '@/utils/ipfs'
 import { useLocalStorage } from '@/utils/useLocalStorage'
 
 // Define all possible steps
@@ -43,125 +41,16 @@ export const tokenCreatorSteps: Array<TokenCreatorStep> = [
   TokenCreatorStep.Summary,
 ]
 
-type CreateInstantiateMsgProps = Omit<InstantiateMsg, 'prng_seed'>
-
-export function createInstantiateMsg(tokenInfo: CreateInstantiateMsgProps): InstantiateMsg {
-  return {
-    prng_seed: btoa(window.crypto.randomUUID()),
-    config: {
-      public_total_supply: true,
-    },
-    ...tokenInfo,
-  }
-}
-
-type UseSecretClientProps = Configuration
-
-function useSecretClient({ chainSettings, tokenFactorySettings }: UseSecretClientProps) {
-  const [secretClient, setSecretClient] = useState<SecretNetworkExtendedClient>()
-
-  const connectWallet = useCallback(async (): Promise<string> => {
-    try {
-      const { signer, walletAddress, encryptionUtils } = await createBrowserSigner(chainSettings.chainId)
-      const { client } = await createClient({
-        ...chainSettings,
-        wallet: signer,
-        walletAddress,
-        encryptionUtils,
-      })
-
-      setSecretClient(client)
-
-      return client.address
-    } catch (error: any) {
-      console.warn(error.message)
-
-      if (error.message.includes(`There is no chain info for ${chainSettings.chainId}`)) {
-        await suggestAddingSecretNetworkToKeplrApp(chainSettings)
-
-        const { signer, walletAddress, encryptionUtils } = await createBrowserSigner(chainSettings.chainId)
-        const { client } = await createClient({
-          ...chainSettings,
-          wallet: signer,
-          walletAddress,
-          encryptionUtils,
-        })
-
-        setSecretClient(client)
-
-        return client.address
-      }
-
-      console.warn('Could not connect at this time, try again')
-
-      return ''
-    }
-  }, [suggestAddingSecretNetworkToKeplrApp])
-
-  const instantiateSnip20Contract = useCallback(
-    async ({ basicTokenInfo, allocationInfo, marketingInfo }: TokenSummaryEntity): Promise<string> => {
-      if (!secretClient) {
-        throw new Error('Cannot instantiate contract, missing Secret Network client instance')
-      }
-
-      const initMsg = createInstantiateMsg({
-        admin: basicTokenInfo.minterAddress,
-        // TODO: allow passing custom name from the user
-        name: basicTokenInfo.tokenSymbol,
-        symbol: basicTokenInfo.tokenSymbol,
-        decimals: tokenFactorySettings.tokenDecimals,
-        initial_balances: tokenSummaryEntity.calculateInitialBalances({
-          allocations: allocationInfo.allocations,
-          tokenDecimals: tokenFactorySettings.tokenDecimals,
-          totalTokenSupply: basicTokenInfo.tokenTotalSupply,
-        }),
-        marketing_info: {
-          project: marketingInfo.projectName,
-          description: marketingInfo.projectDescription,
-          logo: marketingInfo.projectLogoCID ? getImageFromCID(marketingInfo.projectLogoCID) : undefined,
-        },
-      })
-
-      console.log('instantiate', initMsg)
-
-      const { contractAddress } = await secretClient.instantiateContract({
-        codeId: tokenFactorySettings.codeId,
-        codeHash: tokenFactorySettings.codeHash,
-        label: `SNIP-20 token #${globalThis.crypto.randomUUID()}`,
-        initMsg,
-      })
-
-      try {
-        await window.keplr!.suggestToken(chainSettings.chainId, contractAddress)
-      } catch (error) {
-        // the user didn't want to add token to Keplr tokens list
-        console.warn(error)
-      }
-
-      return contractAddress
-    },
-    [secretClient],
-  )
-
-  const connectedWalletAddress = useMemo(() => (secretClient ? secretClient.address : undefined), [secretClient])
-
-  return {
-    connectWallet,
-    connectedWalletAddress,
-    instantiateSnip20Contract,
-  }
-}
-
 interface MetaState {
   lastPresentedStepIdx?: number
 }
 
-interface TokenCreatorStepPageProps extends UseSecretClientProps {
+interface TokenCreatorPageProps extends UseSecretClientProps {
   formStorageKey: string
   metaStorageKey: string
 }
 
-function createDefaultProps(): TokenCreatorStepPageProps {
+function createDefaultProps(): TokenCreatorPageProps {
   return {
     ...configuration,
     formStorageKey: 'snip-20-token-creator/form',
@@ -169,13 +58,8 @@ function createDefaultProps(): TokenCreatorStepPageProps {
   }
 }
 
-export default function TokenCreatorStepPage(
-  {
-    formStorageKey,
-    metaStorageKey,
-    chainSettings,
-    tokenFactorySettings,
-  }: TokenCreatorStepPageProps = createDefaultProps(),
+export default function TokenCreatorPage(
+  { formStorageKey, metaStorageKey, chainSettings, tokenFactorySettings }: TokenCreatorPageProps = createDefaultProps(),
 ) {
   const router = useRouter()
   const secretClient = useSecretClient({ chainSettings, tokenFactorySettings })
@@ -192,7 +76,7 @@ export default function TokenCreatorStepPage(
     [router],
   )
 
-  const stepPath = (step: TokenCreatorStep) => `/snipix/${step}`
+  const stepPath = (step: TokenCreatorStep) => `/snip-20/${step}`
 
   const navigateTo = useCallback((path: string) => router.push(path, undefined, { shallow: true }), [router])
 
@@ -227,31 +111,17 @@ export default function TokenCreatorStepPage(
               // reset form state
               console.log(`Congrats, token created at ${contractAddress} address`)
               setFormState(tokenSummaryEntity.createDefault())
-              router.replace(`/snip-20-token/${contractAddress}`)
+              setMetaState({})
+              router.replace(`/docs/?token=${encodeURI(contractAddress)}`)
             })
             .catch((error) => {
+              alert('Something went wrong, try again')
               console.error('something went wrong, try again')
               console.error(error)
             })
         }
     }
   }
-
-  useEffect(() => {
-    if (secretClient.connectedWalletAddress) {
-      // wallet is already connected, skip
-      return
-    }
-
-    if (!formState.basicTokenInfo.minterAddress) {
-      // minter address has not been stored during previous session, skip
-      return
-    }
-
-    // only call it when the user has connected walled during previous sessions
-    console.info('Requesting Secret Client connection automatically')
-    secretClient.connectWallet()
-  }, [secretClient])
 
   useEffect(() => {
     if (!metaState.lastPresentedStepIdx) {
@@ -337,7 +207,7 @@ export default function TokenCreatorStepPage(
 
 export async function getStaticPaths() {
   return {
-    paths: tokenCreatorSteps.map((stepName) => `/snipix/${stepName.toLowerCase()}`),
+    paths: tokenCreatorSteps.map((stepName) => `/snip-20/${stepName.toLowerCase()}`),
     fallback: false,
   }
 }
