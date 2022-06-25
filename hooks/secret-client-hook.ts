@@ -86,7 +86,7 @@ export function useSecretClient({ chainSettings, tokenFactorySettings }: UseSecr
         marketing_info: {
           project: marketingInfo.projectName,
           description: marketingInfo.projectDescription,
-          logo: marketingInfo.projectLogoCID ? getImageFromCID(marketingInfo.projectLogoCID) : undefined,
+          logo: marketingInfo.projectLogoCID ? { url: getImageFromCID(marketingInfo.projectLogoCID) } : undefined,
         },
       })
 

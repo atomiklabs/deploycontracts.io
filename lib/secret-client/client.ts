@@ -77,7 +77,7 @@ export interface InstantiateMsg {
     project?: string
     description?: string
     marketing?: string
-    logo?: string
+    logo?: { url: string }
   }
 }
 
