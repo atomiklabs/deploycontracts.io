@@ -1,6 +1,7 @@
 import { SecretNetworkClient, Wallet } from 'secretjs'
 import type { CreateClientOptions, MsgInstantiateContractParams } from 'secretjs'
 import type { Window as KeplrWindow } from '@keplr-wallet/types'
+import { ChainSettings } from './configuration'
 
 declare global {
   interface Window extends KeplrWindow { }
@@ -30,14 +31,6 @@ export interface InstantiateContractResult {
 export interface SecretNetworkExtendedClient extends SecretNetworkClient {
   storeCode: (wasmByteCode: Buffer, contractSourceCodeUrl?: string) => Promise<StoreCodeResult>
   instantiateContract: (props: InstantiateContractProps) => Promise<InstantiateContractResult>
-}
-
-export type ChainInfo = {
-  chainId: string
-  chainName?: string
-  grpcUrl: CreateClientOptions['grpcWebUrl']
-  rpcUrl?: string
-  restUrl?: string
 }
 
 export type HumanAddr = string
@@ -88,55 +81,82 @@ export interface InstantiateMsg {
   }
 }
 
-type CreateClientProps = Omit<CreateClientOptions, 'grpcWebUrl'> & ChainInfo
+type CreateClientProps = Omit<CreateClientOptions, 'grpcWebUrl'> & ChainSettings
 
 type CreateClientResult = {
   client: SecretNetworkExtendedClient
-  chainInfo: Partial<ChainInfo>
+  chainSettings: Partial<ChainSettings>
 }
 
-export async function createClient(props: CreateClientProps): Promise<CreateClientResult> {
-  const grpcUrl = props.grpcUrl
-  const rpcUrl = props.rpcUrl
-  const restUrl = props.restUrl
-  const chainId = props.chainId
-  const chainName = props.chainName
+export async function createBrowserSigner(chainId: string) {
+  // if browser env available -> try using Keplr as a signer
+  const hasBrowserDepsAvailable = () =>
+    typeof window !== 'undefined' &&
+    typeof window.keplr !== 'undefined' &&
+    typeof window.getEnigmaUtils === 'function' &&
+    typeof window.getOfflineSignerOnlyAmino === 'function'
 
-  let signer = props.wallet
-  let walletAddress = props.walletAddress
-  let encryptionUtils = props.encryptionUtils
+  if (!hasBrowserDepsAvailable()) {
+    throw new Error(
+      `Cannot create browser signer. \ 
+      One of dependecies is missing on the window object:\
+      keplr, getEnigmaUtils, getOfflineSignerOnlyAmino`
+    )
+  }
 
-  // if no signer defined
-  if (typeof props.wallet === 'undefined') {
-    // if browser env available -> try using Keplr as a signer
-    const hasBrowserDepsAvailable = () =>
-      typeof window !== 'undefined' &&
-      typeof window.keplr !== 'undefined' &&
-      typeof window.getEnigmaUtils === 'function' &&
-      typeof window.getOfflineSignerOnlyAmino === 'function'
+  await window.keplr!.enable(chainId)
 
-    if (hasBrowserDepsAvailable()) {
-      await window.keplr!.enable(chainId)
+  const encryptionUtils = window.getEnigmaUtils!(chainId)
+  const signer = window.getOfflineSignerOnlyAmino!(chainId)
+  const walletAddress = (await signer.getAccounts())[0].address
 
-      encryptionUtils = window.getEnigmaUtils!(chainId)
-      signer = window.getOfflineSignerOnlyAmino!(chainId)
-      walletAddress = (await signer.getAccounts())[0].address
-    } else {
-      const offlineSigner = new Wallet() // Use default constructor of wallet to generate random mnemonic.
-      walletAddress = offlineSigner.address
-      signer = offlineSigner
-    }
+  return {
+    signer, walletAddress, encryptionUtils
+  }
+}
+
+type Mnemonic = string
+
+export async function createProgrammaticSigner(mnemonic: Mnemonic) {
+  if (mnemonic.length === 0) {
+    throw new Error('Mnemonic value is required to create a programmatic signer')
+  }
+  const signer = new Wallet(mnemonic)
+  const walletAddress = signer.address
+
+  return {
+    signer,
+    walletAddress,
+  }
+}
+
+export async function createClient({
+  chainId,
+  chainName,
+  grpcUrl,
+  rpcUrl,
+  restUrl,
+  wallet,
+  walletAddress,
+  encryptionUtils
+}: CreateClientProps): Promise<CreateClientResult> {
+  if (!wallet) {
+    console.warn('Secret Client is in read-only mode. It cannot sign transactions for you.')
   }
 
   const client = await SecretNetworkClient.create({
-    wallet: signer,
     grpcWebUrl: grpcUrl,
+    wallet,
     chainId,
     walletAddress,
     encryptionUtils,
   })
 
   async function storeCode(wasmByteCode: Buffer, contractSourceCodeUrl: string = ''): Promise<StoreCodeResult> {
+    if (!wallet) {
+      throw new Error('Secret Client is in read-only mode. It cannot sign transactions for you.')
+    }
+
     console.log('Uploading contract')
 
     const uploadReceipt = await client.tx.compute.storeCode(
@@ -172,6 +192,10 @@ export async function createClient(props: CreateClientProps): Promise<CreateClie
   }
 
   async function instantiateContract({ codeId, codeHash, initMsg, label }: InstantiateContractProps): Promise<InstantiateContractResult> {
+    if (!wallet) {
+      throw new Error('Secret Client is in read-only mode. It cannot sign transactions for you.')
+    }
+
     const contract = await client.tx.compute.instantiateContract(
       {
         sender: client.address,
@@ -203,7 +227,7 @@ export async function createClient(props: CreateClientProps): Promise<CreateClie
 
   return {
     client: extendedClient,
-    chainInfo: {
+    chainSettings: {
       chainName,
       grpcUrl,
       rpcUrl,
@@ -212,12 +236,12 @@ export async function createClient(props: CreateClientProps): Promise<CreateClie
   }
 }
 
-export async function suggestAddingSecretNetworkToKeplrApp({ chainId, chainName, restUrl, rpcUrl }: Partial<ChainInfo> = {}) {
+export async function suggestAddingSecretNetworkToKeplrApp({ chainId, chainName, restUrl, rpcUrl }: Partial<ChainSettings> = {}) {
   if (typeof window.keplr === 'undefined') {
     throw Error('Wallet extension is not available. Install Keplr App and try again.')
   }
 
-  const completeChainInfo = {
+  const extendedChainSettings = {
     rpc: rpcUrl || '',
     rest: restUrl || '',
     chainName: chainName || '',
@@ -264,30 +288,30 @@ export async function suggestAddingSecretNetworkToKeplrApp({ chainId, chainName,
     features: ['secretwasm', 'ibc-transfer', 'ibc-go'],
   }
 
-  if (completeChainInfo.chainId === 'mainnet') {
+  if (extendedChainSettings.chainId === 'mainnet') {
     // we never have to suggest adding the Secret Netwrok Mainnet
     console.error('The Secret Netwrok Mainnet is already present in the Keplr App');
     return;
   }
 
   try {
-    if (!completeChainInfo.chainId) {
+    if (!extendedChainSettings.chainId) {
       throw new Error('Suggested chain info is missing `chainId` property')
     }
 
-    if (!completeChainInfo.chainName) {
+    if (!extendedChainSettings.chainName) {
       throw new Error('Suggested chain info is missing `chainName` property')
     }
 
-    if (!completeChainInfo.rpc) {
+    if (!extendedChainSettings.rpc) {
       throw new Error('Suggested chain info is missing `rpcUrl` property')
     }
 
-    if (!completeChainInfo.rest) {
+    if (!extendedChainSettings.rest) {
       throw new Error('Suggested chain info is missing `restUrl` property')
     }
 
-    await window.keplr.experimentalSuggestChain(completeChainInfo)
+    await window.keplr.experimentalSuggestChain(extendedChainSettings)
   } catch (error: any) {
     console.error(`Failed to suggest the network switch: ${error.message}`)
   }

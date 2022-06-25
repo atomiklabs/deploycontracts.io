@@ -1,4 +1,3 @@
-import { allocationColors } from '@/utils/snip20Form'
 import { defaultColors } from 'consts'
 import TooltipText from '@/components/TooltipText'
 
@@ -21,9 +20,8 @@ export default function ProgressBar({
           return (
             <div key={i} className='relative' style={{ width: `${x.value}%` }}>
               <div
-                className='h-full'
+                className={`h-full bg-progress-bar-${i}`}
                 style={{
-                  backgroundColor: allocationColors[i],
                   borderTopLeftRadius: firstItem ? '4px' : '0',
                   borderBottomLeftRadius: firstItem ? '4px' : '0',
                   borderTopRightRadius: lastItem && totalAllocation >= 100 ? '4px' : '0',
@@ -39,11 +37,13 @@ export default function ProgressBar({
 
       {!hideAllocationInfo && (
         <div className='flex flex-col sm:flex-row justify-between text-gray-100 text-sm'>
-          <div>You must use 100% allocation space</div>
-
-          <div className='font-medium' style={{ color: totalAllocation !== 100 ? defaultColors.error : 'inherit' }}>
-            Your allocation: {totalAllocation}%
+          <div>
+            <span className={`${totalAllocation === 100 ? 'hidden' : 'text-error-red'}`}>
+              Allocate 100% of token total supply
+            </span>
           </div>
+
+          <div className='font-medium'>Current allocation: {totalAllocation}%</div>
         </div>
       )}
     </section>

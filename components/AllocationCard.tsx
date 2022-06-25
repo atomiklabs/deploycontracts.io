@@ -3,11 +3,9 @@ import Input from '@/components/Input'
 import { FieldArrayRenderProps } from 'formik'
 
 export default function AllocationCardComponent({
-  colour,
   index,
   arrayHelpers,
 }: {
-  colour: string
   index: number
   arrayHelpers: FieldArrayRenderProps
 }) {
@@ -41,12 +39,9 @@ export default function AllocationCardComponent({
 
       <Input name={`allocations.${index}.address`} label='Secret address' placeholder='' required autoComplete='off' />
 
-      {colour && (
-        <div
-          className='absolute top-0 bottom-0 m-auto left-[-8px] w-[16px] h-[16px] rounded-full'
-          style={{ backgroundColor: colour }}
-        ></div>
-      )}
+      <div
+        className={`absolute top-0 bottom-0 m-auto left-[-8px] w-[16px] h-[16px] rounded-full bg-progress-bar-${index}`}
+      ></div>
 
       {index > 0 && (
         <button

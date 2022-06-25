@@ -1,31 +1,27 @@
-import { useSnip20Steps } from '@/utils/snip20StepsProvider'
-import StepsNavigation from '@/components/snip-20/StepsNavigation'
-import SummaryCardWrapper from '@/components/snip-20/SummaryCardWrapper'
+import ProgressBar from '@/components/ProgressBar'
+
 import OutputDataRow from '@/components/snip-20/OutputDataRow'
-import { allocationColors } from '@/utils/snip20Form'
-import ProgressBar from '../ProgressBar'
-import { useCallback } from 'react'
-import { useRouter } from 'next/router'
+import SummaryCardWrapper from '@/components/snip-20/SummaryCardWrapper'
+import StepsNavigation from '@/components/snip-20/StepsNavigation'
 
-export default function tokenSummary() {
-  const router = useRouter()
-  const { snip20FormData, instantiateSnip20Contract } = useSnip20Steps()
-  const onCreateToken = useCallback(
-    () =>
-      instantiateSnip20Contract(snip20FormData)
-        .then((contractAddress) => {
-          console.log('Congrats, token created!', contractAddress)
-          router.replace('/')
-        })
-        .catch((error) => {
-          console.error('something went wrong, try again')
-          console.error(error)
-        }),
-    [snip20FormData],
-  )
+import { TokenSummaryEntity } from '@/lib/snip20-token-creator/entity/token-summary'
+import { TokenCreatorStep } from '@/pages/snipix/[step]'
 
+interface TokenSummaryProps {
+  prevStepPath: string
+  formData: TokenSummaryEntity
+  stepPath: (step: TokenCreatorStep) => string
+  onSubmit: (formData: TokenSummaryEntity) => void
+}
+
+export default function TokenSummary({ prevStepPath, formData, stepPath, onSubmit }: TokenSummaryProps) {
   return (
-    <>
+    <form
+      onSubmit={(event) => {
+        event.preventDefault()
+        onSubmit(formData)
+      }}
+    >
       <div className='flex flex-col gap-y-8'>
         <h1 className='font-space-grotesk font-bold text-xl text-white'>Summary</h1>
 
@@ -34,32 +30,44 @@ export default function tokenSummary() {
           changed.
         </p>
 
-        <SummaryCardWrapper linkUrl='step-1' img='/assets/step1-visited.svg' title='Token details'>
-          <OutputDataRow title='Minter address' data='fq412t41g41b2b34n4mn24n323' />
-          <OutputDataRow title='Token name' data={snip20FormData[0].tokenName} />
-          <OutputDataRow title='Total supply' data={snip20FormData[0].tokenTotalSupply} />
+        <SummaryCardWrapper
+          linkUrl={stepPath(TokenCreatorStep.BasicInfo)}
+          img='/assets/step1-visited.svg'
+          title='Token details'
+        >
+          <OutputDataRow title='Minter address' data={formData.basicTokenInfo.minterAddress} />
+          <OutputDataRow title='Token name' data={formData.basicTokenInfo.tokenSymbol} />
+          <OutputDataRow title='Total supply' data={formData.basicTokenInfo.tokenTotalSupply} />
         </SummaryCardWrapper>
 
-        <SummaryCardWrapper linkUrl='step-2' img='/assets/step2-visited.svg' title='Token allocation'>
-          {snip20FormData[1].allocations?.map((allocation, i) => (
+        <SummaryCardWrapper
+          linkUrl={stepPath(TokenCreatorStep.AllocationInfo)}
+          img='/assets/step2-visited.svg'
+          title='Token allocation'
+        >
+          {formData.allocationInfo.allocations.map((allocation, i) => (
             <div key={i} className='flex flex-col gap-y-6 pb-4 border-b border-[#31437B]'>
-              <OutputDataRow colour={allocationColors[i]} title='Name' data={allocation.name} />
+              <OutputDataRow index={i} title='Name' data={allocation.name} />
               <OutputDataRow title='Value' data={`${allocation.value} %`} />
               <OutputDataRow title='Address' data={allocation.address} />
             </div>
           ))}
 
-          <ProgressBar allocations={snip20FormData[1].allocations || []} hideAllocationInfo={true} />
+          <ProgressBar allocations={formData.allocationInfo.allocations || []} hideAllocationInfo={true} />
         </SummaryCardWrapper>
 
-        <SummaryCardWrapper linkUrl='step-3' img='/assets/step3-visited.svg' title='Marketing details'>
-          <OutputDataRow title='Project name' data={snip20FormData[2].projectName} />
-          <OutputDataRow title='Description' data={snip20FormData[2].projectDescription} />
-          <OutputDataRow title='Logo' projectLogoCID={snip20FormData[2].projectLogoCID} />
+        <SummaryCardWrapper
+          linkUrl={stepPath(TokenCreatorStep.MarketingInfo)}
+          img='/assets/step3-visited.svg'
+          title='Marketing details'
+        >
+          <OutputDataRow title='Project name' data={formData.marketingInfo.projectName} />
+          <OutputDataRow title='Description' data={formData.marketingInfo.projectDescription} />
+          <OutputDataRow title='Logo' projectLogoCID={formData.marketingInfo.projectLogoCID} />
         </SummaryCardWrapper>
       </div>
 
-      <StepsNavigation className='mt-20' submitText='Create token' onClick={onCreateToken} />
-    </>
+      <StepsNavigation className='mt-20' submitText='Create token' prevStepPath={prevStepPath} />
+    </form>
   )
 }

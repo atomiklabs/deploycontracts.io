@@ -1,16 +1,20 @@
+import { FieldArray, Form, Formik } from 'formik'
+
 import AllocationCard from '@/components/AllocationCard'
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import ProgressBar from '@/components/ProgressBar'
-import { FieldArray, Form, Formik } from 'formik'
-import { useSnip20Steps } from '@/utils/snip20StepsProvider'
-import { allocationColors, initialStepsFormData } from '@/utils/snip20Form'
 import StepsNavigation from '@/components/snip-20/StepsNavigation'
 
-export default function tokenAllocation() {
-  const { onNextStep, getFormData } = useSnip20Steps()
-  const stepIndex = 2
-  const { initialValues, validationSchema } = getFormData(stepIndex)
+import { AllocationInfoEntity, createDefualtAllocationEntry } from '@/lib/snip20-token-creator/entity/allocation-info'
 
+interface TokenAllocationProps {
+  prevStepPath: string
+  formData: AllocationInfoEntity
+  validationSchema: any
+  onSubmit: (formData: AllocationInfoEntity) => void
+}
+
+export default function TokenAllocation({ prevStepPath, formData, validationSchema, onSubmit }: TokenAllocationProps) {
   return (
     <>
       <div className='flex flex-col gap-y-[34px]'>
@@ -18,7 +22,7 @@ export default function tokenAllocation() {
         <p className='text-gray-100'>Distribute your initial token allocation between different wallet addresses.</p>
       </div>
 
-      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onNextStep}>
+      <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
         {({ values, errors }) => (
           <Form>
             <div className='mt-[41px] flex flex-col gap-y-9'>
@@ -30,22 +34,15 @@ export default function tokenAllocation() {
                   return (
                     <>
                       {allocations?.map((x, i) => (
-                        <AllocationCard key={i} index={i} colour={allocationColors[i]} arrayHelpers={arrayHelpers} />
+                        <AllocationCard key={i} index={i} arrayHelpers={arrayHelpers} />
                       ))}
 
                       {allocations && allocations.length > 0 && <ProgressBar allocations={values.allocations} />}
 
                       <SecondaryButton
                         className='mt-10'
-                        onClick={(e) => {
-                          e.preventDefault()
-                          const newAllocation = initialStepsFormData[stepIndex - 1].allocations
-                          if (!newAllocation || newAllocation.length < 1) {
-                            return
-                          }
-
-                          arrayHelpers.push(newAllocation[0])
-                        }}
+                        type='button'
+                        onClick={() => arrayHelpers.push(createDefualtAllocationEntry())}
                       >
                         Add new
                       </SecondaryButton>
@@ -67,7 +64,7 @@ export default function tokenAllocation() {
               )}
             </div>
 
-            <StepsNavigation className='mt-6' />
+            <StepsNavigation className='mt-20' prevStepPath={prevStepPath} />
           </Form>
         )}
       </Formik>

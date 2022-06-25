@@ -2,15 +2,19 @@ import { useState } from 'react'
 import Input from '@/components/Input'
 import UploadLogo from '@/components/snip-20/UploadLogo'
 import { Form, Formik } from 'formik'
-import { useSnip20Steps } from '@/utils/snip20StepsProvider'
-import StepsNavigation from './StepsNavigation'
-import { initialStepsFormData } from '@/utils/snip20Form'
-import { LOCAL_DEV_API_KEY, WORKERS_URL } from 'consts'
 
-export default function tokenMarketing() {
-  const { onNextStep, getFormData } = useSnip20Steps()
-  const stepIndex = 3
-  const { initialValues, validationSchema } = getFormData(stepIndex)
+import StepsNavigation from '@/components/snip-20/StepsNavigation'
+import { LOCAL_DEV_API_KEY, WORKERS_URL } from 'consts'
+import { MarketingInfoEntity } from '@/lib/snip20-token-creator/entity/marketing-info'
+
+interface TokenMarketingProps {
+  prevStepPath: string
+  formData: MarketingInfoEntity
+  validationSchema: any
+  onSubmit: (formData: MarketingInfoEntity) => void
+}
+
+export default function TokenMarketing({ prevStepPath, formData, validationSchema, onSubmit }: TokenMarketingProps) {
   const [isUploading, setIsUploading] = useState(false)
 
   async function onDrop(setFieldValue: (field: string, value: any) => void, files: File[]) {
@@ -50,15 +54,15 @@ export default function tokenMarketing() {
   }
 
   function onDelete(setFieldValue: (field: string, value: any) => void) {
-    setFieldValue('projectLogoCID', initialStepsFormData[2].projectLogoCID)
+    setFieldValue('projectLogoCID', '')
   }
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={formData}
       validationSchema={validationSchema}
       onSubmit={(formValues) => {
-        !isUploading && onNextStep(formValues)
+        !isUploading && onSubmit(formValues)
       }}
     >
       {({ setFieldValue, values }) => (
@@ -100,7 +104,7 @@ export default function tokenMarketing() {
             </div>
           </div>
 
-          <StepsNavigation className='mt-20' />
+          <StepsNavigation className='mt-20' prevStepPath={prevStepPath} />
         </Form>
       )}
     </Formik>

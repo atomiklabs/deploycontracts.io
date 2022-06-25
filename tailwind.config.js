@@ -1,5 +1,25 @@
+const progressBarPallet = [
+  '#FD0F9E',
+  '#671BC9',
+  '#FD810F',
+  '#00D0FE',
+  '#FD3A0F',
+  '#BCFE00',
+  '#FDBA0F',
+  '#0CE2AF',
+  '#FE6B00',
+  '#BD01DC',
+  '#0084FE',
+  '#7EE42D',
+  '#4F14F9',
+  '#0DB427',
+  '#0EADAD',
+]
+
 module.exports = {
   content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  plugins: [require('@tailwindcss/forms')],
+  safelist: [...progressBarPallet.map((_, idx) => `bg-progress-bar-${idx}`)],
   theme: {
     extend: {
       fontFamily: {
@@ -29,8 +49,9 @@ module.exports = {
           200: '#6075AA',
           300: '#7A8297',
         },
+        'error-red': '#FC0E47',
+        'progress-bar': progressBarPallet,
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
 }
