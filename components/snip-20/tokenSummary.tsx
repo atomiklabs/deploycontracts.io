@@ -6,6 +6,7 @@ import StepsNavigation from '@/components/snip-20/StepsNavigation'
 
 import { TokenSummaryEntity } from '@/lib/snip20-token-creator/entity/token-summary'
 import { TokenCreatorStep } from '@/pages/snipix/[step]'
+import { stepTitles } from './StepsBreadcrumb'
 
 interface TokenSummaryProps {
   prevStepPath: string
@@ -33,7 +34,7 @@ export default function TokenSummary({ prevStepPath, formData, stepPath, onSubmi
         <SummaryCardWrapper
           linkUrl={stepPath(TokenCreatorStep.BasicInfo)}
           img='/assets/step1-visited.svg'
-          title='Token details'
+          title={stepTitles[0]}
         >
           <OutputDataRow title='Minter address' data={formData.basicTokenInfo.minterAddress} />
           <OutputDataRow title='Token name' data={formData.basicTokenInfo.tokenSymbol} />
@@ -43,7 +44,7 @@ export default function TokenSummary({ prevStepPath, formData, stepPath, onSubmi
         <SummaryCardWrapper
           linkUrl={stepPath(TokenCreatorStep.AllocationInfo)}
           img='/assets/step2-visited.svg'
-          title='Token allocation'
+          title={stepTitles[1]}
         >
           {formData.allocationInfo.allocations.map((allocation, i) => (
             <div key={i} className='flex flex-col gap-y-6 pb-4 border-b border-[#31437B]'>
@@ -59,7 +60,7 @@ export default function TokenSummary({ prevStepPath, formData, stepPath, onSubmi
         <SummaryCardWrapper
           linkUrl={stepPath(TokenCreatorStep.MarketingInfo)}
           img='/assets/step3-visited.svg'
-          title='Marketing details'
+          title={stepTitles[2]}
         >
           <OutputDataRow title='Project name' data={formData.marketingInfo.projectName} />
           <OutputDataRow title='Description' data={formData.marketingInfo.projectDescription} />

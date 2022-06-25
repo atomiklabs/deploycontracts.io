@@ -8,7 +8,7 @@ const ReactTooltip = dynamic(() => import('react-tooltip'), {
   ssr: false,
 })
 
-const stepTitles = ['Basic info', 'Allocation info', 'Marketing info', 'Summary']
+export const stepTitles = ['Basic info', 'Allocation info', 'Marketing info', 'Summary']
 
 export default function StepsBreadcrumb({ activeStep }: StepsProps) {
   return (

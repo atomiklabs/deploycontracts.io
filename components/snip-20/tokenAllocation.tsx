@@ -33,7 +33,7 @@ export default function TokenAllocation({ prevStepPath, formData, validationSche
 
                   return (
                     <>
-                      {allocations?.map((x, i) => (
+                      {allocations?.map((_, i) => (
                         <AllocationCard key={i} index={i} arrayHelpers={arrayHelpers} />
                       ))}
 
