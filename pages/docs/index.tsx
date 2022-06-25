@@ -10,6 +10,7 @@ import { configuration } from '@/lib/secret-client'
 import { create as createSecretAddress } from '@/lib/snip20-token-creator/entity/secret-address'
 
 import { useLocalStorage } from '@/utils/useLocalStorage'
+import Head from 'next/head'
 
 type TokenInfo = GetTokenParamsResponse['token_info']
 
@@ -120,6 +121,14 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   }, [contractAddress, contractCodeHash, secretClient.isReady])
 
   return (
+    <>
+    <Head>
+      <title>SNIP-20 token details | Deploy Contracts</title>
+      <meta
+        name='description'
+        content={`Use a simple web form to interact with any SNIP-20 smart contract.`}
+      />
+    </Head>
     <div className='col-span-full m-20 '>
       <div className='bg-white shadow sm:rounded-lg'>
         <div className='px-4 py-5 sm:p-6'>
@@ -177,6 +186,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
       </div>
     </div>
   )
+  </>
 }
 
 export function getStaticProps() {

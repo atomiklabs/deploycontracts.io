@@ -1,5 +1,7 @@
 export const defaultColors = { error: '#FC0E47' }
 
+export const createNewTokenPath = '/snip-20/basic-info'
+
 export const landingPageUrl = {
   contracts: '/#available-contracts',
   openSource: '/#open-source',
@@ -8,7 +10,7 @@ export const landingPageUrl = {
   navbarLogo: '/',
   // TODO: Update link to exact repository when ready
   github: 'https://github.com/atomiklabs',
-  createNewToken: '/snip-20',
+  createNewToken: createNewTokenPath,
   secretNetworkGrant: 'https://scrt.network/developers/grants',
   atomikLabs: 'https://atomiklabs.io',
 }
