@@ -13,7 +13,7 @@ export default function OutputDataRow({ title, data, index, projectLogoCID }: Pr
     <div className='flex flex-col break-words'>
       <div className='text-gray-100'>{title}</div>
 
-      {index ? (
+      {index && !projectLogoCID ? (
         <div className='flex flex-row items-center gap-x-2 text-white font-bold'>
           <div className={`w-4 h-4 rounded-full bg-progress-bar-${index}`} />
           {dataFormatted}
