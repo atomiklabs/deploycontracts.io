@@ -1,13 +1,39 @@
+import { useEffect, useRef } from 'react'
+import { Form, Formik } from 'formik'
+import type { FormikProps } from 'formik'
+
 import SecondaryButton from '@/components/buttons/SecondaryButton'
 import Input from '@/components/Input'
-import { useSnip20Steps } from '@/utils/snip20StepsProvider'
-import { Form, Formik } from 'formik'
-import StepsNavigation from './StepsNavigation'
+import StepsNavigation from '@/components/snip-20/StepsNavigation'
 
-export default function tokenDetails() {
-  const { onNextStep, getFormData } = useSnip20Steps()
-  const stepIndex = 1
-  const { initialValues, validationSchema } = getFormData(stepIndex)
+import { BasicTokenInfoEntity } from '@/lib/snip20-token-creator/entity/basic-token-info'
+
+interface TokenDetailsProps {
+  minterAddress: string | undefined
+  prevStepPath: string
+  formData: BasicTokenInfoEntity
+  validationSchema: any
+  onConnectWallet: () => Promise<string>
+  onSubmit: (formData: BasicTokenInfoEntity) => void
+}
+
+export default function TokenDetails({
+  minterAddress,
+  prevStepPath,
+  formData,
+  validationSchema,
+  onConnectWallet,
+  onSubmit,
+}: TokenDetailsProps) {
+  const formikRef = useRef<FormikProps<typeof formData>>()
+
+  useEffect(() => {
+    if (typeof formikRef.current === 'undefined') {
+      return
+    }
+
+    formikRef.current.setFieldValue('minterAddress', minterAddress)
+  })
 
   return (
     <>
@@ -20,50 +46,49 @@ export default function tokenDetails() {
         </p>
       </div>
 
-      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onNextStep}>
-        {({ setFieldValue, values }) => (
-          <Form>
-            <Input className='mt-9' label='Minter address' type='hidden' name='minterAddress'>
-              {values.minterAddress ? (
-                <div className='text-gray-200'>{values.minterAddress}</div>
-              ) : (
-                <SecondaryButton
-                  onClick={(e) => {
-                    e.preventDefault()
-                    console.log('--- Connect your wallet')
-                    setFieldValue('minterAddress', 'secret1djskfhjsekf_example_address')
-                  }}
-                >
-                  Connect your wallet
-                </SecondaryButton>
-              )}
-            </Input>
+      <Formik
+        initialValues={formData}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        // @ts-ignore
+        innerRef={formikRef}
+      >
+        <Form>
+          <Input className='mt-9' label='Minter address' type='hidden' name='minterAddress'>
+            {minterAddress ? (
+              // TODO: allow refreshing token by pulling currently selected account in Keplr
+              <div className='text-gray-200'>{minterAddress}</div>
+            ) : (
+              <SecondaryButton onClick={onConnectWallet} type='button'>
+                Connect your wallet
+              </SecondaryButton>
+            )}
+          </Input>
 
-            <Input
-              className='mt-14'
-              name='tokenName'
-              type='text'
-              label='Token symbol'
-              placeholder='SCRT'
-              required
-              autoComplete='off'
-            />
+          <Input
+            className='mt-14'
+            name='tokenSymbol'
+            type='text'
+            label='Token symbol'
+            placeholder='SCRT'
+            required
+            autoComplete='off'
+          />
 
-            {/* TODO: Display big numbers with spaces eg. '1 000 000' */}
-            <Input
-              className='mt-14'
-              name='tokenTotalSupply'
-              type='number'
-              step={1}
-              label='Total supply'
-              placeholder='1 000 000'
-              required
-              autoComplete='off'
-            />
+          {/* TODO: Display big numbers with spaces eg. '1 000 000' */}
+          <Input
+            className='mt-14'
+            name='tokenTotalSupply'
+            type='number'
+            step={1}
+            label='Total supply'
+            placeholder='1 000 000'
+            required
+            autoComplete='off'
+          />
 
-            <StepsNavigation className='mt-20' />
-          </Form>
-        )}
+          <StepsNavigation className='mt-20' prevStepPath={prevStepPath} />
+        </Form>
       </Formik>
     </>
   )

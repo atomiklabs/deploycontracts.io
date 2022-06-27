@@ -13,7 +13,12 @@ export default function UploadLogo({
   onDelete: (e: any) => void
   isUploading: boolean
 }) {
-  const { getRootProps, getInputProps } = useDropzone({ accept: { 'image/*': [] }, onDrop, multiple: false })
+  const acceptedFileExtensions = ['.jpg', '.jpeg', '.png', '.svg', '.gif']
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: { 'image/*': acceptedFileExtensions },
+    onDrop,
+    multiple: false,
+  })
 
   if (isUploading) {
     return <DropBox className='p-7'>Uploading to IPFS... (it may take a few minutes)</DropBox>
@@ -43,7 +48,9 @@ export default function UploadLogo({
               or drag and dorp here
             </div>
 
-            <div className='text-xs text-gray-300'>jpg, gif, jpeg, png, pdf (max. 5 MB)</div>
+            <div className='text-xs text-gray-300'>
+              {acceptedFileExtensions.join(', ').replaceAll('.', '')} (max. 5 MB)
+            </div>
           </label>
         </DropBox>
       )}

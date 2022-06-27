@@ -8,11 +8,9 @@ const ReactTooltip = dynamic(() => import('react-tooltip'), {
   ssr: false,
 })
 
-const stepTitles = ['Token Details', 'Token Allocation', 'Marketing details', 'Summary']
+export const stepTitles = ['Basic info', 'Allocation info', 'Marketing info', 'Summary']
 
 export default function StepsBreadcrumb({ activeStep }: StepsProps) {
-  activeStep -= 1
-
   return (
     <section>
       <div className='flex flex-row gap-x-4'>

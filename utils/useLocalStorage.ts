@@ -2,7 +2,7 @@ import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 
 function getStorageValue(key: string, defaultValue: any) {
   if (typeof window === 'undefined') {
-    return
+    return defaultValue
   }
 
   const saved = localStorage.getItem(key)
@@ -11,9 +11,7 @@ function getStorageValue(key: string, defaultValue: any) {
 }
 
 export const useLocalStorage = <T>(key: string, defaultValue: T) => {
-  const [value, setValue] = useState<T>(() => {
-    return getStorageValue(key, defaultValue)
-  })
+  const [value, setValue] = useState<T>(() => getStorageValue(key, defaultValue))
 
   useEffect(() => {
     localStorage.setItem(key, JSON.stringify(value))
