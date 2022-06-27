@@ -9,6 +9,7 @@ const subSchema = object({
 
 export type Allocation = InferType<typeof subSchema>
 
+// TODO: avoid one address being used in more than one allocation
 export const schema = object({
   allocations: array(
     subSchema,
