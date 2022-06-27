@@ -43,6 +43,7 @@ export const tokenCreatorSteps: Array<TokenCreatorStep> = [
 
 interface MetaState {
   lastPresentedStepIdx?: number
+  connectedWalletAddress?: string
 }
 
 interface TokenCreatorPageProps extends UseSecretClientProps {
@@ -144,9 +145,31 @@ export default function TokenCreatorPage(
         return metaState
       }
 
-      return { lastPresentedStepIdx: currentStepIdx }
+      return { ...metaState, lastPresentedStepIdx: currentStepIdx }
     })
   }, [currentStepIdx])
+
+  // trying to connect to Keplr automatically
+  useEffect(() => {
+    if (secretClient.connectedWalletAddress) {
+      // wallet is already connected, skip
+      return
+    }
+
+    if (!metaState.connectedWalletAddress) {
+      // connected wallet address has not been stored during previous session, skip
+      return
+    }
+
+    // only call it when the user has connected walled during previous sessions
+    console.info('Requesting Secret Client connection automatically')
+    secretClient.connectWallet()
+  }, [secretClient, secretClient.connectedWalletAddress, metaState.connectedWalletAddress])
+
+  // store most recently used wallet address
+  useEffect(() => {
+    setMetaState((metaState) => ({ ...metaState, connectedWalletAddress: secretClient.connectedWalletAddress }))
+  }, [secretClient.connectedWalletAddress])
 
   return (
     <>
