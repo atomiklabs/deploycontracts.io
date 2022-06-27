@@ -54,7 +54,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
 
   const contractCodeHash = useMemo(
     () => (contractAddress ? metaState.addressToCodeHash[contractAddress] : null),
-    [contractAddress],
+    [contractAddress, metaState.addressToCodeHash],
   )
 
   // trying to connect to Keplr automatically
