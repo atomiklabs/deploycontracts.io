@@ -42,6 +42,10 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, { addressToCodeHash: {}, permits: {} })
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>()
 
+  // Transfer submit form
+  const [transferAmount, setTransferAmount] = useState('')
+  const [transferRecipient, setTransferRecipient] = useState('')
+
   const contractAddress = useMemo(() => {
     if (typeof router.query.token !== 'string') {
       return null
@@ -153,6 +157,89 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     return permit
   }
 
+  // Query: getBalance
+  const handleGetBalance = async () => {
+    // Try to get a viewing key from Keplr
+    try {
+      // TODO: Fix Keplr viewing key error
+      const viewingKey = await window.keplr!.getSecret20ViewingKey(chainSettings.chainId, contractAddress!)
+      console.log('viewingKey', viewingKey)
+    } catch (error) {
+      console.log('viewingKey error:', error)
+      // TODO: FIX error
+      // Error: There is no matched secret20
+    }
+
+    const txQuery = await secretClient.inner?.query.snip20.getBalance({
+      address: secretClient.connectedWalletAddress!,
+      contract: { address: contractAddress!, codeHash: contractCodeHash! },
+      auth: { key: 'hello' },
+    })
+    console.log('getBalance', txQuery)
+  }
+
+  // Query: getTransactionHistory
+  const handleGetTransactionHistory = async () => {
+    const txQuery = await secretClient.inner?.query.snip20.getTransactionHistory({
+      address: secretClient.connectedWalletAddress!,
+      contract: { address: contractAddress!, codeHash: contractCodeHash! },
+      auth: { key: 'hello' },
+      page_size: 10,
+    })
+
+    console.log('getTransactionHistory', txQuery)
+  }
+
+  // TX: setViewingKey
+  const handleSetViewingKey = async () => {
+    const txExec = await secretClient.inner?.tx.snip20.setViewingKey({
+      sender: secretClient.connectedWalletAddress!,
+      contractAddress: contractAddress!,
+      codeHash: contractCodeHash!,
+      msg: { set_viewing_key: { key: 'hello' } },
+    })
+
+    console.log('setViewingKey', txExec)
+  }
+
+  // TX: transfer
+  const handleTransfer = async (e: any) => {
+    e.preventDefault()
+
+    try {
+      const txExec = await secretClient.inner?.tx.snip20.transfer(
+        {
+          sender: secretClient.connectedWalletAddress!,
+          contractAddress: contractAddress!,
+          msg: { transfer: { recipient: transferRecipient, amount: transferAmount } },
+        },
+        {
+          gasLimit: 5_000_000,
+        },
+      )
+      console.log('transfer', txExec)
+    } catch (error) {
+      console.log('transfer error:', error)
+    }
+  }
+
+  // TODO: (https://github.com/scrtlabs/secret.js/blob/master/test/snip20.test.ts)
+
+  // --- QUERIES ---
+  // getSnip20Params -> OK
+  // getBalance -> OK
+  // getTransferHistory
+  // getTransactionHistory -> OK
+  // GetAllowance
+
+  // --- TX ---
+  // send (https://github.com/SecretFoundation/SNIPs/blob/master/SNIP-20.md#send)
+  // transfer -> OK (https://github.com/SecretFoundation/SNIPs/blob/master/SNIP-20.md#transfer)
+  // increaseAllowance
+  // decreaseAllowance
+  // setViewingKey -> OK
+  // createViewingKey
+
   return (
     <>
       <Head>
@@ -226,6 +313,67 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               <h2>Token Info</h2>
               <output className='my-10'>{JSON.stringify(tokenInfo, undefined, 2)}</output>
             </div>
+
+            <hr className='mb-5' />
+            <h3 className='text-lg leading-6 font-medium text-gray-900'>SNIP-20 Queries:</h3>
+            <button
+              onClick={() => handleGetBalance()}
+              className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
+            >
+              Get Balance
+            </button>
+
+            <button
+              onClick={() => handleGetTransactionHistory()}
+              className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
+            >
+              Get Transaction History
+            </button>
+
+            <h3 className='mt-5 text-lg leading-6 font-medium text-gray-900'>SNIP-20 TXs:</h3>
+            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleTransfer}>
+              <div className='sm:col-span-2'>
+                <div className='mt-1'>
+                  <input
+                    type='text'
+                    name='amount'
+                    id='amount'
+                    placeholder='amount'
+                    onChange={(e) => setTransferAmount(e.target.value)}
+                    value={transferAmount}
+                    className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                  />
+                </div>
+              </div>
+              <div className='sm:col-span-2'>
+                <div className='mt-1'>
+                  <input
+                    type='text'
+                    name='recipient'
+                    id='recipient'
+                    placeholder='recipient'
+                    onChange={(e) => setTransferRecipient(e.target.value)}
+                    value={transferRecipient}
+                    className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                  />
+                </div>
+              </div>
+              <div className='sm:col-span-2'>
+                <button
+                  type='submit'
+                  className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
+                >
+                  Transfer
+                </button>
+              </div>
+            </form>
+
+            <button
+              onClick={() => handleSetViewingKey()}
+              className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
+            >
+              Set Viewing Key
+            </button>
           </div>
         </div>
       </div>
