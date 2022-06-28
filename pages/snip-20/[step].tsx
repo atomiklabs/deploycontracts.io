@@ -1,13 +1,16 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
+import GradientText from '@/components/buttons/GradientText'
+import H2 from '@/components/headings/H2'
 import Container from '@/components/snip-20/Container'
 import StepsBreadcrumb from '@/components/snip-20/StepsBreadcrumb'
 import TokenDetails from '@/components/snip-20/tokenDetails'
 import TokenAllocation from '@/components/snip-20/tokenAllocation'
 import TokenMarketing from '@/components/snip-20/tokenMarketing'
 import TokenSummary from '@/components/snip-20/tokenSummary'
+import Switch from '@/components/Switch'
 
 import { useSecretClient } from '@/hooks/secret-client-hook'
 import type { UseSecretClientProps } from '@/hooks/secret-client-hook'
@@ -46,6 +49,13 @@ interface MetaState {
   connectedWalletAddress?: string
 }
 
+enum GoLiveState {
+  None,
+  InProgress,
+  Completed,
+  Failed,
+}
+
 interface TokenCreatorPageProps extends UseSecretClientProps {
   formStorageKey: string
   metaStorageKey: string
@@ -71,6 +81,8 @@ export default function TokenCreatorPage(
   )
 
   const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, {})
+
+  const [goLiveState, setGoLiveState] = useState<GoLiveState>(GoLiveState.None)
 
   const isCurrentStep = useCallback(
     (step: TokenCreatorStep) => (typeof router.query.step === 'string' ? router.query.step === step : false),
@@ -106,18 +118,22 @@ export default function TokenCreatorPage(
 
       case TokenCreatorStep.Summary:
         return (formData: TokenSummaryEntity) => {
+          setGoLiveState(GoLiveState.InProgress)
+
           secretClient
             .instantiateSnip20Contract(formData)
             .then((contractAddress) => {
+              setGoLiveState(GoLiveState.Completed)
               // reset form state
               console.log(`Congrats, token created at ${contractAddress} address`)
               setFormState(tokenSummaryEntity.createDefault())
               setMetaState({})
-              router.replace(`/docs/?token=${encodeURI(contractAddress)}`)
+              setTimeout(() => {
+                router.replace(`/docs/?token=${encodeURI(contractAddress)}`)
+              }, 2000)
             })
             .catch((error) => {
-              alert('Something went wrong, try again')
-              console.error('something went wrong, try again')
+              setGoLiveState(GoLiveState.Failed)
               console.error(error)
             })
         }
@@ -215,12 +231,46 @@ export default function TokenCreatorPage(
           )}
 
           {isCurrentStep(TokenCreatorStep.Summary) && (
-            <TokenSummary
-              prevStepPath={stepPath(TokenCreatorStep.MarketingInfo)}
-              formData={formState}
-              stepPath={stepPath}
-              onSubmit={createOnSubmit(TokenCreatorStep.Summary)}
-            />
+            <Switch value={goLiveState}>
+              <Switch.Case variant={GoLiveState.None}>
+                <TokenSummary
+                  prevStepPath={stepPath(TokenCreatorStep.MarketingInfo)}
+                  formData={formState}
+                  stepPath={stepPath}
+                  onSubmit={createOnSubmit(TokenCreatorStep.Summary)}
+                />
+              </Switch.Case>
+              <Switch.Case variant={GoLiveState.InProgress}>
+                <div className='text-white'>
+                  <H2>Going live 🚀</H2>
+                  <p className='mt-10'>
+                    Your contract is being created, please wait. Once it's completed, you will be able to:
+                  </p>
+                  <ul className='mt-5 list-inside list-disc'>
+                    <li>add it to Keplr tokens list</li>
+                    <li>use it with code snippets we provided</li>
+                  </ul>
+                </div>
+              </Switch.Case>
+              <Switch.Case variant={GoLiveState.Completed}>
+                <div className='text-white'>
+                  <H2>Completed</H2>
+                  <p className='my-10'>Taking you to the token page...</p>
+                </div>
+              </Switch.Case>
+              <Switch.Case variant={GoLiveState.Failed}>
+                <div className='text-white'>
+                  <H2>Failed</H2>
+                  <p className='my-10'>
+                    Creating contract failed. You can{' '}
+                    <button type='button' onClick={() => setGoLiveState(GoLiveState.None)}>
+                      <GradientText>Go back to form</GradientText>
+                    </button>{' '}
+                    and try again, or reach out to our team for assistance.
+                  </p>
+                </div>
+              </Switch.Case>
+            </Switch>
           )}
         </section>
       </Container>
