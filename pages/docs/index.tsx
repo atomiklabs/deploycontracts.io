@@ -1,7 +1,9 @@
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 
 import type { GetTokenParamsResponse } from 'secretjs/dist/extensions/snip20/types'
+import type { Permit } from 'secretjs'
 
 import { useSecretClient } from '@/hooks/secret-client-hook'
 import type { UseSecretClientProps } from '@/hooks/secret-client-hook'
@@ -10,14 +12,16 @@ import { configuration } from '@/lib/secret-client'
 import { create as createSecretAddress } from '@/lib/snip20-token-creator/entity/secret-address'
 
 import { useLocalStorage } from '@/utils/useLocalStorage'
-import Head from 'next/head'
 
 type TokenInfo = GetTokenParamsResponse['token_info']
 
 interface MetaState {
   connectedWalletAddress?: string
   addressToCodeHash: {
-    [k: string]: string
+    [address: string]: string
+  }
+  permits: {
+    [contractAddress: string]: Permit
   }
 }
 
@@ -35,7 +39,7 @@ function createDefaultProps(): DocsPageProps {
 export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProps = createDefaultProps()) {
   const router = useRouter()
   const secretClient = useSecretClient({ chainSettings })
-  const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, { addressToCodeHash: {} })
+  const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, { addressToCodeHash: {}, permits: {} })
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>()
 
   const contractAddress = useMemo(() => {
@@ -54,7 +58,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
 
   const contractCodeHash = useMemo(
     () => (contractAddress ? metaState.addressToCodeHash[contractAddress] : null),
-    [contractAddress],
+    [contractAddress, metaState.addressToCodeHash],
   )
 
   // trying to connect to Keplr automatically
@@ -71,7 +75,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
 
     // only call it when the user has connected walled during previous sessions
     console.info('Requesting Secret Client connection automatically')
-    secretClient.connectWallet()
+    secretClient.connectWallet().then((walletAddress) => console.log('automatically connected', { walletAddress }))
   }, [secretClient])
 
   // store most recently used wallet address
@@ -120,6 +124,35 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
       })
   }, [contractAddress, contractCodeHash, secretClient.isReady])
 
+  const signPermit = async () => {
+    if (!contractAddress) {
+      throw Error('Missing contract address')
+    }
+
+    if (!secretClient.connectedWalletAddress) {
+      throw Error('Missing signer address')
+    }
+
+    const permit = await secretClient.inner!.utils.accessControl.permit.sign(
+      secretClient.connectedWalletAddress,
+      chainSettings.chainId,
+      'deploycontracts.io/docs',
+      [contractAddress],
+      ['owner', 'history', 'balance', 'allowance'],
+      false,
+    )
+
+    setMetaState(({ permits, ...metaState }) => ({
+      ...metaState,
+      permits: {
+        ...permits,
+        [contractAddress]: permit,
+      },
+    }))
+
+    return permit
+  }
+
   return (
     <>
       <Head>
@@ -150,7 +183,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               >
                 Load
               </button>
-              {secretClient.isReadOnly && (
+              {secretClient.isReadOnly ? (
                 <button
                   onClick={secretClient.connectWallet}
                   type='button'
@@ -158,6 +191,20 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 >
                   Connect wallet
                 </button>
+              ) : (
+                <>
+                  {typeof contractAddress === 'string' &&
+                    typeof metaState?.permits !== 'undefined' &&
+                    typeof metaState?.permits[contractAddress] === 'undefined' && (
+                      <button
+                        onClick={signPermit}
+                        type='button'
+                        className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-indigo-500 shadow-sm font-medium rounded-md text-indigo-600 bg-transparent hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+                      >
+                        Sign permit
+                      </button>
+                    )}
+                </>
               )}
             </form>
 

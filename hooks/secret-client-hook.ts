@@ -122,6 +122,24 @@ export function useSecretClient({ chainSettings, tokenFactorySettings }: UseSecr
     }).then(({ client }) => setSecretClient(client))
   }, [])
 
+  useEffect(() => {
+    async function onAccountChanged() {
+      const { signer, walletAddress, encryptionUtils } = await createBrowserSigner(chainSettings.chainId)
+      const { client } = await createClient({
+        ...chainSettings,
+        wallet: signer,
+        walletAddress,
+        encryptionUtils,
+      })
+
+      setSecretClient(client)
+    }
+
+    window.addEventListener('keplr_keystorechange', onAccountChanged)
+
+    return () => window.removeEventListener('keplr_keystorechange', onAccountChanged)
+  }, [secretClient, connectedWalletAddress])
+
   return {
     inner: secretClient,
     isReady,

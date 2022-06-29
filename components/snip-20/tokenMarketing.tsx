@@ -49,7 +49,7 @@ export default function TokenMarketing({ prevStepPath, formData, validationSchem
     setIsUploading(false)
 
     // TODO: Improve error handling
-    alert('Ups... something went wrong')
+    alert('Ups... something went wrong and upload was not completed. Try again.')
     console.error('--- catch: ', err)
   }
 

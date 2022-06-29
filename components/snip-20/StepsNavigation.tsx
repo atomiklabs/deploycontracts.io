@@ -18,7 +18,9 @@ export default function StepsNavigation({ className, submitText, prevStepPath }:
       <div className='basis-full sm:basis-1/4 text-center sm:text-left'>
         {typeof prevStepPath === 'string' && (
           <Link href={prevStepPath}>
-            <GradientText>Back</GradientText>
+            <a>
+              <GradientText>Back</GradientText>
+            </a>
           </Link>
         )}
       </div>

@@ -1,11 +1,15 @@
+import React from 'react'
+
+import PrimaryLink from '@/components/buttons/PrimaryLink'
+import GradientText from '@/components/buttons/GradientText'
 import GridContainer from '@/components/GridContainer'
 import H2 from '@/components/headings/H2'
 import H3 from '@/components/headings/H3'
 import AvailableText from '@/components/AvailableText'
 import ComingSoon from '@/components/ComingSoon'
-import React from 'react'
-import PrimaryLink from './buttons/PrimaryLink'
+
 import { landingPageUrl } from 'consts'
+import Link from 'next/link'
 
 const data = [
   { text: 'No smart contract developers required', icon: '/assets/hand.svg', iconName: 'hand' },
@@ -73,6 +77,15 @@ export default function Contracts() {
                         <H3>{x.title}</H3>
                         <div className='text-gray-100 tracking-[-0.02rem]'>{x.text}</div>
                         <PrimaryLink href={landingPageUrl.createNewToken}>Create new token</PrimaryLink>
+                        <div className='text-gray-100 tracking-[-0.02rem]'>
+                          or if you already created one{' '}
+                          <Link href='/docs'>
+                            <a className='underline-offset-4 font-bold mx-2'>
+                              <GradientText>see docs</GradientText>
+                            </a>
+                          </Link>{' '}
+                          on how to integrate it on your website.
+                        </div>
                       </div>
                     </div>
                   ) : (

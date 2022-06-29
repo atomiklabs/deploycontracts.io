@@ -20,7 +20,9 @@ export default function SummaryCardWrapper({ children, img, title, linkUrl }: Pr
         </div>
 
         <Link href={linkUrl}>
-          <GradientText className='mt-5 sm:mt-0'>Edit</GradientText>
+          <a>
+            <GradientText className='mt-5 sm:mt-0'>Edit</GradientText>
+          </a>
         </Link>
       </div>
 
