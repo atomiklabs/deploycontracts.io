@@ -231,16 +231,17 @@ export default function TokenCreatorPage(
           )}
 
           {isCurrentStep(TokenCreatorStep.Summary) && (
-            <Switch value={goLiveState}>
-              <Switch.Case variant={GoLiveState.None}>
+            <>
+              {goLiveState === GoLiveState.None && (
                 <TokenSummary
                   prevStepPath={stepPath(TokenCreatorStep.MarketingInfo)}
                   formData={formState}
                   stepPath={stepPath}
                   onSubmit={createOnSubmit(TokenCreatorStep.Summary)}
                 />
-              </Switch.Case>
-              <Switch.Case variant={GoLiveState.InProgress}>
+              )}
+
+              {goLiveState === GoLiveState.InProgress && (
                 <div className='text-white'>
                   <H2>Going live 🚀</H2>
                   <p className='mt-10'>
@@ -251,14 +252,16 @@ export default function TokenCreatorPage(
                     <li>use it with code snippets we provided</li>
                   </ul>
                 </div>
-              </Switch.Case>
-              <Switch.Case variant={GoLiveState.Completed}>
+              )}
+
+              {goLiveState === GoLiveState.Completed && (
                 <div className='text-white'>
                   <H2>Completed</H2>
                   <p className='my-10'>Taking you to the token page...</p>
                 </div>
-              </Switch.Case>
-              <Switch.Case variant={GoLiveState.Failed}>
+              )}
+
+              {goLiveState === GoLiveState.Failed && (
                 <div className='text-white'>
                   <H2>Failed</H2>
                   <p className='my-10'>
@@ -269,8 +272,8 @@ export default function TokenCreatorPage(
                     and try again, or reach out to our team for assistance.
                   </p>
                 </div>
-              </Switch.Case>
-            </Switch>
+              )}
+            </>
           )}
         </section>
       </Container>
