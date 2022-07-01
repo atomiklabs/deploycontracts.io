@@ -42,6 +42,10 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, { addressToCodeHash: {}, permits: {} })
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>()
 
+  // TODO: remove when permit ready
+  const MOCK_VIEWING_KEY = 'very secure key'
+  const PAGE_SIZE = 10
+
   // Query: GetAllowance - submit form
   const [allowanceSpender, setAllowanceSpender] = useState('')
   // TX: send - submit form
@@ -172,21 +176,34 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   // ------ SNIP20: Queries ------
   // Query: getBalance
   const handleGetBalance = async () => {
-    // Get viewingKey from Keplr when token added
-    try {
-      const viewingKey = await window.keplr!.getSecret20ViewingKey(chainSettings.chainId, contractAddress!)
-      console.log('viewingKey', viewingKey)
-    } catch (error) {
-      console.log('viewingKey error:', error)
-    }
+    // // TODO: Remove when permit ready or add a viewing_key option with Keplr handle to a snippet?
+    // // Get viewingKey from Keplr when token added
+    // try {
+    //   const viewingKey = await window.keplr!.getSecret20ViewingKey(chainSettings.chainId, contractAddress!)
+    //   console.log('viewingKey', viewingKey)
+    // } catch (error) {
+    //   console.log('viewingKey error:', error)
+    // }
 
     const txQuery = await secretClient.inner?.query.snip20.getBalance({
       address: secretClient.connectedWalletAddress!,
       contract: { address: contractAddress!, codeHash: contractCodeHash! },
       // auth: { permit: metaState.permits[contractAddress!] },
-      auth: { key: 'hello' },
+      auth: { key: MOCK_VIEWING_KEY },
     })
     console.log('getBalance', txQuery)
+  }
+
+  // Query: getTransferHistory
+  const handleGetTransferHistory = async () => {
+    const txQuery = await secretClient.inner?.query.snip20.getTransferHistory({
+      address: secretClient.connectedWalletAddress!,
+      contract: { address: contractAddress!, codeHash: contractCodeHash! },
+      auth: { key: MOCK_VIEWING_KEY },
+      page_size: PAGE_SIZE,
+    })
+
+    console.log('getTransferHistory', txQuery)
   }
 
   // Query: getTransactionHistory
@@ -194,8 +211,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     const txQuery = await secretClient.inner?.query.snip20.getTransactionHistory({
       address: secretClient.connectedWalletAddress!,
       contract: { address: contractAddress!, codeHash: contractCodeHash! },
-      auth: { key: 'hello' },
-      page_size: 10,
+      auth: { key: MOCK_VIEWING_KEY },
+      page_size: PAGE_SIZE,
     })
 
     console.log('getTransactionHistory', txQuery)
@@ -209,13 +226,26 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
       contract: { address: contractAddress!, codeHash: contractCodeHash! },
       owner: secretClient.connectedWalletAddress!,
       spender: allowanceSpender,
-      auth: { key: 'hello' },
+      auth: { key: MOCK_VIEWING_KEY },
     })
 
     console.log('GetAllowance', txQuery)
   }
 
   // ------ SNIP20: TXs ------
+  // TX: setViewingKey
+  // TODO: Remove when permit ready or add a viewing_key option to a snippet?
+  const handleSetViewingKey = async () => {
+    const txExec = await secretClient.inner?.tx.snip20.setViewingKey({
+      sender: secretClient.connectedWalletAddress!,
+      contractAddress: contractAddress!,
+      codeHash: contractCodeHash!,
+      msg: { set_viewing_key: { key: MOCK_VIEWING_KEY } },
+    })
+
+    console.log('setViewingKey', txExec)
+  }
+
   // TX: send
   const handleSend = async (e: any) => {
     e.preventDefault()
@@ -257,18 +287,6 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     } catch (error) {
       console.log('transfer error:', error)
     }
-  }
-
-  // TX: setViewingKey
-  const handleSetViewingKey = async () => {
-    const txExec = await secretClient.inner?.tx.snip20.setViewingKey({
-      sender: secretClient.connectedWalletAddress!,
-      contractAddress: contractAddress!,
-      codeHash: contractCodeHash!,
-      msg: { set_viewing_key: { key: 'hello' } },
-    })
-
-    console.log('setViewingKey', txExec)
   }
 
   // TX: increaseAllowance
@@ -313,23 +331,6 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
       console.log('decreaseAllowance error:', error)
     }
   }
-
-  // TODO:
-
-  // --- QUERIES ---
-  // getSnip20Params -> OK
-  // getBalance -> OK
-  // getTransferHistory
-  // getTransactionHistory -> OK
-  // GetAllowance -> OK
-
-  // --- TX ---
-  // send -> OK
-  // transfer -> OK
-  // increaseAllowance -> OK
-  // decreaseAllowance -> OK
-  // setViewingKey -> OK
-  // createViewingKey -> No need ?
 
   return (
     <>
@@ -415,6 +416,13 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
             </button>
 
             <button
+              onClick={() => handleGetTransferHistory()}
+              className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
+            >
+              Get Transfer History
+            </button>
+
+            <button
               onClick={() => handleGetTransactionHistory()}
               className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
             >
@@ -447,6 +455,14 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
 
             <hr className='mb-5 mt-5' />
             <h3 className='mt-5 text-lg leading-6 font-medium text-gray-900'>SNIP-20 TXs:</h3>
+
+            <button
+              onClick={() => handleSetViewingKey()}
+              className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
+            >
+              Set Viewing Key
+            </button>
+
             <form className='mt-5 sm:flex sm:items-center' onSubmit={handleSend}>
               <div className='sm:col-span-2'>
                 <div className='mt-1'>
@@ -594,13 +610,6 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 </button>
               </div>
             </form>
-
-            <button
-              onClick={() => handleSetViewingKey()}
-              className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
-            >
-              Set Viewing Key
-            </button>
           </div>
         </div>
       </div>
