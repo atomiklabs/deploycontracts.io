@@ -42,16 +42,20 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, { addressToCodeHash: {}, permits: {} })
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>()
 
-  // GetAllowance - submit form
+  // Query: GetAllowance - submit form
   const [allowanceSpender, setAllowanceSpender] = useState('')
-
-  // transfer - submit form
+  // TX: send - submit form
+  const [sendAmount, setSendAmount] = useState('')
+  const [sendRecipient, setSendRecipient] = useState('')
+  // TX: transfer - submit form
   const [transferAmount, setTransferAmount] = useState('')
   const [transferRecipient, setTransferRecipient] = useState('')
-
-  // increaseAllowance - submit form
+  // TX: increaseAllowance - submit form
   const [increaseAllowanceAmount, setIncreaseAllowanceAmount] = useState('')
   const [increaseAllowanceSpender, setIncreaseAllowanceSpender] = useState('')
+  // TX: increaseAllowance - submit form
+  const [decreaseAllowanceAmount, setDecreaseAllowanceAmount] = useState('')
+  const [decreaseAllowanceSpender, setDecreaseAllowanceSpender] = useState('')
 
   const contractAddress = useMemo(() => {
     if (typeof router.query.token !== 'string') {
@@ -164,7 +168,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     return permit
   }
 
-  // ------ Queries ------
+  // (https://github.com/scrtlabs/secret.js/blob/master/test/snip20.test.ts)
+  // ------ SNIP20: Queries ------
   // Query: getBalance
   const handleGetBalance = async () => {
     // Get viewingKey from Keplr when token added
@@ -210,7 +215,28 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     console.log('GetAllowance', txQuery)
   }
 
-  // ------ TX ------
+  // ------ SNIP20: TXs ------
+  // TX: send
+  const handleSend = async (e: any) => {
+    e.preventDefault()
+
+    try {
+      const txExec = await secretClient.inner?.tx.snip20.send(
+        {
+          sender: secretClient.connectedWalletAddress!,
+          contractAddress: contractAddress!,
+          codeHash: contractCodeHash!,
+          msg: { send: { recipient: sendRecipient, amount: sendAmount } },
+        },
+        {
+          gasLimit: 5_000_000,
+        },
+      )
+      console.log('send', txExec)
+    } catch (error) {
+      console.log('send error:', error)
+    }
+  }
   // TX: transfer
   const handleTransfer = async (e: any) => {
     e.preventDefault()
@@ -220,6 +246,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
         {
           sender: secretClient.connectedWalletAddress!,
           contractAddress: contractAddress!,
+          codeHash: contractCodeHash!,
           msg: { transfer: { recipient: transferRecipient, amount: transferAmount } },
         },
         {
@@ -253,6 +280,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
         {
           sender: secretClient.connectedWalletAddress!,
           contractAddress: contractAddress!,
+          codeHash: contractCodeHash!,
           msg: { increase_allowance: { spender: increaseAllowanceSpender, amount: increaseAllowanceAmount } },
         },
         {
@@ -264,8 +292,29 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
       console.log('increaseAllowance error:', error)
     }
   }
+  // TX: decreaseAllowance
+  const handleDecreaseAllowance = async (e: any) => {
+    e.preventDefault()
 
-  // TODO: (https://github.com/scrtlabs/secret.js/blob/master/test/snip20.test.ts)
+    try {
+      const txExec = await secretClient.inner?.tx.snip20.decreaseAllowance(
+        {
+          sender: secretClient.connectedWalletAddress!,
+          contractAddress: contractAddress!,
+          codeHash: contractCodeHash!,
+          msg: { decrease_allowance: { spender: decreaseAllowanceSpender, amount: decreaseAllowanceAmount } },
+        },
+        {
+          gasLimit: 5_000_000,
+        },
+      )
+      console.log('decreaseAllowance', txExec)
+    } catch (error) {
+      console.log('decreaseAllowance error:', error)
+    }
+  }
+
+  // TODO:
 
   // --- QUERIES ---
   // getSnip20Params -> OK
@@ -275,12 +324,12 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   // GetAllowance -> OK
 
   // --- TX ---
-  // send (https://github.com/SecretFoundation/SNIPs/blob/master/SNIP-20.md#send)
-  // transfer -> OK (https://github.com/SecretFoundation/SNIPs/blob/master/SNIP-20.md#transfer)
-  // increaseAllowance
-  // decreaseAllowance
+  // send -> OK
+  // transfer -> OK
+  // increaseAllowance -> OK
+  // decreaseAllowance -> OK
   // setViewingKey -> OK
-  // createViewingKey
+  // createViewingKey -> No need ?
 
   return (
     <>
@@ -396,7 +445,45 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               </div>
             </form>
 
+            <hr className='mb-5 mt-5' />
             <h3 className='mt-5 text-lg leading-6 font-medium text-gray-900'>SNIP-20 TXs:</h3>
+            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleSend}>
+              <div className='sm:col-span-2'>
+                <div className='mt-1'>
+                  <input
+                    type='text'
+                    name='sendAmount'
+                    id='sendAmount'
+                    placeholder='amount'
+                    onChange={(e) => setSendAmount(e.target.value)}
+                    value={sendAmount}
+                    className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                  />
+                </div>
+              </div>
+              <div className='sm:col-span-2'>
+                <div className='mt-1'>
+                  <input
+                    type='text'
+                    name='sendRecipient'
+                    id='sendRecipient'
+                    placeholder='recipient'
+                    onChange={(e) => setSendRecipient(e.target.value)}
+                    value={sendRecipient}
+                    className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                  />
+                </div>
+              </div>
+              <div className='sm:col-span-2'>
+                <button
+                  type='submit'
+                  className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
+                >
+                  Send
+                </button>
+              </div>
+            </form>
+
             <form className='mt-5 sm:flex sm:items-center' onSubmit={handleTransfer}>
               <div className='sm:col-span-2'>
                 <div className='mt-1'>
@@ -467,6 +554,43 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                   className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
                 >
                   Increase Allowance
+                </button>
+              </div>
+            </form>
+
+            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleDecreaseAllowance}>
+              <div className='sm:col-span-2'>
+                <div className='mt-1'>
+                  <input
+                    type='text'
+                    name='decreaseAllowanceAmount'
+                    id='decreaseAllowanceAmount'
+                    placeholder='amount'
+                    onChange={(e) => setDecreaseAllowanceAmount(e.target.value)}
+                    value={decreaseAllowanceAmount}
+                    className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                  />
+                </div>
+              </div>
+              <div className='sm:col-span-2'>
+                <div className='mt-1'>
+                  <input
+                    type='text'
+                    name='decreaseAllowanceSpender'
+                    id='decreaseAllowanceSpender'
+                    placeholder='spender addr'
+                    onChange={(e) => setDecreaseAllowanceSpender(e.target.value)}
+                    value={decreaseAllowanceSpender}
+                    className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                  />
+                </div>
+              </div>
+              <div className='sm:col-span-2'>
+                <button
+                  type='submit'
+                  className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
+                >
+                  Decrease Allowance
                 </button>
               </div>
             </form>
