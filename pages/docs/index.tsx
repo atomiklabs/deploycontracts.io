@@ -173,7 +173,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     const txQuery = await secretClient.inner?.query.snip20.getBalance({
       address: secretClient.connectedWalletAddress!,
       contract: { address: contractAddress!, codeHash: contractCodeHash! },
-      auth: { key: 'hello' },
+      auth: { permit: metaState.permits[contractAddress!] },
+      // auth: { key: 'hello' },
     })
     console.log('getBalance', txQuery)
   }
