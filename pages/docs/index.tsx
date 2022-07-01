@@ -42,6 +42,9 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, { addressToCodeHash: {}, permits: {} })
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>()
 
+  // GetAllowance submit form
+  const [allowanceSpender, setAllowanceSpender] = useState('')
+
   // Transfer submit form
   const [transferAmount, setTransferAmount] = useState('')
   const [transferRecipient, setTransferRecipient] = useState('')
@@ -159,22 +162,19 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
 
   // Query: getBalance
   const handleGetBalance = async () => {
-    // Try to get a viewing key from Keplr
+    // Get viewingKey from Keplr when token added
     try {
-      // TODO: Fix Keplr viewing key error
       const viewingKey = await window.keplr!.getSecret20ViewingKey(chainSettings.chainId, contractAddress!)
       console.log('viewingKey', viewingKey)
     } catch (error) {
       console.log('viewingKey error:', error)
-      // TODO: FIX error
-      // Error: There is no matched secret20
     }
 
     const txQuery = await secretClient.inner?.query.snip20.getBalance({
       address: secretClient.connectedWalletAddress!,
       contract: { address: contractAddress!, codeHash: contractCodeHash! },
-      auth: { permit: metaState.permits[contractAddress!] },
-      // auth: { key: 'hello' },
+      // auth: { permit: metaState.permits[contractAddress!] },
+      auth: { key: 'hello' },
     })
     console.log('getBalance', txQuery)
   }
@@ -191,16 +191,18 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     console.log('getTransactionHistory', txQuery)
   }
 
-  // TX: setViewingKey
-  const handleSetViewingKey = async () => {
-    const txExec = await secretClient.inner?.tx.snip20.setViewingKey({
-      sender: secretClient.connectedWalletAddress!,
-      contractAddress: contractAddress!,
-      codeHash: contractCodeHash!,
-      msg: { set_viewing_key: { key: 'hello' } },
+  // Query: GetAllowance
+  const handleGetAllowance = async (e: any) => {
+    e.preventDefault()
+
+    const txQuery = await secretClient.inner?.query.snip20.GetAllowance({
+      contract: { address: contractAddress!, codeHash: contractCodeHash! },
+      owner: secretClient.connectedWalletAddress!,
+      spender: allowanceSpender,
+      auth: { key: 'hello' },
     })
 
-    console.log('setViewingKey', txExec)
+    console.log('GetAllowance', txQuery)
   }
 
   // TX: transfer
@@ -222,6 +224,18 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     } catch (error) {
       console.log('transfer error:', error)
     }
+  }
+
+  // TX: setViewingKey
+  const handleSetViewingKey = async () => {
+    const txExec = await secretClient.inner?.tx.snip20.setViewingKey({
+      sender: secretClient.connectedWalletAddress!,
+      contractAddress: contractAddress!,
+      codeHash: contractCodeHash!,
+      msg: { set_viewing_key: { key: 'hello' } },
+    })
+
+    console.log('setViewingKey', txExec)
   }
 
   // TODO: (https://github.com/scrtlabs/secret.js/blob/master/test/snip20.test.ts)
@@ -330,6 +344,30 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
             >
               Get Transaction History
             </button>
+
+            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleGetAllowance}>
+              <div className='sm:col-span-2'>
+                <div className='mt-1'>
+                  <input
+                    type='text'
+                    name='allowanceSpender'
+                    id='allowanceSpender'
+                    placeholder='spender addr'
+                    onChange={(e) => setAllowanceSpender(e.target.value)}
+                    value={allowanceSpender}
+                    className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                  />
+                </div>
+              </div>
+              <div className='sm:col-span-2'>
+                <button
+                  type='submit'
+                  className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
+                >
+                  GetAllowance
+                </button>
+              </div>
+            </form>
 
             <h3 className='mt-5 text-lg leading-6 font-medium text-gray-900'>SNIP-20 TXs:</h3>
             <form className='mt-5 sm:flex sm:items-center' onSubmit={handleTransfer}>
