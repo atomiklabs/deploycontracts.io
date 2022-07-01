@@ -42,12 +42,16 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, { addressToCodeHash: {}, permits: {} })
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>()
 
-  // GetAllowance submit form
+  // GetAllowance - submit form
   const [allowanceSpender, setAllowanceSpender] = useState('')
 
-  // Transfer submit form
+  // transfer - submit form
   const [transferAmount, setTransferAmount] = useState('')
   const [transferRecipient, setTransferRecipient] = useState('')
+
+  // increaseAllowance - submit form
+  const [increaseAllowanceAmount, setIncreaseAllowanceAmount] = useState('')
+  const [increaseAllowanceSpender, setIncreaseAllowanceSpender] = useState('')
 
   const contractAddress = useMemo(() => {
     if (typeof router.query.token !== 'string') {
@@ -160,6 +164,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     return permit
   }
 
+  // ------ Queries ------
   // Query: getBalance
   const handleGetBalance = async () => {
     // Get viewingKey from Keplr when token added
@@ -205,6 +210,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     console.log('GetAllowance', txQuery)
   }
 
+  // ------ TX ------
   // TX: transfer
   const handleTransfer = async (e: any) => {
     e.preventDefault()
@@ -238,6 +244,27 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     console.log('setViewingKey', txExec)
   }
 
+  // TX: increaseAllowance
+  const handleIncreaseAllowance = async (e: any) => {
+    e.preventDefault()
+
+    try {
+      const txExec = await secretClient.inner?.tx.snip20.increaseAllowance(
+        {
+          sender: secretClient.connectedWalletAddress!,
+          contractAddress: contractAddress!,
+          msg: { increase_allowance: { spender: increaseAllowanceSpender, amount: increaseAllowanceAmount } },
+        },
+        {
+          gasLimit: 5_000_000,
+        },
+      )
+      console.log('increaseAllowance', txExec)
+    } catch (error) {
+      console.log('increaseAllowance error:', error)
+    }
+  }
+
   // TODO: (https://github.com/scrtlabs/secret.js/blob/master/test/snip20.test.ts)
 
   // --- QUERIES ---
@@ -245,7 +272,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   // getBalance -> OK
   // getTransferHistory
   // getTransactionHistory -> OK
-  // GetAllowance
+  // GetAllowance -> OK
 
   // --- TX ---
   // send (https://github.com/SecretFoundation/SNIPs/blob/master/SNIP-20.md#send)
@@ -375,8 +402,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 <div className='mt-1'>
                   <input
                     type='text'
-                    name='amount'
-                    id='amount'
+                    name='transferAmount'
+                    id='transferAmount'
                     placeholder='amount'
                     onChange={(e) => setTransferAmount(e.target.value)}
                     value={transferAmount}
@@ -388,8 +415,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 <div className='mt-1'>
                   <input
                     type='text'
-                    name='recipient'
-                    id='recipient'
+                    name='transferRecipient'
+                    id='transferRecipient'
                     placeholder='recipient'
                     onChange={(e) => setTransferRecipient(e.target.value)}
                     value={transferRecipient}
@@ -403,6 +430,43 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                   className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
                 >
                   Transfer
+                </button>
+              </div>
+            </form>
+
+            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleIncreaseAllowance}>
+              <div className='sm:col-span-2'>
+                <div className='mt-1'>
+                  <input
+                    type='text'
+                    name='increaseAllowanceAmount'
+                    id='increaseAllowanceAmount'
+                    placeholder='amount'
+                    onChange={(e) => setIncreaseAllowanceAmount(e.target.value)}
+                    value={increaseAllowanceAmount}
+                    className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                  />
+                </div>
+              </div>
+              <div className='sm:col-span-2'>
+                <div className='mt-1'>
+                  <input
+                    type='text'
+                    name='increaseAllowanceSpender'
+                    id='increaseAllowanceSpender'
+                    placeholder='spender addr'
+                    onChange={(e) => setIncreaseAllowanceSpender(e.target.value)}
+                    value={increaseAllowanceSpender}
+                    className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                  />
+                </div>
+              </div>
+              <div className='sm:col-span-2'>
+                <button
+                  type='submit'
+                  className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
+                >
+                  Increase Allowance
                 </button>
               </div>
             </form>
