@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from 'react'
 import type { GetTokenParamsResponse } from 'secretjs/dist/extensions/snip20/types'
 import type { Permit } from 'secretjs'
 
+import { FormButton, FormWithSinger } from '@/components/form'
+
 import { useSecretClient } from '@/hooks/secret-client-hook'
 import type { UseSecretClientProps } from '@/hooks/secret-client-hook'
 
@@ -39,32 +41,21 @@ function createDefaultProps(): DocsPageProps {
 export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProps = createDefaultProps()) {
   const router = useRouter()
   const secretClient = useSecretClient({ chainSettings })
-  const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, { addressToCodeHash: {}, permits: {} })
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>()
+  const [metaState, setMetaState] = useLocalStorage<MetaState>(metaStorageKey, {
+    addressToCodeHash: {},
+    permits: {},
+  })
 
   // TODO: remove when permit ready
   const MOCK_VIEWING_KEY = 'very secure key'
   const PAGE_SIZE = 10
 
-  // Query: GetAllowance - submit form
-  const [allowanceSpender, setAllowanceSpender] = useState('')
-  // TX: send - submit form
-  const [sendAmount, setSendAmount] = useState('')
-  const [sendRecipient, setSendRecipient] = useState('')
-  // TX: transfer - submit form
-  const [transferAmount, setTransferAmount] = useState('')
-  const [transferRecipient, setTransferRecipient] = useState('')
-  // TX: increaseAllowance - submit form
-  const [increaseAllowanceAmount, setIncreaseAllowanceAmount] = useState('')
-  const [increaseAllowanceSpender, setIncreaseAllowanceSpender] = useState('')
-  // TX: increaseAllowance - submit form
-  const [decreaseAllowanceAmount, setDecreaseAllowanceAmount] = useState('')
-  const [decreaseAllowanceSpender, setDecreaseAllowanceSpender] = useState('')
-
   const contractAddress = useMemo(() => {
     if (typeof router.query.token !== 'string') {
       return null
     }
+
     console.log('contractAddress', router.query.token)
 
     try {
@@ -144,62 +135,61 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   }, [contractAddress, contractCodeHash, secretClient.isReady])
 
   const signPermit = async () => {
-    if (!contractAddress) {
-      throw Error('Missing contract address')
-    }
-
-    if (!secretClient.connectedWalletAddress) {
-      throw Error('Missing signer address')
-    }
+    const useKelpAsSigner = true
 
     const permit = await secretClient.inner!.utils.accessControl.permit.sign(
-      secretClient.connectedWalletAddress,
+      secretClient.connectedWalletAddress!,
       chainSettings.chainId,
       'deploycontracts.io/docs',
-      [contractAddress],
+      [contractAddress!],
       ['owner', 'history', 'balance', 'allowance'],
-      false,
+      useKelpAsSigner,
     )
+
+    const storageKey = `${secretClient.connectedWalletAddress}:${contractAddress}`
 
     setMetaState(({ permits, ...metaState }) => ({
       ...metaState,
       permits: {
         ...permits,
-        [contractAddress]: permit,
+        [storageKey]: permit,
       },
     }))
 
     return permit
   }
 
+  const getPermit = async () => {
+    const storageKey = `${secretClient.connectedWalletAddress}:${contractAddress}`
+    const storageValue = metaState.permits[storageKey]
+
+    return storageValue || (await signPermit())
+  }
+
   // (https://github.com/scrtlabs/secret.js/blob/master/test/snip20.test.ts)
   // ------ SNIP20: Queries ------
   // Query: getBalance
-  const handleGetBalance = async () => {
-    // // TODO: Remove when permit ready or add a viewing_key option with Keplr handle to a snippet?
-    // // Get viewingKey from Keplr when token added
-    // try {
-    //   const viewingKey = await window.keplr!.getSecret20ViewingKey(chainSettings.chainId, contractAddress!)
-    //   console.log('viewingKey', viewingKey)
-    // } catch (error) {
-    //   console.log('viewingKey error:', error)
-    // }
+  const handleGetBalance: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
 
     const txQuery = await secretClient.inner?.query.snip20.getBalance({
       address: secretClient.connectedWalletAddress!,
       contract: { address: contractAddress!, codeHash: contractCodeHash! },
-      // auth: { permit: metaState.permits[contractAddress!] },
-      auth: { key: MOCK_VIEWING_KEY },
+      auth: {
+        permit: await getPermit(),
+      },
     })
     console.log('getBalance', txQuery)
   }
 
   // Query: getTransferHistory
-  const handleGetTransferHistory = async () => {
+  const handleGetTransferHistory: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+
     const txQuery = await secretClient.inner?.query.snip20.getTransferHistory({
       address: secretClient.connectedWalletAddress!,
       contract: { address: contractAddress!, codeHash: contractCodeHash! },
-      auth: { key: MOCK_VIEWING_KEY },
+      auth: { permit: await getPermit() },
       page_size: PAGE_SIZE,
     })
 
@@ -207,11 +197,13 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   }
 
   // Query: getTransactionHistory
-  const handleGetTransactionHistory = async () => {
+  const handleGetTransactionHistory: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+
     const txQuery = await secretClient.inner?.query.snip20.getTransactionHistory({
       address: secretClient.connectedWalletAddress!,
       contract: { address: contractAddress!, codeHash: contractCodeHash! },
-      auth: { key: MOCK_VIEWING_KEY },
+      auth: { permit: await getPermit() },
       page_size: PAGE_SIZE,
     })
 
@@ -219,14 +211,16 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   }
 
   // Query: GetAllowance
-  const handleGetAllowance = async (e: any) => {
-    e.preventDefault()
+  const handleGetAllowance: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
 
     const txQuery = await secretClient.inner?.query.snip20.GetAllowance({
       contract: { address: contractAddress!, codeHash: contractCodeHash! },
       owner: secretClient.connectedWalletAddress!,
-      spender: allowanceSpender,
-      auth: { key: MOCK_VIEWING_KEY },
+      spender: formData.get('allowanceSpender')!.toString(),
+      auth: { permit: await getPermit() },
     })
 
     console.log('GetAllowance', txQuery)
@@ -235,7 +229,9 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   // ------ SNIP20: TXs ------
   // TX: setViewingKey
   // TODO: Remove when permit ready or add a viewing_key option to a snippet?
-  const handleSetViewingKey = async () => {
+  const handleSetViewingKey: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+
     const txExec = await secretClient.inner?.tx.snip20.setViewingKey({
       sender: secretClient.connectedWalletAddress!,
       contractAddress: contractAddress!,
@@ -247,8 +243,10 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   }
 
   // TX: send
-  const handleSend = async (e: any) => {
-    e.preventDefault()
+  const handleSend: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
 
     try {
       const txExec = await secretClient.inner?.tx.snip20.send(
@@ -256,7 +254,12 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           sender: secretClient.connectedWalletAddress!,
           contractAddress: contractAddress!,
           codeHash: contractCodeHash!,
-          msg: { send: { recipient: sendRecipient, amount: sendAmount } },
+          msg: {
+            send: {
+              recipient: formData.get('recipient')!.toString(),
+              amount: formData.get('sendAmount')!.toString(),
+            },
+          },
         },
         {
           gasLimit: 5_000_000,
@@ -268,8 +271,10 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     }
   }
   // TX: transfer
-  const handleTransfer = async (e: any) => {
-    e.preventDefault()
+  const handleTransfer: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
 
     try {
       const txExec = await secretClient.inner?.tx.snip20.transfer(
@@ -277,7 +282,12 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           sender: secretClient.connectedWalletAddress!,
           contractAddress: contractAddress!,
           codeHash: contractCodeHash!,
-          msg: { transfer: { recipient: transferRecipient, amount: transferAmount } },
+          msg: {
+            transfer: {
+              recipient: formData.get('transferRecipient')!.toString(),
+              amount: formData.get('transferAmount')!.toString(),
+            },
+          },
         },
         {
           gasLimit: 5_000_000,
@@ -290,8 +300,10 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   }
 
   // TX: increaseAllowance
-  const handleIncreaseAllowance = async (e: any) => {
-    e.preventDefault()
+  const handleIncreaseAllowance: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
 
     try {
       const txExec = await secretClient.inner?.tx.snip20.increaseAllowance(
@@ -299,7 +311,12 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           sender: secretClient.connectedWalletAddress!,
           contractAddress: contractAddress!,
           codeHash: contractCodeHash!,
-          msg: { increase_allowance: { spender: increaseAllowanceSpender, amount: increaseAllowanceAmount } },
+          msg: {
+            increase_allowance: {
+              spender: formData.get('increaseAllowanceSpender')!.toString(),
+              amount: formData.get('increaseAllowanceAmount')!.toString(),
+            },
+          },
         },
         {
           gasLimit: 5_000_000,
@@ -311,8 +328,10 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     }
   }
   // TX: decreaseAllowance
-  const handleDecreaseAllowance = async (e: any) => {
-    e.preventDefault()
+  const handleDecreaseAllowance: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget)
 
     try {
       const txExec = await secretClient.inner?.tx.snip20.decreaseAllowance(
@@ -320,7 +339,12 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           sender: secretClient.connectedWalletAddress!,
           contractAddress: contractAddress!,
           codeHash: contractCodeHash!,
-          msg: { decrease_allowance: { spender: decreaseAllowanceSpender, amount: decreaseAllowanceAmount } },
+          msg: {
+            decrease_allowance: {
+              spender: formData.get('decreaseAllowanceSpender')!.toString(),
+              amount: formData.get('decreaseAllowanceAmount')!.toString(),
+            },
+          },
         },
         {
           gasLimit: 5_000_000,
@@ -338,7 +362,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
         <title>SNIP-20 token details | Deploy Contracts</title>
         <meta name='description' content={`Use a simple web form to interact with any SNIP-20 smart contract.`} />
       </Head>
-      <div className='col-span-full m-20 '>
+      <div className='col-span-full m-20'>
         <div className='bg-white shadow sm:rounded-lg'>
           <div className='px-4 py-5 sm:p-6'>
             <h3 className='text-lg leading-6 font-medium text-gray-900'>SNIP-20 contract address</h3>
@@ -362,7 +386,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               >
                 Load
               </button>
-              {secretClient.isReadOnly ? (
+              {secretClient.isReadOnly && (
                 <button
                   onClick={secretClient.connectWallet}
                   type='button'
@@ -370,20 +394,6 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 >
                   Connect wallet
                 </button>
-              ) : (
-                <>
-                  {typeof contractAddress === 'string' &&
-                    typeof metaState?.permits !== 'undefined' &&
-                    typeof metaState?.permits[contractAddress] === 'undefined' && (
-                      <button
-                        onClick={signPermit}
-                        type='button'
-                        className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-indigo-500 shadow-sm font-medium rounded-md text-indigo-600 bg-transparent hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
-                      >
-                        Sign permit
-                      </button>
-                    )}
-                </>
               )}
             </form>
 
@@ -407,29 +417,31 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
             </div>
 
             <hr className='mb-5' />
-            <h3 className='text-lg leading-6 font-medium text-gray-900'>SNIP-20 Queries:</h3>
-            <button
-              onClick={() => handleGetBalance()}
-              className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
-            >
-              Get Balance
-            </button>
+            <h3 className='text-lg leading-6 font-medium text-gray-900'>SNIP-20 Permitted Queries:</h3>
 
-            <button
-              onClick={() => handleGetTransferHistory()}
-              className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
-            >
-              Get Transfer History
-            </button>
+            {secretClient.isReadOnly && <p className='my-4'>Connect wallet to interact with form</p>}
 
-            <button
-              onClick={() => handleGetTransactionHistory()}
-              className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
-            >
-              Get Transaction History
-            </button>
+            <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetBalance}>
+              <FormButton>Get Balance</FormButton>
+            </FormWithSinger>
 
-            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleGetAllowance}>
+            <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetTransferHistory}>
+              <FormButton className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'>
+                Get Transfer History
+              </FormButton>
+            </FormWithSinger>
+
+            <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetTransactionHistory}>
+              <FormButton className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'>
+                Get Transaction History
+              </FormButton>
+            </FormWithSinger>
+
+            <FormWithSinger
+              disabled={secretClient.isReadOnly}
+              onSubmit={handleGetAllowance}
+              className='mt-5 sm:flex sm:items-center'
+            >
               <div className='sm:col-span-2'>
                 <div className='mt-1'>
                   <input
@@ -437,33 +449,37 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                     name='allowanceSpender'
                     id='allowanceSpender'
                     placeholder='spender addr'
-                    onChange={(e) => setAllowanceSpender(e.target.value)}
-                    value={allowanceSpender}
+                    required
                     className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
                   />
                 </div>
               </div>
               <div className='sm:col-span-2'>
-                <button
+                <FormButton
                   type='submit'
                   className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
                 >
                   GetAllowance
-                </button>
+                </FormButton>
               </div>
-            </form>
+            </FormWithSinger>
 
             <hr className='mb-5 mt-5' />
             <h3 className='mt-5 text-lg leading-6 font-medium text-gray-900'>SNIP-20 TXs:</h3>
 
-            <button
-              onClick={() => handleSetViewingKey()}
-              className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
-            >
-              Set Viewing Key
-            </button>
+            {secretClient.isReadOnly && <p className='my-4'>Connect wallet to interact with form</p>}
 
-            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleSend}>
+            <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleSetViewingKey}>
+              <FormButton className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'>
+                Set Viewing Key
+              </FormButton>
+            </FormWithSinger>
+
+            <FormWithSinger
+              disabled={secretClient.isReadOnly}
+              onSubmit={handleSend}
+              className='mt-5 sm:flex sm:items-center'
+            >
               <div className='sm:col-span-2'>
                 <div className='mt-1'>
                   <input
@@ -471,8 +487,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                     name='sendAmount'
                     id='sendAmount'
                     placeholder='amount'
-                    onChange={(e) => setSendAmount(e.target.value)}
-                    value={sendAmount}
+                    required
                     className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
                   />
                 </div>
@@ -484,23 +499,26 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                     name='sendRecipient'
                     id='sendRecipient'
                     placeholder='recipient'
-                    onChange={(e) => setSendRecipient(e.target.value)}
-                    value={sendRecipient}
+                    required
                     className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
                   />
                 </div>
               </div>
               <div className='sm:col-span-2'>
-                <button
+                <FormButton
                   type='submit'
                   className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
                 >
                   Send
-                </button>
+                </FormButton>
               </div>
-            </form>
+            </FormWithSinger>
 
-            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleTransfer}>
+            <FormWithSinger
+              disabled={secretClient.isReadOnly}
+              onSubmit={handleTransfer}
+              className='mt-5 sm:flex sm:items-center'
+            >
               <div className='sm:col-span-2'>
                 <div className='mt-1'>
                   <input
@@ -508,8 +526,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                     name='transferAmount'
                     id='transferAmount'
                     placeholder='amount'
-                    onChange={(e) => setTransferAmount(e.target.value)}
-                    value={transferAmount}
+                    required
                     className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
                   />
                 </div>
@@ -521,23 +538,26 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                     name='transferRecipient'
                     id='transferRecipient'
                     placeholder='recipient'
-                    onChange={(e) => setTransferRecipient(e.target.value)}
-                    value={transferRecipient}
+                    required
                     className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
                   />
                 </div>
               </div>
               <div className='sm:col-span-2'>
-                <button
+                <FormButton
                   type='submit'
                   className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
                 >
                   Transfer
-                </button>
+                </FormButton>
               </div>
-            </form>
+            </FormWithSinger>
 
-            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleIncreaseAllowance}>
+            <FormWithSinger
+              disabled={secretClient.isReadOnly}
+              onSubmit={handleIncreaseAllowance}
+              className='mt-5 sm:flex sm:items-center'
+            >
               <div className='sm:col-span-2'>
                 <div className='mt-1'>
                   <input
@@ -545,8 +565,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                     name='increaseAllowanceAmount'
                     id='increaseAllowanceAmount'
                     placeholder='amount'
-                    onChange={(e) => setIncreaseAllowanceAmount(e.target.value)}
-                    value={increaseAllowanceAmount}
+                    required
                     className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
                   />
                 </div>
@@ -558,23 +577,26 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                     name='increaseAllowanceSpender'
                     id='increaseAllowanceSpender'
                     placeholder='spender addr'
-                    onChange={(e) => setIncreaseAllowanceSpender(e.target.value)}
-                    value={increaseAllowanceSpender}
+                    required
                     className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
                   />
                 </div>
               </div>
               <div className='sm:col-span-2'>
-                <button
+                <FormButton
                   type='submit'
                   className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
                 >
                   Increase Allowance
-                </button>
+                </FormButton>
               </div>
-            </form>
+            </FormWithSinger>
 
-            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleDecreaseAllowance}>
+            <FormWithSinger
+              disabled={secretClient.isReadOnly}
+              onSubmit={handleDecreaseAllowance}
+              className='mt-5 sm:flex sm:items-center'
+            >
               <div className='sm:col-span-2'>
                 <div className='mt-1'>
                   <input
@@ -582,8 +604,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                     name='decreaseAllowanceAmount'
                     id='decreaseAllowanceAmount'
                     placeholder='amount'
-                    onChange={(e) => setDecreaseAllowanceAmount(e.target.value)}
-                    value={decreaseAllowanceAmount}
+                    required
                     className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
                   />
                 </div>
@@ -595,21 +616,20 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                     name='decreaseAllowanceSpender'
                     id='decreaseAllowanceSpender'
                     placeholder='spender addr'
-                    onChange={(e) => setDecreaseAllowanceSpender(e.target.value)}
-                    value={decreaseAllowanceSpender}
+                    required
                     className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
                   />
                 </div>
               </div>
               <div className='sm:col-span-2'>
-                <button
+                <FormButton
                   type='submit'
                   className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
                 >
                   Decrease Allowance
-                </button>
+                </FormButton>
               </div>
-            </form>
+            </FormWithSinger>
           </div>
         </div>
       </div>
