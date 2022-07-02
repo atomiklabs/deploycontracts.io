@@ -244,7 +244,8 @@ export default function TokenCreatorPage(
               {goLiveState === GoLiveState.InProgress && (
                 <div className='text-white'>
                   <H2>Going live 🚀</H2>
-                  <p className='mt-10'>
+                  <p className='mt-10 flex gap-4 items-center'>
+                    <span className='loader w-10 h-10 flex-none bg-[#671bc9]' />
                     Your contract is being created, please wait. Once it's completed, you will be able to:
                   </p>
                   <ul className='mt-5 list-inside list-disc'>
