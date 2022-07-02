@@ -5,7 +5,7 @@ import { AtomikLabsLogo } from './AtomikLabsLogo'
 export default function Footer() {
   return (
     <footer className='mt-16 md:mt-28'>
-      <GridContainer>
+      <GridContainer className='px-6'>
         <div className='col-span-full flex flex-col items-center md:justify-between md:flex-row gap-y-6 py-14 md:py-6 md:border-t md:border-[#455378]'>
           <div className='flex flex-col md:flex-row gap-y-1 md:gap-x-2 items-center  text-gray-200'>
             Created by:

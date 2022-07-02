@@ -4,7 +4,7 @@ import H1 from '@/components/headings/H1'
 export default function Masthead() {
   return (
     <header className='mt-11 md:mt-16'>
-      <GridContainer className='justify-center items-center'>
+      <GridContainer className='px-6 justify-center items-center'>
         <div className='col-span-full lg:col-start-7 lg:col-span-6 lg:order-2 flex justify-center'>
           <div className='h-full w-[270px] md:w-[410px] lg:w-[487px] flex shrink-0'>
             <img src='/assets/masthead.svg' alt='masthead image' />

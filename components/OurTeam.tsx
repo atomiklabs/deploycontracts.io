@@ -18,7 +18,7 @@ export default function OurTeam() {
     <section className='relative mt-32'>
       <div id='our-team' className='absolute -top-24' />
 
-      <GirdContainer>
+      <GirdContainer className='px-6'>
         <div className='col-span-full lg:col-start-3 lg:col-span-8 flex flex-col text-center gap-y-4 md:gap-y-6'>
           <H2>
             <span className='text-center'>
@@ -30,7 +30,7 @@ export default function OurTeam() {
           </H2>
 
           <div className='text-gray-100 tracking-[-0.002rem]'>
-            Those people are deeply involved into this project. Let us know what you think?
+            Creators of this project. Feel free to reach out and share your thoughts!
           </div>
         </div>
 
