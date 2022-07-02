@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
+import type { FormEventHandler } from 'react'
 
 import type { GetTokenParamsResponse } from 'secretjs/dist/extensions/snip20/types'
 import type { Permit } from 'secretjs'
