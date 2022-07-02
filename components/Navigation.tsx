@@ -17,7 +17,7 @@ export default function Navigation() {
     <aside className='sticky top-0 z-50 backdrop-blur'>
       <Popover>
         <nav className='relative py-5'>
-          <GridContainer>
+          <GridContainer className='px-6'>
             <div className='z-50 col-span-3 md:col-start-2 md:order-2 xl:col-start-1 flex items-center'>
               <a href={landingPageUrl.navbarLogo}>
                 <DeployconttractsLogo className='w-56 h-full md:w-72 md:h-9 cursor-pointer shrink-0' />
@@ -59,7 +59,7 @@ export default function Navigation() {
               leaveTo='opacity-0'
             >
               <Popover.Panel className='absolute z-10 top-0 inset-x-0 transition transform origin-top-right bg-[#071741] border-b-2 xl:hidden'>
-                <GridContainer className='py-5 md:pt-9'>
+                <GridContainer className='px-6 py-5 md:pt-9'>
                   <div className='col-span-1 col-start-4 md:col-start-1 xl:hidden flex justify-end md:justify-start'>
                     <Popover.Button>
                       <div className='w-8 h-full cursor-pointer flex items-center shrink-0'>

@@ -44,7 +44,7 @@ export default function Contracts() {
   return (
     <section className='relative mt-24 md:mt-32'>
       <div id='available-contracts' className='absolute -top-24' />
-      <GridContainer>
+      <GridContainer className='px-6'>
         <div className='col-span-full text-center'>
           <H2>Available contracts</H2>
         </div>
