@@ -2,9 +2,9 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEventHandler } from 'react'
-
 import type { GetTokenParamsResponse } from 'secretjs/dist/extensions/snip20/types'
 import type { Permit } from 'secretjs'
+import { CopyBlock, atomOneDark, nord, dracula } from 'react-code-blocks'
 
 import { FormButton, FormWithSinger } from '@/components/form'
 
@@ -50,6 +50,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     addressToCodeHash: {},
     permits: {},
   })
+
+  const [balanceOutput, setBalanceOutput] = useState('')
 
   const PAGE_SIZE = 10
 
@@ -181,6 +183,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
       },
     })
     console.log('getBalance', txQuery)
+    setBalanceOutput(JSON.stringify(txQuery, null, 2))
   }
 
   // Query: getTransferHistory
@@ -562,9 +565,38 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
             {secretClient.isReadOnly && <p className='my-4'>Connect wallet to interact with form</p>}
 
             <h2 className='text-white'>Get Balance</h2>
+            <div className='mb-5 prose prose-slate max-w-none dark:prose-invert dark:text-slate-400 prose-headings:scroll-mt-28 prose-headings:font-display prose-headings:font-normal lg:prose-headings:scroll-mt-[8.5rem] prose-lead:text-slate-500 dark:prose-lead:text-slate-400 prose-a:font-semibold dark:prose-a:text-sky-400 prose-a:no-underline prose-a:shadow-[inset_0_-2px_0_0_var(--tw-prose-background,#fff),inset_0_calc(-1*(var(--tw-prose-underline-size,4px)+2px))_0_0_var(--tw-prose-underline,theme(colors.sky.300))] hover:prose-a:[--tw-prose-underline-size:6px] dark:[--tw-prose-background:theme(colors.slate.900)] dark:prose-a:shadow-[inset_0_calc(-1*var(--tw-prose-underline-size,2px))_0_0_var(--tw-prose-underline,theme(colors.sky.800))] dark:hover:prose-a:[--tw-prose-underline-size:6px] prose-pre:rounded-xl prose-pre:bg-slate-900 prose-pre:shadow-lg dark:prose-pre:bg-slate-800/60 dark:prose-pre:shadow-none dark:prose-pre:ring-1 dark:prose-pre:ring-slate-300/10 dark:prose-hr:border-slate-800'>
+              <p>
+                Some text about explaing how the balance works. Some text about explaing how the balance works. Some
+                text about explaing how the balance works. Some text about explaing how the balance works.
+              </p>
+            </div>
+
+            <CopyBlock
+              text={`const handleGetBalance = async (event) => {
+  event.preventDefault()
+
+  const txQuery = await secretClient.inner?.query.snip20.getBalance({
+    address: secretClient.connectedWalletAddress!,
+    contract: { address: contractAddress!, codeHash: contractCodeHash! },
+    auth: { permit: await getPermit() }
+    })
+}`}
+              theme={atomOneDark}
+              language='js'
+            />
+
             <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetBalance}>
               <FormButton>Get Balance</FormButton>
             </FormWithSinger>
+
+            <div className='mb-5 prose prose-slate max-w-none dark:prose-invert dark:text-slate-400 prose-headings:scroll-mt-28 prose-headings:font-display prose-headings:font-normal lg:prose-headings:scroll-mt-[8.5rem] prose-lead:text-slate-500 dark:prose-lead:text-slate-400 prose-a:font-semibold dark:prose-a:text-sky-400 prose-a:no-underline prose-a:shadow-[inset_0_-2px_0_0_var(--tw-prose-background,#fff),inset_0_calc(-1*(var(--tw-prose-underline-size,4px)+2px))_0_0_var(--tw-prose-underline,theme(colors.sky.300))] hover:prose-a:[--tw-prose-underline-size:6px] dark:[--tw-prose-background:theme(colors.slate.900)] dark:prose-a:shadow-[inset_0_calc(-1*var(--tw-prose-underline-size,2px))_0_0_var(--tw-prose-underline,theme(colors.sky.800))] dark:hover:prose-a:[--tw-prose-underline-size:6px] prose-pre:rounded-xl prose-pre:bg-slate-900 prose-pre:shadow-lg dark:prose-pre:bg-slate-800/60 dark:prose-pre:shadow-none dark:prose-pre:ring-1 dark:prose-pre:ring-slate-300/10 dark:prose-hr:border-slate-800'>
+              {balanceOutput && (
+                <pre>
+                  <output>{balanceOutput}</output>
+                </pre>
+              )}
+            </div>
 
             <h2 className='text-white'>Get Transfer History</h2>
             <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetTransferHistory}>
