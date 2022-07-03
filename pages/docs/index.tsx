@@ -51,8 +51,6 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     permits: {},
   })
 
-  // TODO: remove when permit ready
-  const MOCK_VIEWING_KEY = 'very secure key'
   const PAGE_SIZE = 10
 
   const contractAddress = useMemo(() => {
@@ -170,7 +168,6 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     return storageValue || (await signPermit())
   }
 
-  // (https://github.com/scrtlabs/secret.js/blob/master/test/snip20.test.ts)
   // ------ SNIP20: Queries ------
   // Query: getBalance
   const handleGetBalance: FormEventHandler<HTMLFormElement> = async (event) => {
@@ -231,21 +228,6 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   }
 
   // ------ SNIP20: TXs ------
-  // TX: setViewingKey
-  // TODO: Remove when permit ready or add a viewing_key option to a snippet?
-  const handleSetViewingKey: FormEventHandler<HTMLFormElement> = async (event) => {
-    event.preventDefault()
-
-    const txExec = await secretClient.inner?.tx.snip20.setViewingKey({
-      sender: secretClient.connectedWalletAddress!,
-      contractAddress: contractAddress!,
-      codeHash: contractCodeHash!,
-      msg: { set_viewing_key: { key: MOCK_VIEWING_KEY } },
-    })
-
-    console.log('setViewingKey', txExec)
-  }
-
   // TX: send
   const handleSend: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
@@ -791,13 +773,6 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                   Decrease Allowance
                 </FormButton>
               </div>
-            </FormWithSinger>
-
-            <h2 className='text-white'>Set Viewing Key</h2>
-            <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleSetViewingKey}>
-              <FormButton className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'>
-                Set Viewing Key
-              </FormButton>
             </FormWithSinger>
           </article>
         </div>
