@@ -1,6 +1,7 @@
 import { SecretNetworkClient, Wallet } from 'secretjs'
 import type { CreateClientOptions, MsgInstantiateContractParams } from 'secretjs'
-import type { Window as KeplrWindow } from '@keplr-wallet/types'
+import { Bech32Address } from "@keplr-wallet/cosmos";
+import type { Currency, Window as KeplrWindow } from '@keplr-wallet/types'
 import { ChainSettings } from './configuration'
 
 declare global {
@@ -241,45 +242,44 @@ export async function suggestAddingSecretNetworkToKeplrApp({ chainId, chainName,
     throw Error('Wallet extension is not available. Install Keplr App and try again.')
   }
 
+  if (!chainId) {
+    throw new Error('Suggested chain info is missing `chainId` property')
+  }
+
+  if (!chainName) {
+    throw new Error('Suggested chain info is missing `chainName` property')
+  }
+
+  if (!rpcUrl) {
+    throw new Error('Suggested chain info is missing `rpcUrl` property')
+  }
+
+  if (!restUrl) {
+    throw new Error('Suggested chain info is missing `restUrl` property')
+  }
+
+  const coinTypeId: number = 529
+
+  const scrtCoin: Currency = {
+    coinDenom: 'SCRT',
+    coinMinimalDenom: 'uscrt',
+    coinDecimals: 6,
+    coinGeckoId: 'secret',
+  }
+
   const extendedChainSettings = {
-    rpc: rpcUrl || '',
-    rest: restUrl || '',
-    chainName: chainName || '',
-    chainId: chainId || '',
+    rpc: rpcUrl,
+    rest: restUrl,
+    chainName: chainName,
+    chainId: chainId,
     bip44: {
-      coinType: 529,
+      coinType: coinTypeId,
     },
-    bech32Config: {
-      bech32PrefixAccAddr: 'secret',
-      bech32PrefixAccPub: 'secretpub',
-      bech32PrefixValAddr: 'secretvaloper',
-      bech32PrefixValPub: 'secretvaloperpub',
-      bech32PrefixConsAddr: 'secretvalcons',
-      bech32PrefixConsPub: 'secretvalconspub',
-    },
-    currencies: [
-      {
-        coinDenom: 'SCRT',
-        coinMinimalDenom: 'uscrt',
-        coinDecimals: 6,
-        coinGeckoId: 'secret',
-      },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: 'SCRT',
-        coinMinimalDenom: 'uscrt',
-        coinDecimals: 6,
-        coinGeckoId: 'secret',
-      },
-    ],
-    stakeCurrency: {
-      coinDenom: 'SCRT',
-      coinMinimalDenom: 'uscrt',
-      coinDecimals: 6,
-      coinGeckoId: 'secret',
-    },
-    coinType: 529,
+    bech32Config: Bech32Address.defaultBech32Config('secret'),
+    currencies: [scrtCoin],
+    feeCurrencies: [scrtCoin],
+    stakeCurrency: scrtCoin,
+    coinType: coinTypeId,
     gasPriceStep: {
       low: 0.1,
       average: 0.25,
@@ -295,22 +295,6 @@ export async function suggestAddingSecretNetworkToKeplrApp({ chainId, chainName,
   }
 
   try {
-    if (!extendedChainSettings.chainId) {
-      throw new Error('Suggested chain info is missing `chainId` property')
-    }
-
-    if (!extendedChainSettings.chainName) {
-      throw new Error('Suggested chain info is missing `chainName` property')
-    }
-
-    if (!extendedChainSettings.rpc) {
-      throw new Error('Suggested chain info is missing `rpcUrl` property')
-    }
-
-    if (!extendedChainSettings.rest) {
-      throw new Error('Suggested chain info is missing `restUrl` property')
-    }
-
     await window.keplr.experimentalSuggestChain(extendedChainSettings)
   } catch (error: any) {
     console.error(`Failed to suggest the network switch: ${error.message}`)

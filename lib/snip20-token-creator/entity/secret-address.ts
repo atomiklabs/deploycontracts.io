@@ -1,5 +1,5 @@
 import { InferType, string } from "yup";
-import { Bech32 } from "secretjs";
+import { Bech32Address } from "@keplr-wallet/cosmos";
 
 export const schema = string().test(
   'secret address',
@@ -10,9 +10,9 @@ export const schema = string().test(
     }
 
     try {
-      const decoded = Bech32.decode(value);
+      Bech32Address.validate(value, 'secret')
 
-      return decoded.prefix === 'secret'
+      return true;
     } catch (error) {
       return false
     }

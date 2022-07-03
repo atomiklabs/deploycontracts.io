@@ -39,27 +39,32 @@ export function useSecretClient({ chainSettings, tokenFactorySettings }: UseSecr
       return client.address
     } catch (error: any) {
       console.warn(error.message)
+      try {
+        if (error.message.includes(`There is no chain info for ${chainSettings.chainId}`)) {
 
-      if (error.message.includes(`There is no chain info for ${chainSettings.chainId}`)) {
-        await suggestAddingSecretNetworkToKeplrApp(chainSettings)
+          await suggestAddingSecretNetworkToKeplrApp(chainSettings)
 
-        const { signer, walletAddress, encryptionUtils } = await createBrowserSigner(chainSettings.chainId)
-        const { client } = await createClient({
-          ...chainSettings,
-          wallet: signer,
-          walletAddress,
-          encryptionUtils,
-        })
 
-        setSecretClient(client)
 
-        return client.address
+          const { signer, walletAddress, encryptionUtils } = await createBrowserSigner(chainSettings.chainId)
+          const { client } = await createClient({
+            ...chainSettings,
+            wallet: signer,
+            walletAddress,
+            encryptionUtils,
+          })
+
+          setSecretClient(client)
+
+          return client.address
+        }
       }
-
-      console.warn('Could not connect at this time, try again')
-
-      return ''
+      catch (error) {
+        console.warn('Could not connect at this time, try again')
+      }
     }
+    console.error('Could not connect wallet')
+    return ''
   }, [suggestAddingSecretNetworkToKeplrApp])
 
   const instantiateSnip20Contract = useCallback(
