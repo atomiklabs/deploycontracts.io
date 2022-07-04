@@ -500,13 +500,13 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               <p className='font-display text-sm font-medium text-[#FD0F9E]'>Introduction</p>
               <h1 className='font-display text-3xl tracking-tight text-white'>Getting started</h1>
             </header>
-            <p className='text-slate-400'>
+            <p className='text-slate-400 leading-7'>
               Quasi sapiente voluptates aut minima non doloribus similique quisquam. In quo expedita ipsum nostrum
               corrupti incidunt. Et aut eligendi ea perferendis.
             </p>
 
-            <form className='mt-5 sm:flex sm:items-center'>
-              <div className='w-full sm:max-w-xs'>
+            <form className='mt-5 mb-5 sm:flex sm:items-center'>
+              <div className='max-w-xs'>
                 <label htmlFor='snip20-addr' className='sr-only'>
                   SNIP-20 address
                 </label>
@@ -526,41 +526,49 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 Load
               </PrimaryButton>
               {secretClient.isReadOnly && (
-                <button
+                <PrimaryButton
                   onClick={secretClient.connectWallet}
                   type='button'
-                  className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-indigo-500 shadow-sm font-medium rounded-md text-indigo-600 bg-transparent hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+                  className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
                 >
                   Connect wallet
-                </button>
+                </PrimaryButton>
               )}
             </form>
 
-            <div className='my-10'>
-              <h2 className='text-white'>Secret Client Info</h2>
-              <output className='my-10 text-white'>
-                {JSON.stringify(
-                  {
-                    isReadOnly: secretClient.isReadOnly,
-                    connectedWalletAddress: secretClient.connectedWalletAddress,
-                  },
-                  undefined,
-                  2,
-                )}
-              </output>
+            <h2 className='text-white'>Secret Client Info</h2>
+            <div className='mt-5 mb-5 prose prose-slate max-w-none prose-invert text-slate-400'>
+              <pre className='rounded-xl bg-slate-900 shadow-lg bg-slate-800/60 shadow-none ring-1 ring-slate-300/10'>
+                <output>
+                  {JSON.stringify(
+                    {
+                      isReadOnly: secretClient.isReadOnly,
+                      connectedWalletAddress: secretClient.connectedWalletAddress,
+                    },
+                    undefined,
+                    2,
+                  )}
+                </output>
+              </pre>
             </div>
 
-            <div className='my-10'>
-              <h2 className='text-white'>Token Info</h2>
-              <output className='my-10 text-white'>{JSON.stringify(tokenInfo, undefined, 2)}</output>
-            </div>
+            <h2 className='text-white'>Token Info</h2>
+            {tokenInfo && (
+              <div className='mt-5 mb-5 prose prose-slate max-w-none prose-invert text-slate-400'>
+                <pre className='rounded-xl bg-slate-900 shadow-lg bg-slate-800/60 shadow-none ring-1 ring-slate-300/10'>
+                  <output>{JSON.stringify(tokenInfo, undefined, 2)}</output>
+                </pre>
+              </div>
+            )}
 
-            <header className='mt-9 mb-9 space-y-1'>
+            <header className='mt-9 space-y-1'>
               <p className='font-display text-sm font-medium text-[#FD0F9E]'>SNIP-20 Queries</p>
               <h1 className='font-display text-3xl tracking-tight text-white'>SNIP-20 Queries</h1>
             </header>
 
-            {secretClient.isReadOnly && <p className='my-4'>Connect wallet to interact with form</p>}
+            {secretClient.isReadOnly && (
+              <h2 className='text-[#FC0E47] font-black mt-2 mb-2'>Connect wallet to interact with form!</h2>
+            )}
 
             <h2 className='text-white'>Get Balance</h2>
             <p className='text-slate-400 text-sm leading-6 mt-2 mb-4'>
@@ -641,7 +649,9 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               <h1 className='font-display text-3xl tracking-tight text-white'>SNIP-20 Transactions</h1>
             </header>
 
-            {secretClient.isReadOnly && <p className='my-4'>Connect wallet to interact with form</p>}
+            {secretClient.isReadOnly && (
+              <h2 className='text-[#FC0E47] font-black mt-2 mb-2'>Connect wallet to interact with form!</h2>
+            )}
 
             <h2 className='text-white'>Send</h2>
             <FormWithSinger
