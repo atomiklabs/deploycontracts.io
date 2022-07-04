@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react'
 import type { FormEventHandler } from 'react'
 import type { GetTokenParamsResponse } from 'secretjs/dist/extensions/snip20/types'
 import type { Permit } from 'secretjs'
-import { CopyBlock, atomOneDark, nord, dracula } from 'react-code-blocks'
 
 import { FormButton, FormWithSinger } from '@/components/form'
 
@@ -18,6 +17,8 @@ import { configuration } from '@/lib/secret-client'
 import { create as createSecretAddress } from '@/lib/snip20-token-creator/entity/secret-address'
 
 import { useLocalStorage } from '@/utils/useLocalStorage'
+
+import Query from '@/components/docs/Query'
 
 type TokenInfo = GetTokenParamsResponse['token_info']
 
@@ -52,7 +53,11 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   })
 
   const [balanceOutput, setBalanceOutput] = useState('')
+  const [transferHistoryOutput, setTransferHistoryOutput] = useState('')
+  const [transactionHistoryOutput, setTransactionHistoryOutput] = useState('')
+  const [allowanceOutput, setAllowanceOutput] = useState('')
 
+  // TODO: dynamic Page size on query
   const PAGE_SIZE = 10
 
   const contractAddress = useMemo(() => {
@@ -182,7 +187,6 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
         permit: await getPermit(),
       },
     })
-    console.log('getBalance', txQuery)
     setBalanceOutput(JSON.stringify(txQuery, null, 2))
   }
 
@@ -197,7 +201,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
       page_size: PAGE_SIZE,
     })
 
-    console.log('getTransferHistory', txQuery)
+    setTransferHistoryOutput(JSON.stringify(txQuery, null, 2))
   }
 
   // Query: getTransactionHistory
@@ -211,7 +215,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
       page_size: PAGE_SIZE,
     })
 
-    console.log('getTransactionHistory', txQuery)
+    setTransactionHistoryOutput(JSON.stringify(txQuery, null, 2))
   }
 
   // Query: GetAllowance
@@ -227,7 +231,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
       auth: { permit: await getPermit() },
     })
 
-    console.log('GetAllowance', txQuery)
+    setAllowanceOutput(JSON.stringify(txQuery, null, 2))
   }
 
   // ------ SNIP20: TXs ------
@@ -557,68 +561,58 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               <h2 className='text-[#FC0E47] font-black mt-2 mb-2'>Connect wallet to interact with form!</h2>
             )}
 
-            <h2 className='text-white'>Get Balance</h2>
-            <p className='text-slate-400 text-sm leading-6 mt-2 mb-4'>
-              Some text about explaing how the balance works. Some text about explaing how the balance works. Some text
-              about explaing how the balance works. Some text about explaing how the balance works.
-            </p>
-
-            <CopyBlock
-              text={`await secretClient.inner?.query.snip20.getBalance({
+            <Query
+              queryName='Get Balance'
+              secretClient={secretClient}
+              onSubmit={handleGetBalance}
+              queryResult={balanceOutput}
+              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              codeBlock={`await secretClient.inner?.query.snip20.getBalance({
     address: secretClient.connectedWalletAddress!,
     contract: { address: contractAddress!, codeHash: contractCodeHash! },
     auth: { permit: await getPermit() }})`}
-              theme={atomOneDark}
-              language='js'
-              wrapLines
             />
 
-            <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetBalance}>
-              <h4 className='text-white'>Try it out:</h4>
-              <FormButton>Get Balance</FormButton>
-            </FormWithSinger>
+            <Query
+              queryName='Get Transfer History'
+              secretClient={secretClient}
+              onSubmit={handleGetTransferHistory}
+              queryResult={transferHistoryOutput}
+              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              codeBlock={`await secretClient.inner?.query.snip20.getTransferHistory({
+    address: secretClient.connectedWalletAddress!,
+    contract: { address: contractAddress!, codeHash: contractCodeHash! },
+    auth: { permit: await getPermit() },
+    page_size: PAGE_SIZE })`}
+            />
 
-            {balanceOutput && (
-              <div className='mb-5 prose prose-slate max-w-none prose-invert text-slate-400'>
-                <h4 className='text-white'>Output:</h4>
-                <pre className='rounded-xl bg-slate-900 shadow-lg bg-slate-800/60 shadow-none ring-1 ring-slate-300/10'>
-                  <output>{balanceOutput}</output>
-                </pre>
-              </div>
-            )}
+            <Query
+              queryName='Get Transaction History'
+              secretClient={secretClient}
+              onSubmit={handleGetTransactionHistory}
+              queryResult={transactionHistoryOutput}
+              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              codeBlock={`await secretClient.inner?.query.snip20.getTransactionHistory({
+    address: secretClient.connectedWalletAddress!,
+    contract: { address: contractAddress!, codeHash: contractCodeHash! },
+    auth: { permit: await getPermit() },
+    page_size: PAGE_SIZE })`}
+            />
 
-            <h2 className='text-white'>Get Transfer History</h2>
-            <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetTransferHistory}>
-              <FormButton>Get Transfer History</FormButton>
-            </FormWithSinger>
-
-            <h2 className='text-white'>Get Transaction History</h2>
-            <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetTransactionHistory}>
-              <FormButton>Get Transaction History</FormButton>
-            </FormWithSinger>
-
-            <h2 className='text-white'>Get Allowance</h2>
-            <FormWithSinger
-              disabled={secretClient.isReadOnly}
+            <Query
+              queryName='Get Allowance'
+              secretClient={secretClient}
               onSubmit={handleGetAllowance}
-              className='mt-5 sm:flex sm:items-center'
-            >
-              <div className='sm:col-span-2'>
-                <div className='mt-1'>
-                  <input
-                    type='text'
-                    name='allowanceSpender'
-                    id='allowanceSpender'
-                    placeholder='spender addr'
-                    required
-                    className='input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-                  />
-                </div>
-              </div>
-              <div className='sm:col-span-2'>
-                <FormButton type='submit'>GetAllowance</FormButton>
-              </div>
-            </FormWithSinger>
+              queryResult={allowanceOutput}
+              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              codeBlock={`await secretClient.inner?.query.snip20.GetAllowance({
+    contract: { address: contractAddress!, codeHash: contractCodeHash! },
+    owner: secretClient.connectedWalletAddress!,
+    spender: formData.get('allowanceSpender')!.toString(),
+    auth: { permit: await getPermit() } })`}
+              inputName='allowanceSpender'
+              inputPlaceholder='spender addr'
+            />
 
             <header className='mt-9 mb-9 space-y-1'>
               <p className='font-display text-sm font-medium text-[#FD0F9E]'>SNIP-20 Transactions</p>
