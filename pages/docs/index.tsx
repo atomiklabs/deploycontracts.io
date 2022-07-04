@@ -351,25 +351,12 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
         <title>SNIP-20 token details | Deploy Contracts</title>
         <meta name='description' content={`Use a simple web form to interact with any SNIP-20 smart contract.`} />
       </Head>
+
       <header className='sticky top-0 z-50 flex flex-wrap items-center justify-between bg-white px-4 py-5 shadow-md shadow-slate-900/5 transition duration-500 shadow-none sm:px-6 lg:px-8 bg-transparent'>
-        <div className='mr-6 lg:hidden'>
-          <button type='button' className='relative'>
-            <span className='sr-only'>Open navigation</span>
-            <svg
-              aria-hidden='true'
-              className='h-6 w-6 stroke-slate-500'
-              fill='none'
-              strokeWidth='2'
-              strokeLinecap='round'
-            >
-              <path d='M4 7h16M4 12h16M4 17h16'></path>
-            </svg>
-          </button>
-        </div>
         <div className='relative flex flex-grow basis-0 items-center'>
-          <a className='block w-10 overflow-hidden lg:w-auto' href='/'>
+          <a className='block w-10 lg:w-auto' href='/'>
             <span className='sr-only'>Home page</span>
-            <DeployconttractsLogo className='w-48 h-full md:w-64 md:h-9 cursor-pointer shrink-0' />
+            <DeployconttractsLogo className='w-64 h-9 cursor-pointer shrink-0' />
           </a>
         </div>
         <div className='relative flex basis-0 justify-end space-x-6 sm:space-x-8 md:flex-grow'>
@@ -521,7 +508,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               </div>
               <PrimaryButton
                 type='submit'
-                className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+                className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 shadow-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
               >
                 Load
               </PrimaryButton>
@@ -529,7 +516,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 <PrimaryButton
                   onClick={secretClient.connectWallet}
                   type='button'
-                  className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+                  className='mt-3 w-full inline-flex items-center justify-center px-4 py-2 shadow-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
                 >
                   Connect wallet
                 </PrimaryButton>
@@ -577,25 +564,23 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
             </p>
 
             <CopyBlock
-              text={`const handleGetBalance = async (event) => {
-  event.preventDefault()
-
-  const txQuery = await secretClient.inner?.query.snip20.getBalance({
+              text={`await secretClient.inner?.query.snip20.getBalance({
     address: secretClient.connectedWalletAddress!,
     contract: { address: contractAddress!, codeHash: contractCodeHash! },
-    auth: { permit: await getPermit() }
-    })
-}`}
+    auth: { permit: await getPermit() }})`}
               theme={atomOneDark}
               language='js'
+              wrapLines
             />
 
             <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetBalance}>
+              <h4 className='text-white'>Try it out:</h4>
               <FormButton>Get Balance</FormButton>
             </FormWithSinger>
 
             {balanceOutput && (
               <div className='mb-5 prose prose-slate max-w-none prose-invert text-slate-400'>
+                <h4 className='text-white'>Output:</h4>
                 <pre className='rounded-xl bg-slate-900 shadow-lg bg-slate-800/60 shadow-none ring-1 ring-slate-300/10'>
                   <output>{balanceOutput}</output>
                 </pre>
@@ -604,16 +589,12 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
 
             <h2 className='text-white'>Get Transfer History</h2>
             <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetTransferHistory}>
-              <FormButton className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'>
-                Get Transfer History
-              </FormButton>
+              <FormButton>Get Transfer History</FormButton>
             </FormWithSinger>
 
             <h2 className='text-white'>Get Transaction History</h2>
             <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={handleGetTransactionHistory}>
-              <FormButton className='block mt-4 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'>
-                Get Transaction History
-              </FormButton>
+              <FormButton>Get Transaction History</FormButton>
             </FormWithSinger>
 
             <h2 className='text-white'>Get Allowance</h2>
@@ -635,12 +616,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 </div>
               </div>
               <div className='sm:col-span-2'>
-                <FormButton
-                  type='submit'
-                  className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
-                >
-                  GetAllowance
-                </FormButton>
+                <FormButton type='submit'>GetAllowance</FormButton>
               </div>
             </FormWithSinger>
 
@@ -684,12 +660,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 </div>
               </div>
               <div className='sm:col-span-2'>
-                <FormButton
-                  type='submit'
-                  className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
-                >
-                  Send
-                </FormButton>
+                <FormButton type='submit'>Send</FormButton>
               </div>
             </FormWithSinger>
 
@@ -724,12 +695,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 </div>
               </div>
               <div className='sm:col-span-2'>
-                <FormButton
-                  type='submit'
-                  className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
-                >
-                  Transfer
-                </FormButton>
+                <FormButton type='submit'>Transfer</FormButton>
               </div>
             </FormWithSinger>
 
@@ -764,12 +730,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 </div>
               </div>
               <div className='sm:col-span-2'>
-                <FormButton
-                  type='submit'
-                  className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
-                >
-                  Increase Allowance
-                </FormButton>
+                <FormButton type='submit'>Increase Allowance</FormButton>
               </div>
             </FormWithSinger>
 
@@ -804,12 +765,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 </div>
               </div>
               <div className='sm:col-span-2'>
-                <FormButton
-                  type='submit'
-                  className='mt-1 px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700'
-                >
-                  Decrease Allowance
-                </FormButton>
+                <FormButton type='submit'>Decrease Allowance</FormButton>
               </div>
             </FormWithSinger>
           </article>
