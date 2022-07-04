@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useState } from 'react'
+import { createRef, useEffect, useMemo, useState } from 'react'
 import type { FormEventHandler } from 'react'
 import type { GetTokenParamsResponse } from 'secretjs/dist/extensions/snip20/types'
 import type { Permit } from 'secretjs'
@@ -56,6 +56,19 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const [transferHistoryOutput, setTransferHistoryOutput] = useState('')
   const [transactionHistoryOutput, setTransactionHistoryOutput] = useState('')
   const [allowanceOutput, setAllowanceOutput] = useState('')
+
+  const scrollIntoView = (ref: any) => () => {
+    ref.current.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const queryBalanceRef = createRef()
+  const scrollToQueryBalance = scrollIntoView(queryBalanceRef)
+  const queryTransferHistoryRef = createRef()
+  const scrollToTransferHistory = scrollIntoView(queryTransferHistoryRef)
+  const queryTransactionHistoryRef = createRef()
+  const scrollToTransactionHistory = scrollIntoView(queryTransactionHistoryRef)
+  const queryAllowanceRef = createRef()
+  const scrollToAllowance = scrollIntoView(queryAllowanceRef)
 
   // TODO: dynamic Page size on query
   const PAGE_SIZE = 10
@@ -411,32 +424,32 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                   <ul className='mt-2 space-y-2 border-l-2 border-slate-700 lg:mt-4 lg:space-y-4'>
                     <li className='relative'>
                       <a
-                        className='block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
-                        href='/docs/balance'
+                        className='cursor-pointer block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
+                        onClick={scrollToQueryBalance}
                       >
                         Get Balance
                       </a>
                     </li>
                     <li className='relative'>
                       <a
-                        className='block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
-                        href='/docs/transfer-history'
+                        className='cursor-pointer block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
+                        onClick={scrollToTransferHistory}
                       >
                         Get Transfer History
                       </a>
                     </li>
                     <li className='relative'>
                       <a
-                        className='block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
-                        href='/docs/transaction-history'
+                        className='cursor-pointer block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
+                        onClick={scrollToTransactionHistory}
                       >
                         Get Transaction History
                       </a>
                     </li>
                     <li className='relative'>
                       <a
-                        className='block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
-                        href='/docs/allowance'
+                        className='cursor-pointer block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
+                        onClick={scrollToAllowance}
                       >
                         Get Allowance
                       </a>
@@ -571,6 +584,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     address: secretClient.connectedWalletAddress!,
     contract: { address: contractAddress!, codeHash: contractCodeHash! },
     auth: { permit: await getPermit() }})`}
+              refScroll={queryBalanceRef}
             />
 
             <Query
@@ -584,6 +598,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     contract: { address: contractAddress!, codeHash: contractCodeHash! },
     auth: { permit: await getPermit() },
     page_size: PAGE_SIZE })`}
+              refScroll={queryTransferHistoryRef}
             />
 
             <Query
@@ -597,6 +612,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     contract: { address: contractAddress!, codeHash: contractCodeHash! },
     auth: { permit: await getPermit() },
     page_size: PAGE_SIZE })`}
+              refScroll={queryTransactionHistoryRef}
             />
 
             <Query
@@ -612,6 +628,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     auth: { permit: await getPermit() } })`}
               inputName='allowanceSpender'
               inputPlaceholder='spender addr'
+              refScroll={queryAllowanceRef}
             />
 
             <header className='mt-9 mb-9 space-y-1'>

@@ -13,9 +13,10 @@ export default function Query({
   text,
   inputName = '',
   inputPlaceholder = '',
+  refScroll,
 }) {
   return (
-    <>
+    <section ref={refScroll}>
       <h2 className='text-white'>{queryName}</h2>
       <p className='text-slate-400 text-sm leading-6 mt-2 mb-4'>{text}</p>
 
@@ -44,6 +45,6 @@ export default function Query({
           </pre>
         </div>
       )}
-    </>
+    </section>
   )
 }
