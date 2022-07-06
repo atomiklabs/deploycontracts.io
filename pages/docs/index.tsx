@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { createRef, useEffect, useMemo, useState } from 'react'
+import { createRef, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import type { FormEventHandler } from 'react'
 import type { GetTokenParamsResponse } from 'secretjs/dist/extensions/snip20/types'
 import type { Permit } from 'secretjs'
@@ -59,6 +59,15 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const [transferOutput, setTransferOutput] = useState('')
   const [increaseAllowanceOutput, setIncreaseAllowanceOutput] = useState('')
   const [decreaseAllowanceOutput, setDecreaseAllowanceOutput] = useState('')
+
+  const formValueExample = ({ formName, fieldName, defaultValue }: any): any => {
+    if (typeof document === 'undefined') {
+      return defaultValue
+    }
+
+    // @ts-ignore
+    return document.forms.namedItem(formName)?.elements[fieldName]?.value || defaultValue
+  }
 
   const scrollIntoView = (ref: any) => () => {
     ref.current.scrollIntoView({ behavior: 'smooth' })
@@ -170,6 +179,20 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
         console.error(error)
       })
   }, [contractAddress, contractCodeHash, secretClient.isReady])
+
+  // Expose namespaced values so users could play in the console
+  useEffect(() => {
+    // @ts-ignore
+    window['secretClient'] = secretClient.inner
+    // @ts-ignore
+    window['contractAddress'] = contractAddress
+    // @ts-ignore
+    window['contractCodeHash'] = contractCodeHash
+    // @ts-ignore
+    window['getPermit'] = getPermit
+    // @ts-ignore
+    window['PAGE_SIZE'] = PAGE_SIZE
+  })
 
   const signPermit = async () => {
     const useKelpAsSigner = true
@@ -518,10 +541,10 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           </div>
         </div>
 
-        <div className='min-w-0 max-w-2xl flex-auto px-4 py-16 lg:max-w-6xl lg:pr-0 lg:pl-8 xl:px-16'>
-          <article>
+        <article className='min-w-0 max-w-2xl flex-auto px-4 py-16 lg:max-w-6xl lg:pr-0 lg:pl-8 xl:px-16'>
+          <section className='my-12'>
             <header className='mb-2 space-y-1'>
-              <p className='font-display text-sm font-medium text-[#FD0F9E]'>Introduction</p>
+              <em className='font-display text-sm font-medium text-[#FD0F9E]'>Introduction</em>
               <h1
                 ref={startingRef as React.RefObject<HTMLHeadingElement>}
                 className='font-display text-3xl tracking-tight text-white'
@@ -529,11 +552,9 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 Getting started
               </h1>
             </header>
-            <p className='text-slate-400 leading-7'>
-              Quasi sapiente voluptates aut minima non doloribus similique quisquam. In quo expedita ipsum nostrum
-              corrupti incidunt. Et aut eligendi ea perferendis.
-            </p>
-
+            <Paragraph>
+              Check basic token information. Provide the address of chosen token contract and click "Load".
+            </Paragraph>
             <form className='mt-5 mb-5 sm:flex sm:items-center'>
               <div className='max-w-xs'>
                 <label htmlFor='snip20-addr' className='sr-only'>
@@ -564,139 +585,268 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 </PrimaryButton>
               )}
             </form>
-
-            <h2 className='text-white'>Secret Client Info</h2>
-            <div className='mt-5 mb-5 prose prose-slate max-w-none prose-invert text-slate-400'>
-              <pre className='rounded-xl bg-slate-900 shadow-lg bg-slate-800/60 shadow-none ring-1 ring-slate-300/10'>
-                <output>
-                  {JSON.stringify(
-                    {
-                      isReadOnly: secretClient.isReadOnly,
-                      connectedWalletAddress: secretClient.connectedWalletAddress,
-                    },
-                    undefined,
-                    2,
-                  )}
-                </output>
-              </pre>
+          </section>
+          <section className='my-12'>
+            <h2 className='text-white text-lg'>Token Info</h2>
+            <div className='my-4'>
+              <CopyBlock
+                text={tokenInfo ? JSON.stringify(tokenInfo, undefined, 2) : 'Data loading...'}
+                theme={atomOneDark}
+                language='json'
+                wrapLines
+                customStyle={{ overflowWrap: 'break-word', fontSize: '1rem', padding: '1rem' }}
+              />
             </div>
-
-            <h2 className='text-white'>Token Info</h2>
             {tokenInfo && (
-              <div className='mt-5 mb-5 prose prose-slate max-w-none prose-invert text-slate-400'>
-                <pre className='rounded-xl bg-slate-900 shadow-lg bg-slate-800/60 shadow-none ring-1 ring-slate-300/10'>
-                  <output>{JSON.stringify(tokenInfo, undefined, 2)}</output>
-                </pre>
-              </div>
+              <Paragraph>
+                Seeing basic information is nice, but what if you wanted to integrate your token into a website? Let's
+                keep going!
+              </Paragraph>
             )}
 
-            <h2 ref={installationRef as React.RefObject<HTMLHeadingElement>} className='text-white'>
+            <Paragraph>
+              Side note: In the code examples down the page we'll be using <code>contractAddress</code> and{' '}
+              <code>contractCodeHash</code> variables. You can access both of them in the developer console. Take a
+              small break and give it a try!
+            </Paragraph>
+            <div className='my-4'>
+              <CopyBlock
+                text={`const contractAddress = "${contractAddress}"
+const contractCodeHash = "${contractCodeHash}"`}
+                theme={atomOneDark}
+                language='js'
+                wrapLines
+                customStyle={{ overflowWrap: 'break-word', fontSize: '1rem', padding: '1rem' }}
+              />
+            </div>
+            <Paragraph>
+              Remember! They are based on the token contract address you provided at the very top of this page.
+            </Paragraph>
+          </section>
+          <section className='my-12'>
+            <h2 ref={installationRef as React.RefObject<HTMLHeadingElement>} className='text-white text-lg'>
               Installation
             </h2>
-            <p className='text-slate-400 text-sm leading-6 mt-2 mb-4'>
-              Quasi sapiente voluptates aut minima non doloribus similique quisquam. In quo expedita ipsum nostrum
-              corrupti incidunt. Et aut eligendi ea perferendis
-            </p>
-            <CopyBlock
-              text={`import { useSecretClient } from '@/hooks/secret-client-hook'
-const secretClient = useSecretClient({ chainSettings })`}
-              theme={atomOneDark}
-              language='js'
-              wrapLines
-              customStyle={{ overflowWrap: 'break-word', fontSize: '1rem' }}
-            />
+            <Paragraph>
+              If you want your website to communitcate with the Secret Network you'll need a client setup to connect to
+              blockchain.
+            </Paragraph>
+            <Paragraph>
+              Let's assume we need to add the client on the website. We'll use{' '}
+              <a
+                href='https://docs.scrt.network/docs/development/api-endpoints#grpc-web'
+                target='_blank'
+                rel='noreferrer'
+              >
+                an example
+              </a>{' '}
+              provided in the official documentation. It shows how to setup a gRPC client to Secret Network.
+            </Paragraph>
 
-            <header className='mt-9 space-y-1'>
-              <p className='font-display text-sm font-medium text-[#FD0F9E]'>SNIP-20 Queries</p>
+            <Paragraph>First, we'll install NPM package which inlcudes Secret Network JS SDK:</Paragraph>
+            <div className='my-4'>
+              <CopyBlock
+                text={`npm install secretjs@beta
+# OR
+yarn add secretjs@beta`}
+                theme={atomOneDark}
+                language='bash'
+                wrapLines
+                customStyle={{ overflowWrap: 'break-word', fontSize: '1rem', padding: '1rem' }}
+              />
+            </div>
+
+            <Paragraph>
+              Now, we can setup the client. We'll need{' '}
+              <a href='https://www.keplr.app' target='_blank' rel='noreferrer'>
+                Keplr browser extension
+              </a>{' '}
+              to sign transactions and access control permits. Of course, we also need to know which network we'd like
+              to connect to. Check out the example below:
+            </Paragraph>
+
+            <CopyBlock
+              text={`import { SecretNetworkClient } from "secretjs";
+// Connection data is available on this page:
+// https://docs.scrt.network/docs/development/api-endpoints
+
+// We'll go ahead with the testnet connection
+const grpcWebUrl = "https://testnet-web-rpc.roninventures.io";
+const chainId = "pulsar-2";
+
+// A client with Keplr integration — Keplr is the signer
+await window.keplr.enable(chainId)
+const [{ address: myAddress }] = await keplrOfflineSigner.getAccounts()
+
+const secretClient = await SecretNetworkClient.create({
+  grpcWebUrl,
+  chainId,
+  wallet: window.getOfflineSignerOnlyAmino(chainId),
+  walletAddress: myAddress,
+  encryptionUtils: window.getEnigmaUtils(chainId),
+})`}
+              theme={atomOneDark}
+              language='ts'
+              wrapLines
+              customStyle={{ overflowWrap: 'break-word', fontSize: '1rem', padding: '1rem' }}
+            />
+            <Paragraph>
+              This website has one up-and-runnig. You can check it in the developer console. Just type{' '}
+              <code>secretClient</code> and see what it's got for you!
+            </Paragraph>
+          </section>
+          <section className='my-12'>
+            <header className='mt-10 mb-4 space-y-1'>
+              <em className='font-display text-sm font-medium text-[#FD0F9E]'>Reading data</em>
               <h1 className='font-display text-3xl tracking-tight text-white'>SNIP-20 Queries</h1>
             </header>
-
+            <Paragraph>
+              Below you'll find so-called authenticated queries. It means that the contract has to know who sent the
+              query to apply access control correctly. We'll use permits to proove who we are.
+            </Paragraph>
             {secretClient.isReadOnly && (
-              <h2 className='text-[#FC0E47] font-black mt-2 mb-2'>Connect wallet to interact with form!</h2>
+              <div className='text-white bg-[#FD0F9E]/80 p-5 font-black my-10'>
+                <button onClick={secretClient.connectWallet} className='underline underline-offset-4'>
+                  Connect wallet
+                </button>{' '}
+                to interact with queries
+              </div>
             )}
-
             <Doc
               name='Get Balance'
               secretClient={secretClient}
               onSubmit={handleGetBalance}
               output={balanceOutput}
-              text='This query MUST be authenticated. Returns the balance of the given address. Returns "0" if the address is unknown to the contract.'
-              codeBlock={`await secretClient.inner?.query.snip20.getBalance({
-    address: secretClient.connectedWalletAddress!,
-    contract: { address: contractAddress!, codeHash: contractCodeHash! },
-    auth: { permit: await getPermit() }})`}
+              text={
+                <>
+                  Returns the balance of the given address. Returns <code>0</code> if the address is unknown to the
+                  contract.
+                </>
+              }
+              codeBlock={`await secretClient.query.snip20.getBalance({
+  address: secretClient.address,
+  contract: { address: contractAddress, codeHash: contractCodeHash },
+  auth: { permit: await getPermit()
+}})`}
               refScroll={queryBalanceRef}
             />
-
             <Doc
               name='Get Transfer History'
               secretClient={secretClient}
               onSubmit={handleGetTransferHistory}
               output={transferHistoryOutput}
-              text='This query MUST be authenticated.
-              This query SHOULD return a list of json objects describing the transfers made by the querying address, in newest-first order. The user may optionally specify a limit on the amount of information returned by paging the available items.'
-              codeBlock={`await secretClient.inner?.query.snip20.getTransferHistory({
-    address: secretClient.connectedWalletAddress!,
-    contract: { address: contractAddress!, codeHash: contractCodeHash! },
-    auth: { permit: await getPermit() },
-    page_size: PAGE_SIZE })`}
+              text={
+                <>
+                  Returns a list of transfers made by the querying address, in newest-first order. The user may
+                  optionally specify a limit on the amount of information returned by paging the available items.
+                </>
+              }
+              codeBlock={`await secretClient.query.snip20.getTransferHistory({
+  address: secretClient.address,
+  contract: { address: contractAddress, codeHash: contractCodeHash },
+  auth: { permit: await getPermit() },
+  page_size: PAGE_SIZE
+})`}
               refScroll={queryTransferHistoryRef}
             />
-
             <Doc
               name='Get Transaction History'
               secretClient={secretClient}
               onSubmit={handleGetTransactionHistory}
               output={transactionHistoryOutput}
-              text='This query MUST be authenticated.
-              This query SHOULD return a list of json objects describing the transactions made by the querying address, in newest-first order. The user may optionally specify a limit on the amount of information returned by paging the available items.'
-              codeBlock={`await secretClient.inner?.query.snip20.getTransactionHistory({
-    address: secretClient.connectedWalletAddress!,
-    contract: { address: contractAddress!, codeHash: contractCodeHash! },
-    auth: { permit: await getPermit() },
-    page_size: PAGE_SIZE })`}
+              text={
+                <>
+                  Returns a list of transactions made by the querying address, in newest-first order. The user may
+                  optionally specify a limit on the amount of information returned by paging the available items.
+                </>
+              }
+              codeBlock={`await secretClient.query.snip20.getTransactionHistory({
+  address: secretClient.address,
+  contract: { address: contractAddress, codeHash: contractCodeHash },
+  auth: { permit: await getPermit() },
+  page_size: PAGE_SIZE
+})`}
               refScroll={queryTransactionHistoryRef}
             />
-
             <Doc
               name='Get Allowance'
               secretClient={secretClient}
               onSubmit={handleGetAllowance}
               output={allowanceOutput}
-              text='A SNIP-20 contract may allow accounts to delegate some of their balance to other accounts. This is very similar to the allowance feature of ERC-20 contracts. It can be used by accounts to allow other contracts to manage a portion of their balance.'
-              codeBlock={`await secretClient.inner?.query.snip20.GetAllowance({
-    contract: { address: contractAddress!, codeHash: contractCodeHash! },
-    owner: secretClient.connectedWalletAddress!,
-    spender: formData.get('allowanceSpender')!.toString(),
-    auth: { permit: await getPermit() } })`}
+              text={
+                <>
+                  Returns the amount of tokens delegated by the owner to the spender. It's a similar feature to the
+                  ERC-20 allowances.
+                </>
+              }
+              codeBlock={`await secretClient.query.snip20.GetAllowance({
+  contract: { address: contractAddress, codeHash: contractCodeHash },
+  owner: secretClient.address,
+  // spender address, i.e. Bob,
+  spender: "${formValueExample({
+    formName: 'Get Allowance',
+    fieldName: 'allowanceSpender',
+    defaultValue: 'secret1fc3fzy78ttp0lwuujw7e52rhspxn8uj52zfyne',
+  })}",
+  auth: { permit: await getPermit() }
+})`}
               inputName='allowanceSpender'
               inputPlaceholder='spender addr'
               refScroll={queryAllowanceRef}
             />
+          </section>
 
-            <header className='mt-9 mb-9 space-y-1'>
-              <p className='font-display text-sm font-medium text-[#FD0F9E]'>SNIP-20 Transactions</p>
+          <section>
+            <header className='mt-10 mb-4 space-y-1'>
+              <em className='font-display text-sm font-medium text-[#FD0F9E]'>Writing data</em>
               <h1 className='font-display text-3xl tracking-tight text-white'>SNIP-20 Transactions</h1>
             </header>
-
+            <Paragraph>Every single transaction has to be signed by to be exectued.</Paragraph>
             {secretClient.isReadOnly && (
-              <h2 className='text-[#FC0E47] font-black mt-2 mb-2'>Connect wallet to interact with form!</h2>
+              <div className='text-white bg-[#FD0F9E]/80 p-5 font-black my-10'>
+                <button onClick={secretClient.connectWallet} className='underline underline-offset-4'>
+                  Connect wallet
+                </button>{' '}
+                to interact with transactions
+              </div>
             )}
-
             <Doc
               name='Send'
               secretClient={secretClient}
               onSubmit={handleSend}
               output={sendOutput}
-              text="Moves amount from the Cosmos message sender account to the recipient account. The receiver account MAY be a contract that has registered itself using a RegisterReceive message. If such a registration has been performed, a message MUST be sent to the contract's address as a callback, after completing the transfer. The format of this message is described under Receiver interface. If the callback fails due to an error in the Receiver contract, the entire transaction will be reverted."
-              codeBlock={`await secretClient.inner?.tx.snip20.send({
-  sender: secretClient.connectedWalletAddress!,
-  contractAddress: contractAddress!,
-  codeHash: contractCodeHash!,
+              text={
+                <>
+                  <Paragraph>
+                    Moves amount from the sender account to the recipient account. The receiver account MAY be a
+                    contract that has registered itself using a RegisterReceive message.
+                  </Paragraph>
+                  <Paragraph>
+                    If such a registration has been performed, a message MUST be sent to the contract's address as a
+                    callback, after completing the transfer. The format of this message is described under Receiver
+                    interface. If the callback fails due to an error in the Receiver contract, the entire transaction
+                    will be reverted.
+                  </Paragraph>
+                </>
+              }
+              codeBlock={`await secretClient.tx.snip20.send({
+  sender: secretClient.address,
+  contractAddress: contractAddress,
+  codeHash: contractCodeHash,
   msg: {
     send: {
-      recipient: formData.get('senderRecipient')!.toString(),
-      amount: formData.get('sendAmount')!.toString(),
+      // recepient address, i.e. Bob,
+      recipient: "${formValueExample({
+        formName: 'Send',
+        fieldName: 'sendRecipient',
+        defaultValue: 'secret1fc3fzy78ttp0lwuujw7e52rhspxn8uj52zfyne',
+      })}",
+      // amount to be sent
+      amount: "${formValueExample({
+        formName: 'Send',
+        fieldName: 'sendAmount',
+        defaultValue: '30000000',
+      })}",
     },
   }},
   {
@@ -708,21 +858,35 @@ const secretClient = useSecretClient({ chainSettings })`}
               inputPlaceholder2='recipient'
               refScroll={txSendRef}
             />
-
             <Doc
               name='Transfer'
               secretClient={secretClient}
               onSubmit={handleTransfer}
               output={transferOutput}
-              text='Moves tokens from the account that appears in the Cosmos message sender field to the account in the recipient field.'
-              codeBlock={`await secretClient.inner?.tx.snip20.transfer({
-  sender: secretClient.connectedWalletAddress!,
-  contractAddress: contractAddress!,
-  codeHash: contractCodeHash!,
+              text={
+                <>
+                  Moves tokens from the account that appears in the Cosmos message sender field to the account in the
+                  recipient field. This is where allowances make sense!
+                </>
+              }
+              codeBlock={`await secretClient.tx.snip20.transfer({
+  sender: secretClient.address,
+  contractAddress: contractAddress,
+  codeHash: contractCodeHash,
   msg: {
-    send: {
-      recipient: formData.get('transferRecipient')!.toString(),
-      amount: formData.get('transferAmount')!.toString(),
+    transfer: {
+      // recepient address, i.e. Bob,
+      recipient: "${formValueExample({
+        formName: 'Transfer',
+        fieldName: 'transferRecipient',
+        defaultValue: 'secret1fc3fzy78ttp0lwuujw7e52rhspxn8uj52zfyne',
+      })}",
+      // amount to be transferred
+      amount: "${formValueExample({
+        formName: 'Transfer',
+        fieldName: 'transferAmount',
+        defaultValue: '30000000',
+      })}",
     },
   }},
   {
@@ -734,21 +898,36 @@ const secretClient = useSecretClient({ chainSettings })`}
               inputPlaceholder2='recipient'
               refScroll={txTransferRef}
             />
-
             <Doc
               name='Increase Allowance'
               secretClient={secretClient}
               onSubmit={handleIncreaseAllowance}
               output={increaseAllowanceOutput}
-              text='Set or increase the allowance such that spender may access up to current_allowance + amount tokens from the Cosmos message sender account. This may optionally come with an expiration time, which if set limits when the approval can be used (by time).'
-              codeBlock={`await secretClient.inner?.tx.snip20.increaseAllowance({
-  sender: secretClient.connectedWalletAddress!,
-  contractAddress: contractAddress!,
-  codeHash: contractCodeHash!,
+              text={
+                <>
+                  Set or increase the allowance such that spender may access up to current_allowance + amount tokens
+                  from the Cosmos message sender account. This may optionally come with an expiration time, which if set
+                  limits when the approval can be used (by time).
+                </>
+              }
+              codeBlock={`await secretClient.tx.snip20.increaseAllowance({
+  sender: secretClient.address,
+  contractAddress: contractAddress,
+  codeHash: contractCodeHash,
   msg: {
     increase_allowance: {
-      recipient: formData.get('increaseAllowanceSpender')!.toString(),
-      amount: formData.get('increaseAllowanceAmount')!.toString(),
+      // spender address, i.e. Bob,
+      spender: "${formValueExample({
+        formName: 'Increase Allowance',
+        fieldName: 'increaseAllowanceSpender',
+        defaultValue: 'secret1fc3fzy78ttp0lwuujw7e52rhspxn8uj52zfyne',
+      })}",
+      // amount to be added to the current allowance
+      amount: "${formValueExample({
+        formName: 'Increase Allowance',
+        fieldName: 'increaseAllowanceAmount',
+        defaultValue: '30000000',
+      })}",
     },
   }},
   {
@@ -760,21 +939,36 @@ const secretClient = useSecretClient({ chainSettings })`}
               inputPlaceholder2='allowancer addr'
               refScroll={txIncreaseAllowanceRef}
             />
-
             <Doc
               name='Decrease Allowance'
               secretClient={secretClient}
               onSubmit={handleDecreaseAllowance}
               output={decreaseAllowanceOutput}
-              text='Decrease or clear the allowance by a sent amount. This may optionally come with an expiration time, which if set limits when the approval can be used. If amount is equal or greater than the current allowance, this action MUST set the allowance to zero, and return a "success" response.'
-              codeBlock={`await secretClient.inner?.tx.snip20.decreaseAllowance({
-  sender: secretClient.connectedWalletAddress!,
-  contractAddress: contractAddress!,
-  codeHash: contractCodeHash!,
+              text={
+                <>
+                  Decrease or clear the allowance by a sent amount. This may optionally come with an expiration time,
+                  which if set limits when the approval can be used. If amount is equal or greater than the current
+                  allowance, this action MUST set the allowance to zero, and return a "success" response.
+                </>
+              }
+              codeBlock={`await secretClient.tx.snip20.decreaseAllowance({
+  sender: secretClient.address,
+  contractAddress: contractAddress,
+  codeHash: contractCodeHash,
   msg: {
     decrease_allowance: {
-      recipient: formData.get('decreaseAllowanceSpender')!.toString(),
-      amount: formData.get('decreaseAllowanceAmount')!.toString(),
+      // spender address, i.e. Bob,
+      spender: "${formValueExample({
+        formName: 'Decrease Allowance',
+        fieldName: 'decreaseAllowanceSpender',
+        defaultValue: 'secret1fc3fzy78ttp0lwuujw7e52rhspxn8uj52zfyne',
+      })}",
+      // amount to be subtracted from the current allowance
+      amount: "${formValueExample({
+        formName: 'Decrease Allowance',
+        fieldName: 'decreaseAllowanceAmount',
+        defaultValue: '30000000',
+      })}",
     },
   }},
   {
@@ -786,11 +980,15 @@ const secretClient = useSecretClient({ chainSettings })`}
               inputPlaceholder2='allowancer addr'
               refScroll={txDecreaseAllowanceRef}
             />
-          </article>
-        </div>
+          </section>
+        </article>
       </div>
     </>
   )
+}
+
+function Paragraph(props: PropsWithChildren<unknown>) {
+  return <p className='text-slate-400 text-sm my-6'>{props.children}</p>
 }
 
 export function getStaticProps() {

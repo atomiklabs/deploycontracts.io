@@ -13,3 +13,11 @@ html {
 .body-gradient {
   background: linear-gradient(119.2deg, #071741 22.38%, #010c27 93.45%);
 }
+
+a[target="_blank"] {
+  @apply underline underline-offset-4 hover:underline-offset-8 text-white
+}
+
+p code {
+  @apply bg-[#000B28] text-white rounded-sm p-1
+}
