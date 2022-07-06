@@ -18,7 +18,10 @@ const progressBarPallet = [
 
 module.exports = {
   content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography')
+  ],
   safelist: [...progressBarPallet.map((_, idx) => `bg-progress-bar-${idx}`)],
   theme: {
     extend: {

@@ -10,7 +10,6 @@ import TokenDetails from '@/components/snip-20/tokenDetails'
 import TokenAllocation from '@/components/snip-20/tokenAllocation'
 import TokenMarketing from '@/components/snip-20/tokenMarketing'
 import TokenSummary from '@/components/snip-20/tokenSummary'
-import Switch from '@/components/Switch'
 
 import { useSecretClient } from '@/hooks/secret-client-hook'
 import type { UseSecretClientProps } from '@/hooks/secret-client-hook'
