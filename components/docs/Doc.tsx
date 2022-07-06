@@ -52,7 +52,7 @@ export default function Doc({
             className='mb-3 input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
           />
         )}
-        <FormButton>{name}</FormButton>
+        <FormButton className={'max-w-xs'}>{name}</FormButton>
       </FormWithSinger>
 
       {output && (
