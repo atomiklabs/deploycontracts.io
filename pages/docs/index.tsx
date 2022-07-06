@@ -522,7 +522,10 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           <article>
             <header className='mb-2 space-y-1'>
               <p className='font-display text-sm font-medium text-[#FD0F9E]'>Introduction</p>
-              <h1 ref={startingRef} className='font-display text-3xl tracking-tight text-white'>
+              <h1
+                ref={startingRef as React.RefObject<HTMLHeadingElement>}
+                className='font-display text-3xl tracking-tight text-white'
+              >
                 Getting started
               </h1>
             </header>
@@ -587,7 +590,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               </div>
             )}
 
-            <h2 ref={installationRef} className='text-white'>
+            <h2 ref={installationRef as React.RefObject<HTMLHeadingElement>} className='text-white'>
               Installation
             </h2>
             <p className='text-slate-400 text-sm leading-6 mt-2 mb-4'>
