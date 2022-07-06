@@ -18,7 +18,7 @@ import { create as createSecretAddress } from '@/lib/snip20-token-creator/entity
 
 import { useLocalStorage } from '@/utils/useLocalStorage'
 
-import Query from '@/components/docs/Query'
+import Doc from '@/components/docs/Doc'
 
 type TokenInfo = GetTokenParamsResponse['token_info']
 
@@ -57,6 +57,9 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const [transactionHistoryOutput, setTransactionHistoryOutput] = useState('')
   const [allowanceOutput, setAllowanceOutput] = useState('')
   const [sendOutput, setSendOutput] = useState('')
+  const [transferOutput, setTransferOutput] = useState('')
+  const [increaseAllowanceOutput, setIncreaseAllowanceOutput] = useState('')
+  const [decreaseAllowanceOutput, setDecreaseAllowanceOutput] = useState('')
 
   const scrollIntoView = (ref: any) => () => {
     ref.current.scrollIntoView({ behavior: 'smooth' })
@@ -72,6 +75,12 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const scrollToAllowance = scrollIntoView(queryAllowanceRef)
   const txSendRef = createRef()
   const scrollToSend = scrollIntoView(txSendRef)
+  const txTransferRef = createRef()
+  const scrollToTransfer = scrollIntoView(txTransferRef)
+  const txIncreaseAllowanceRef = createRef()
+  const scrollToIncreaseAllowance = scrollIntoView(txIncreaseAllowanceRef)
+  const txDecreaseAllowanceRef = createRef()
+  const scrollToDecreaseAllowance = scrollIntoView(txDecreaseAllowanceRef)
 
   // TODO: dynamic Page size on query
   const PAGE_SIZE = 10
@@ -258,7 +267,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     const formData = new FormData(event.currentTarget)
 
     try {
-      setSendOutput('Sending a TX...')
+      setSendOutput('Sending a TX ...')
       const txExec = await secretClient.inner?.tx.snip20.send(
         {
           sender: secretClient.connectedWalletAddress!,
@@ -266,7 +275,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           codeHash: contractCodeHash!,
           msg: {
             send: {
-              recipient: formData.get('recipient')!.toString(),
+              recipient: formData.get('sendRecipient')!.toString(),
               amount: formData.get('sendAmount')!.toString(),
             },
           },
@@ -287,6 +296,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     const formData = new FormData(event.currentTarget)
 
     try {
+      setTransferOutput('Sending a TX ...')
+
       const txExec = await secretClient.inner?.tx.snip20.transfer(
         {
           sender: secretClient.connectedWalletAddress!,
@@ -303,9 +314,9 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           gasLimit: 5_000_000,
         },
       )
-      console.log('transfer', txExec)
+      setTransferOutput(`OK, transactionHash: ${txExec!.transactionHash}`)
     } catch (error) {
-      console.log('transfer error:', error)
+      setTransferOutput(JSON.stringify(error, null, 2))
     }
   }
 
@@ -316,6 +327,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     const formData = new FormData(event.currentTarget)
 
     try {
+      setIncreaseAllowanceOutput('Sending a TX ...')
       const txExec = await secretClient.inner?.tx.snip20.increaseAllowance(
         {
           sender: secretClient.connectedWalletAddress!,
@@ -332,9 +344,9 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           gasLimit: 5_000_000,
         },
       )
-      console.log('increaseAllowance', txExec)
+      setIncreaseAllowanceOutput(`OK, transactionHash: ${txExec!.transactionHash}`)
     } catch (error) {
-      console.log('increaseAllowance error:', error)
+      setIncreaseAllowanceOutput(JSON.stringify(error, null, 2))
     }
   }
   // TX: decreaseAllowance
@@ -344,6 +356,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     const formData = new FormData(event.currentTarget)
 
     try {
+      setDecreaseAllowanceOutput('Sending a TX ...')
       const txExec = await secretClient.inner?.tx.snip20.decreaseAllowance(
         {
           sender: secretClient.connectedWalletAddress!,
@@ -360,9 +373,9 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           gasLimit: 5_000_000,
         },
       )
-      console.log('decreaseAllowance', txExec)
+      setDecreaseAllowanceOutput(`OK, transactionHash: ${txExec!.transactionHash}`)
     } catch (error) {
-      console.log('decreaseAllowance error:', error)
+      setDecreaseAllowanceOutput(JSON.stringify(error, null, 2))
     }
   }
 
@@ -473,24 +486,24 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                     </li>
                     <li className='relative'>
                       <a
-                        className='block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
-                        href='/docs/transfer'
+                        className='cursor-pointer block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
+                        onClick={scrollToTransfer}
                       >
                         Transfer
                       </a>
                     </li>
                     <li className='relative'>
                       <a
-                        className='block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
-                        href='/docs/increase-allowance'
+                        className='cursor-pointer block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
+                        onClick={scrollToIncreaseAllowance}
                       >
                         Increase Allowance
                       </a>
                     </li>
                     <li className='relative'>
                       <a
-                        className='block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
-                        href='/docs/decrease-allowance'
+                        className='cursor-pointer block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
+                        onClick={scrollToDecreaseAllowance}
                       >
                         Decrease Allowance
                       </a>
@@ -578,11 +591,11 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               <h2 className='text-[#FC0E47] font-black mt-2 mb-2'>Connect wallet to interact with form!</h2>
             )}
 
-            <Query
-              queryName='Get Balance'
+            <Doc
+              name='Get Balance'
               secretClient={secretClient}
               onSubmit={handleGetBalance}
-              queryResult={balanceOutput}
+              output={balanceOutput}
               text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
               codeBlock={`await secretClient.inner?.query.snip20.getBalance({
     address: secretClient.connectedWalletAddress!,
@@ -591,11 +604,11 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               refScroll={queryBalanceRef}
             />
 
-            <Query
-              queryName='Get Transfer History'
+            <Doc
+              name='Get Transfer History'
               secretClient={secretClient}
               onSubmit={handleGetTransferHistory}
-              queryResult={transferHistoryOutput}
+              output={transferHistoryOutput}
               text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
               codeBlock={`await secretClient.inner?.query.snip20.getTransferHistory({
     address: secretClient.connectedWalletAddress!,
@@ -605,11 +618,11 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               refScroll={queryTransferHistoryRef}
             />
 
-            <Query
-              queryName='Get Transaction History'
+            <Doc
+              name='Get Transaction History'
               secretClient={secretClient}
               onSubmit={handleGetTransactionHistory}
-              queryResult={transactionHistoryOutput}
+              output={transactionHistoryOutput}
               text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
               codeBlock={`await secretClient.inner?.query.snip20.getTransactionHistory({
     address: secretClient.connectedWalletAddress!,
@@ -619,11 +632,11 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               refScroll={queryTransactionHistoryRef}
             />
 
-            <Query
-              queryName='Get Allowance'
+            <Doc
+              name='Get Allowance'
               secretClient={secretClient}
               onSubmit={handleGetAllowance}
-              queryResult={allowanceOutput}
+              output={allowanceOutput}
               text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
               codeBlock={`await secretClient.inner?.query.snip20.GetAllowance({
     contract: { address: contractAddress!, codeHash: contractCodeHash! },
@@ -644,19 +657,19 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               <h2 className='text-[#FC0E47] font-black mt-2 mb-2'>Connect wallet to interact with form!</h2>
             )}
 
-            <Query
-              queryName='Send'
+            <Doc
+              name='Send'
               secretClient={secretClient}
               onSubmit={handleSend}
-              queryResult={sendOutput}
+              output={sendOutput}
               text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-              codeBlock={` await secretClient.inner?.tx.snip20.send({
+              codeBlock={`await secretClient.inner?.tx.snip20.send({
   sender: secretClient.connectedWalletAddress!,
   contractAddress: contractAddress!,
   codeHash: contractCodeHash!,
   msg: {
     send: {
-      recipient: formData.get('recipient')!.toString(),
+      recipient: formData.get('senderRecipient')!.toString(),
       amount: formData.get('sendAmount')!.toString(),
     },
   }},
@@ -665,115 +678,88 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
 })`}
               inputName='sendAmount'
               inputPlaceholder='amount'
-              inputName2='recipient'
+              inputName2='sendRecipient'
               inputPlaceholder2='recipient'
               refScroll={txSendRef}
             />
 
-            <h2 className='text-white'>Transfer</h2>
-            <FormWithSinger
-              disabled={secretClient.isReadOnly}
+            <Doc
+              name='Transfer'
+              secretClient={secretClient}
               onSubmit={handleTransfer}
-              className='mt-5 sm:flex sm:items-center'
-            >
-              <div className='sm:col-span-2'>
-                <div className='mt-1'>
-                  <input
-                    type='text'
-                    name='transferAmount'
-                    id='transferAmount'
-                    placeholder='amount'
-                    required
-                    className='input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-                  />
-                </div>
-              </div>
-              <div className='sm:col-span-2'>
-                <div className='mt-1'>
-                  <input
-                    type='text'
-                    name='transferRecipient'
-                    id='transferRecipient'
-                    placeholder='recipient'
-                    required
-                    className='input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-                  />
-                </div>
-              </div>
-              <div className='sm:col-span-2'>
-                <FormButton type='submit'>Transfer</FormButton>
-              </div>
-            </FormWithSinger>
+              output={transferOutput}
+              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              codeBlock={`await secretClient.inner?.tx.snip20.transfer({
+  sender: secretClient.connectedWalletAddress!,
+  contractAddress: contractAddress!,
+  codeHash: contractCodeHash!,
+  msg: {
+    send: {
+      recipient: formData.get('transferRecipient')!.toString(),
+      amount: formData.get('transferAmount')!.toString(),
+    },
+  }},
+  {
+  gasLimit: 5_000_000
+})`}
+              inputName='transferAmount'
+              inputPlaceholder='amount'
+              inputName2='transferRecipient'
+              inputPlaceholder2='recipient'
+              refScroll={txTransferRef}
+            />
 
-            <h2 className='text-white'>Increase Allowance</h2>
-            <FormWithSinger
-              disabled={secretClient.isReadOnly}
+            <Doc
+              name='Increase Allowance'
+              secretClient={secretClient}
               onSubmit={handleIncreaseAllowance}
-              className='mt-5 sm:flex sm:items-center'
-            >
-              <div className='sm:col-span-2'>
-                <div className='mt-1'>
-                  <input
-                    type='text'
-                    name='increaseAllowanceAmount'
-                    id='increaseAllowanceAmount'
-                    placeholder='amount'
-                    required
-                    className='input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-                  />
-                </div>
-              </div>
-              <div className='sm:col-span-2'>
-                <div className='mt-1'>
-                  <input
-                    type='text'
-                    name='increaseAllowanceSpender'
-                    id='increaseAllowanceSpender'
-                    placeholder='spender addr'
-                    required
-                    className='input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-                  />
-                </div>
-              </div>
-              <div className='sm:col-span-2'>
-                <FormButton type='submit'>Increase Allowance</FormButton>
-              </div>
-            </FormWithSinger>
+              output={increaseAllowanceOutput}
+              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              codeBlock={`await secretClient.inner?.tx.snip20.increaseAllowance({
+  sender: secretClient.connectedWalletAddress!,
+  contractAddress: contractAddress!,
+  codeHash: contractCodeHash!,
+  msg: {
+    increase_allowance: {
+      recipient: formData.get('increaseAllowanceSpender')!.toString(),
+      amount: formData.get('increaseAllowanceAmount')!.toString(),
+    },
+  }},
+  {
+  gasLimit: 5_000_000
+})`}
+              inputName='increaseAllowanceAmount'
+              inputPlaceholder='amount'
+              inputName2='increaseAllowanceSpender'
+              inputPlaceholder2='allowancer addr'
+              refScroll={txIncreaseAllowanceRef}
+            />
 
-            <h2 className='text-white'>Decrease Allowance</h2>
-            <FormWithSinger
-              disabled={secretClient.isReadOnly}
+            <Doc
+              name='Decrease Allowance'
+              secretClient={secretClient}
               onSubmit={handleDecreaseAllowance}
-              className='mt-5 sm:flex sm:items-center'
-            >
-              <div className='sm:col-span-2'>
-                <div className='mt-1'>
-                  <input
-                    type='text'
-                    name='decreaseAllowanceAmount'
-                    id='decreaseAllowanceAmount'
-                    placeholder='amount'
-                    required
-                    className='input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-                  />
-                </div>
-              </div>
-              <div className='sm:col-span-2'>
-                <div className='mt-1'>
-                  <input
-                    type='text'
-                    name='decreaseAllowanceSpender'
-                    id='decreaseAllowanceSpender'
-                    placeholder='spender addr'
-                    required
-                    className='input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-                  />
-                </div>
-              </div>
-              <div className='sm:col-span-2'>
-                <FormButton type='submit'>Decrease Allowance</FormButton>
-              </div>
-            </FormWithSinger>
+              output={decreaseAllowanceOutput}
+              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              codeBlock={`await secretClient.inner?.tx.snip20.decreaseAllowance({
+  sender: secretClient.connectedWalletAddress!,
+  contractAddress: contractAddress!,
+  codeHash: contractCodeHash!,
+  msg: {
+    decrease_allowance: {
+      recipient: formData.get('decreaseAllowanceSpender')!.toString(),
+      amount: formData.get('decreaseAllowanceAmount')!.toString(),
+    },
+  }},
+  {
+  gasLimit: 5_000_000
+})`}
+              inputName='decreaseAllowanceAmount'
+              inputPlaceholder='amount'
+              inputName2='decreaseAllowanceSpender'
+              inputPlaceholder2='allowancer addr'
+              refScroll={txDecreaseAllowanceRef}
+            />
           </article>
         </div>
       </div>
