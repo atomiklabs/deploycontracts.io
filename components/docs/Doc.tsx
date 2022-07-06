@@ -18,8 +18,8 @@ export default function Doc({
   refScroll,
 }) {
   return (
-    <section ref={refScroll}>
-      <h2 className='text-white'>{name}</h2>
+    <section ref={refScroll} className='mb-20'>
+      <h3 className='text-white text-lg'>{name}</h3>
       <p className='text-slate-400 text-sm leading-6 mt-2 mb-4'>{text}</p>
 
       <CopyBlock
@@ -31,7 +31,7 @@ export default function Doc({
       />
 
       <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={onSubmit}>
-        <h4 className='text-white'>Try it out:</h4>
+        <h4 className='text-white my-3'>Try it out:</h4>
         {inputName && (
           <input
             type='text'
@@ -57,7 +57,7 @@ export default function Doc({
 
       {output && (
         <div className='mb-5 prose prose-slate max-w-none prose-invert text-slate-400'>
-          <h4 className='text-white'>Output:</h4>
+          <h4 className='text-white my-3'>Output:</h4>
           <pre className='rounded-xl bg-slate-900 shadow-lg bg-slate-800/60 shadow-none ring-1 ring-slate-300/10'>
             <output>{output}</output>
           </pre>
