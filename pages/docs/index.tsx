@@ -386,7 +386,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
         <meta name='description' content={`Use a simple web form to interact with any SNIP-20 smart contract.`} />
       </Head>
 
-      <header className='sticky top-0 z-50 flex flex-wrap items-center justify-between bg-white px-4 py-5 shadow-md shadow-slate-900/5 transition duration-500 shadow-none sm:px-6 lg:px-8 bg-transparent'>
+      <header className='sticky top-0 z-50 flex flex-wrap items-center justify-between px-4 py-5 shadow-md shadow-slate-900/5 transition duration-500 shadow-none sm:px-6 lg:px-8 bg-[#071741] md:bg-transparent max-w-screen-2xl mx-auto'>
         <div className='relative flex flex-grow basis-0 items-center'>
           <a className='block w-10 lg:w-auto' href='/'>
             <span className='sr-only'>Home page</span>
@@ -408,7 +408,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
         </div>
       </header>
 
-      <div className='relative mx-auto flex max-w-8xl justify-center sm:px-2 lg:px-8 xl:px-12'>
+      <div className='relative mx-auto flex justify-center sm:px-2 lg:px-8 xl:px-12'>
         <div className='hidden lg:relative lg:block lg:flex-none'>
           <div className='sticky top-[4.5rem] -ml-0.5 h-[calc(100vh-4.5rem)] overflow-y-auto py-16 pl-0.5'>
             <div className='absolute top-16 bottom-0 right-0 h-12 w-px bg-gradient-to-t from-slate-700 block' />
