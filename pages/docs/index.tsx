@@ -56,6 +56,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const [transferHistoryOutput, setTransferHistoryOutput] = useState('')
   const [transactionHistoryOutput, setTransactionHistoryOutput] = useState('')
   const [allowanceOutput, setAllowanceOutput] = useState('')
+  const [sendOutput, setSendOutput] = useState('')
 
   const scrollIntoView = (ref: any) => () => {
     ref.current.scrollIntoView({ behavior: 'smooth' })
@@ -69,6 +70,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
   const scrollToTransactionHistory = scrollIntoView(queryTransactionHistoryRef)
   const queryAllowanceRef = createRef()
   const scrollToAllowance = scrollIntoView(queryAllowanceRef)
+  const txSendRef = createRef()
+  const scrollToSend = scrollIntoView(txSendRef)
 
   // TODO: dynamic Page size on query
   const PAGE_SIZE = 10
@@ -255,6 +258,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     const formData = new FormData(event.currentTarget)
 
     try {
+      setSendOutput('Sending a TX...')
       const txExec = await secretClient.inner?.tx.snip20.send(
         {
           sender: secretClient.connectedWalletAddress!,
@@ -271,9 +275,9 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           gasLimit: 5_000_000,
         },
       )
-      console.log('send', txExec)
+      setSendOutput(`OK, transactionHash: ${txExec!.transactionHash}`)
     } catch (error) {
-      console.log('send error:', error)
+      setSendOutput(JSON.stringify(error, null, 2))
     }
   }
   // TX: transfer
@@ -461,8 +465,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                   <ul className='mt-2 space-y-2 border-l-2 border-slate-700 lg:mt-4 lg:space-y-4'>
                     <li className='relative'>
                       <a
-                        className='block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
-                        href='/docs/send'
+                        className='cursor-pointer block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
+                        onClick={scrollToSend}
                       >
                         Send
                       </a>
@@ -640,40 +644,31 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               <h2 className='text-[#FC0E47] font-black mt-2 mb-2'>Connect wallet to interact with form!</h2>
             )}
 
-            <h2 className='text-white'>Send</h2>
-            <FormWithSinger
-              disabled={secretClient.isReadOnly}
+            <Query
+              queryName='Send'
+              secretClient={secretClient}
               onSubmit={handleSend}
-              className='mt-5 sm:flex sm:items-center'
-            >
-              <div className='sm:col-span-2'>
-                <div className='mt-1'>
-                  <input
-                    type='text'
-                    name='sendAmount'
-                    id='sendAmount'
-                    placeholder='amount'
-                    required
-                    className='input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-                  />
-                </div>
-              </div>
-              <div className='sm:col-span-2'>
-                <div className='mt-1'>
-                  <input
-                    type='text'
-                    name='sendRecipient'
-                    id='sendRecipient'
-                    placeholder='recipient'
-                    required
-                    className='input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
-                  />
-                </div>
-              </div>
-              <div className='sm:col-span-2'>
-                <FormButton type='submit'>Send</FormButton>
-              </div>
-            </FormWithSinger>
+              queryResult={sendOutput}
+              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              codeBlock={` await secretClient.inner?.tx.snip20.send({
+  sender: secretClient.connectedWalletAddress!,
+  contractAddress: contractAddress!,
+  codeHash: contractCodeHash!,
+  msg: {
+    send: {
+      recipient: formData.get('recipient')!.toString(),
+      amount: formData.get('sendAmount')!.toString(),
+    },
+  }},
+  {
+  gasLimit: 5_000_000
+})`}
+              inputName='sendAmount'
+              inputPlaceholder='amount'
+              inputName2='recipient'
+              inputPlaceholder2='recipient'
+              refScroll={txSendRef}
+            />
 
             <h2 className='text-white'>Transfer</h2>
             <FormWithSinger

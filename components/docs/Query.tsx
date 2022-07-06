@@ -13,6 +13,8 @@ export default function Query({
   text,
   inputName = '',
   inputPlaceholder = '',
+  inputName2 = '',
+  inputPlaceholder2 = '',
   refScroll,
 }) {
   return (
@@ -30,6 +32,16 @@ export default function Query({
             name={inputName}
             id={inputName}
             placeholder={inputPlaceholder}
+            required
+            className='mb-3 mr-2 input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
+          />
+        )}
+        {inputName2 && (
+          <input
+            type='text'
+            name={inputName2}
+            id={inputName2}
+            placeholder={inputPlaceholder2}
             required
             className='mb-3 input py-4 px-5 bg-[#000B28] text-base border-2 border-[#455378] rounded-2xl text-gray-100 placeholder:text-gray-300 visited:border-[#6075AA]'
           />
