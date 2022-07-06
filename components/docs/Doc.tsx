@@ -22,7 +22,13 @@ export default function Doc({
       <h2 className='text-white'>{name}</h2>
       <p className='text-slate-400 text-sm leading-6 mt-2 mb-4'>{text}</p>
 
-      <CopyBlock text={codeBlock} theme={atomOneDark} language='js' wrapLines />
+      <CopyBlock
+        text={codeBlock}
+        theme={atomOneDark}
+        language='js'
+        wrapLines
+        customStyle={{ overflowWrap: 'break-word', fontSize: '1rem' }}
+      />
 
       <FormWithSinger disabled={secretClient.isReadOnly} onSubmit={onSubmit}>
         <h4 className='text-white'>Try it out:</h4>
