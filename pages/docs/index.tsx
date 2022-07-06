@@ -542,7 +542,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
         </div>
 
         <article className='min-w-0 max-w-2xl flex-auto px-4 py-16 lg:max-w-6xl lg:pr-0 lg:pl-8 xl:px-16'>
-          <section className='my-12'>
+          <section className='mb-12'>
             <header className='mb-2 space-y-1'>
               <em className='font-display text-sm font-medium text-[#FD0F9E]'>Introduction</em>
               <h1
