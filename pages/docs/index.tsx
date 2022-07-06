@@ -596,7 +596,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               secretClient={secretClient}
               onSubmit={handleGetBalance}
               output={balanceOutput}
-              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              text='This query MUST be authenticated. Returns the balance of the given address. Returns "0" if the address is unknown to the contract.'
               codeBlock={`await secretClient.inner?.query.snip20.getBalance({
     address: secretClient.connectedWalletAddress!,
     contract: { address: contractAddress!, codeHash: contractCodeHash! },
@@ -609,7 +609,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               secretClient={secretClient}
               onSubmit={handleGetTransferHistory}
               output={transferHistoryOutput}
-              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              text='This query MUST be authenticated.
+              This query SHOULD return a list of json objects describing the transfers made by the querying address, in newest-first order. The user may optionally specify a limit on the amount of information returned by paging the available items.'
               codeBlock={`await secretClient.inner?.query.snip20.getTransferHistory({
     address: secretClient.connectedWalletAddress!,
     contract: { address: contractAddress!, codeHash: contractCodeHash! },
@@ -623,7 +624,8 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               secretClient={secretClient}
               onSubmit={handleGetTransactionHistory}
               output={transactionHistoryOutput}
-              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              text='This query MUST be authenticated.
+              This query SHOULD return a list of json objects describing the transactions made by the querying address, in newest-first order. The user may optionally specify a limit on the amount of information returned by paging the available items.'
               codeBlock={`await secretClient.inner?.query.snip20.getTransactionHistory({
     address: secretClient.connectedWalletAddress!,
     contract: { address: contractAddress!, codeHash: contractCodeHash! },
@@ -637,7 +639,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               secretClient={secretClient}
               onSubmit={handleGetAllowance}
               output={allowanceOutput}
-              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              text='A SNIP-20 contract may allow accounts to delegate some of their balance to other accounts. This is very similar to the allowance feature of ERC-20 contracts. It can be used by accounts to allow other contracts to manage a portion of their balance.'
               codeBlock={`await secretClient.inner?.query.snip20.GetAllowance({
     contract: { address: contractAddress!, codeHash: contractCodeHash! },
     owner: secretClient.connectedWalletAddress!,
@@ -662,7 +664,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               secretClient={secretClient}
               onSubmit={handleSend}
               output={sendOutput}
-              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              text="Moves amount from the Cosmos message sender account to the recipient account. The receiver account MAY be a contract that has registered itself using a RegisterReceive message. If such a registration has been performed, a message MUST be sent to the contract's address as a callback, after completing the transfer. The format of this message is described under Receiver interface. If the callback fails due to an error in the Receiver contract, the entire transaction will be reverted."
               codeBlock={`await secretClient.inner?.tx.snip20.send({
   sender: secretClient.connectedWalletAddress!,
   contractAddress: contractAddress!,
@@ -688,7 +690,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               secretClient={secretClient}
               onSubmit={handleTransfer}
               output={transferOutput}
-              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              text='Moves tokens from the account that appears in the Cosmos message sender field to the account in the recipient field.'
               codeBlock={`await secretClient.inner?.tx.snip20.transfer({
   sender: secretClient.connectedWalletAddress!,
   contractAddress: contractAddress!,
@@ -714,7 +716,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               secretClient={secretClient}
               onSubmit={handleIncreaseAllowance}
               output={increaseAllowanceOutput}
-              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              text='Set or increase the allowance such that spender may access up to current_allowance + amount tokens from the Cosmos message sender account. This may optionally come with an expiration time, which if set limits when the approval can be used (by time).'
               codeBlock={`await secretClient.inner?.tx.snip20.increaseAllowance({
   sender: secretClient.connectedWalletAddress!,
   contractAddress: contractAddress!,
@@ -740,7 +742,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
               secretClient={secretClient}
               onSubmit={handleDecreaseAllowance}
               output={decreaseAllowanceOutput}
-              text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              text='Decrease or clear the allowance by a sent amount. This may optionally come with an expiration time, which if set limits when the approval can be used. If amount is equal or greater than the current allowance, this action MUST set the allowance to zero, and return a "success" response.'
               codeBlock={`await secretClient.inner?.tx.snip20.decreaseAllowance({
   sender: secretClient.connectedWalletAddress!,
   contractAddress: contractAddress!,
