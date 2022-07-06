@@ -4,8 +4,7 @@ import { createRef, useEffect, useMemo, useState } from 'react'
 import type { FormEventHandler } from 'react'
 import type { GetTokenParamsResponse } from 'secretjs/dist/extensions/snip20/types'
 import type { Permit } from 'secretjs'
-
-import { FormButton, FormWithSinger } from '@/components/form'
+import { CopyBlock, atomOneDark } from 'react-code-blocks'
 
 import { DeployconttractsLogo } from '@/components/DeployconttractsLogo'
 import PrimaryButton from '@/components/buttons/PrimaryButton'
@@ -65,6 +64,10 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
     ref.current.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const startingRef = createRef()
+  const scrollToStarting = scrollIntoView(startingRef)
+  const installationRef = createRef()
+  const scrollToInstallation = scrollIntoView(installationRef)
   const queryBalanceRef = createRef()
   const scrollToQueryBalance = scrollIntoView(queryBalanceRef)
   const queryTransferHistoryRef = createRef()
@@ -420,16 +423,16 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                   <ul className='mt-2 space-y-2 border-l-2 border-slate-700 lg:mt-4 lg:space-y-4'>
                     <li className='relative'>
                       <a
-                        className='block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-[#FD0F9E] before:bg-progress-bar-0 before:block font-black'
-                        href='/'
+                        className='cursor-pointer block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-[#FD0F9E] before:bg-progress-bar-0 before:block font-black'
+                        onClick={scrollToStarting}
                       >
                         Getting started
                       </a>
                     </li>
                     <li className='relative'>
                       <a
-                        className='block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
-                        href='/docs/installation'
+                        className='cursor-pointer block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-600 hover:text-slate-600 hover:before:block text-slate-400 before:bg-slate-700 hover:text-slate-300'
+                        onClick={scrollToInstallation}
                       >
                         Installation
                       </a>
@@ -519,7 +522,9 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
           <article>
             <header className='mb-2 space-y-1'>
               <p className='font-display text-sm font-medium text-[#FD0F9E]'>Introduction</p>
-              <h1 className='font-display text-3xl tracking-tight text-white'>Getting started</h1>
+              <h1 ref={startingRef} className='font-display text-3xl tracking-tight text-white'>
+                Getting started
+              </h1>
             </header>
             <p className='text-slate-400 leading-7'>
               Quasi sapiente voluptates aut minima non doloribus similique quisquam. In quo expedita ipsum nostrum
@@ -581,6 +586,22 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
                 </pre>
               </div>
             )}
+
+            <h2 ref={installationRef} className='text-white'>
+              Installation
+            </h2>
+            <p className='text-slate-400 text-sm leading-6 mt-2 mb-4'>
+              Quasi sapiente voluptates aut minima non doloribus similique quisquam. In quo expedita ipsum nostrum
+              corrupti incidunt. Et aut eligendi ea perferendis
+            </p>
+            <CopyBlock
+              text={`import { useSecretClient } from '@/hooks/secret-client-hook'
+const secretClient = useSecretClient({ chainSettings })`}
+              theme={atomOneDark}
+              language='js'
+              wrapLines
+              customStyle={{ overflowWrap: 'break-word', fontSize: '1rem' }}
+            />
 
             <header className='mt-9 space-y-1'>
               <p className='font-display text-sm font-medium text-[#FD0F9E]'>SNIP-20 Queries</p>
