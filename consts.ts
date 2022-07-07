@@ -9,7 +9,7 @@ export const landingPageUrl = {
   team: '/#our-team',
   navbarLogo: '/',
   // TODO: Update link to exact repository when ready
-  github: 'https://github.com/atomiklabs',
+  github: 'https://github.com/atomiklabs/deploycontracts.io',
   createNewToken: createNewTokenPath,
   secretNetworkGrant: 'https://scrt.network/developers/grants',
   atomikLabs: 'https://atomiklabs.io',
