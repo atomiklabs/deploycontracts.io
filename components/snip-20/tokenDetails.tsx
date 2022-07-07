@@ -55,7 +55,7 @@ export default function TokenDetails({
       >
         <Form>
           <Input className='mt-9' label='Minter address' type='hidden' name='minterAddress'>
-            <p className='text-white my-3'>Make sure to have some SCRT avaialble on this account.</p>
+            <p className='text-white my-3'>Make sure to have some SCRT available on this account.</p>
             {minterAddress ? (
               // TODO: allow refreshing token by pulling currently selected account in Keplr
               <div className='text-gray-200'>{minterAddress}</div>
