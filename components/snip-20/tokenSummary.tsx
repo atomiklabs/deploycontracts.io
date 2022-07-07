@@ -68,6 +68,15 @@ export default function TokenSummary({ prevStepPath, formData, stepPath, onSubmi
         </SummaryCardWrapper>
       </div>
 
+      <p className='text-slate-400 docs-paragraph mt-16 -mb-10'>
+        By clicking <strong className='text-white'>Create token</strong> button you agree that you read and understood
+        our{' '}
+        <a href='/snip-20/terms-of-service' target='_blank' rel='noreferrer'>
+          Terms of Service
+        </a>
+        .
+      </p>
+
       <StepsNavigation className='mt-20' submitText='Create token' prevStepPath={prevStepPath} />
     </form>
   )
