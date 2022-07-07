@@ -232,12 +232,14 @@ export default function TokenCreatorPage(
           {isCurrentStep(TokenCreatorStep.Summary) && (
             <>
               {goLiveState === GoLiveState.None && (
-                <TokenSummary
-                  prevStepPath={stepPath(TokenCreatorStep.MarketingInfo)}
-                  formData={formState}
-                  stepPath={stepPath}
-                  onSubmit={createOnSubmit(TokenCreatorStep.Summary)}
-                />
+                <>
+                  <TokenSummary
+                    prevStepPath={stepPath(TokenCreatorStep.MarketingInfo)}
+                    formData={formState}
+                    stepPath={stepPath}
+                    onSubmit={createOnSubmit(TokenCreatorStep.Summary)}
+                  />
+                </>
               )}
 
               {goLiveState === GoLiveState.InProgress && (
