@@ -605,7 +605,7 @@ export default function DocsPage({ chainSettings, metaStorageKey }: DocsPageProp
             )}
 
             <Paragraph>
-              Side note: In the code examples down the page we'll be using <code>contractAddress</code> and{' '}
+              <strong>Side note:</strong> In the code examples down the page, we'll use <code>contractAddress</code> and{' '}
               <code>contractCodeHash</code> variables. You can access both of them in the developer console. Take a
               small break and give it a try!
             </Paragraph>
@@ -628,11 +628,11 @@ const contractCodeHash = "${contractCodeHash}"`}
               Installation
             </h2>
             <Paragraph>
-              If you want your website to communitcate with the Secret Network you'll need a client setup to connect to
-              blockchain.
+              If you want your website to communicate with the Secret Network, you'll need a client set up to connect to
+              the blockchain.
             </Paragraph>
             <Paragraph>
-              Let's assume we need to add the client on the website. We'll use{' '}
+              Let's assume we need to add the client to the website. We'll use{' '}
               <a
                 href='https://docs.scrt.network/docs/development/api-endpoints#grpc-web'
                 target='_blank'
@@ -640,10 +640,10 @@ const contractCodeHash = "${contractCodeHash}"`}
               >
                 an example
               </a>{' '}
-              provided in the official documentation. It shows how to setup a gRPC client to Secret Network.
+              provided in the official documentation. It shows how to configure a gRPC client to Secret Network.
             </Paragraph>
 
-            <Paragraph>First, we'll install NPM package which inlcudes Secret Network JS SDK:</Paragraph>
+            <Paragraph>First, we'll install the NPM package, which includes Secret Network JS SDK:</Paragraph>
             <div className='my-4'>
               <CopyBlock
                 text={`npm install secretjs@beta
@@ -657,7 +657,7 @@ yarn add secretjs@beta`}
             </div>
 
             <Paragraph>
-              Now, we can setup the client. We'll need{' '}
+              Now, we can initialise the client. We'll need the{' '}
               <a href='https://www.keplr.app' target='_blank' rel='noreferrer'>
                 Keplr browser extension
               </a>{' '}
@@ -691,7 +691,7 @@ const secretClient = await SecretNetworkClient.create({
               customStyle={{ overflowWrap: 'break-word', fontSize: '1rem', padding: '1rem' }}
             />
             <Paragraph>
-              This website has one up-and-runnig. You can check it in the developer console. Just type{' '}
+              This website has one up and running. You can check it in the developer console. Just type{' '}
               <code>secretClient</code> and see what it's got for you!
             </Paragraph>
           </section>
@@ -702,7 +702,7 @@ const secretClient = await SecretNetworkClient.create({
             </header>
             <Paragraph>
               Below you'll find so-called authenticated queries. It means that the contract has to know who sent the
-              query to apply access control correctly. We'll use permits to proove who we are.
+              query to apply access control correctly. We'll use permits to prove who we are.
             </Paragraph>
             {secretClient.isReadOnly && (
               <div className='text-white bg-[#FD0F9E]/80 p-5 font-black my-10'>
@@ -737,8 +737,8 @@ const secretClient = await SecretNetworkClient.create({
               output={transferHistoryOutput}
               text={
                 <>
-                  Returns a list of transfers made by the querying address, in newest-first order. The user may
-                  optionally specify a limit on the amount of information returned by paging the available items.
+                  Returns a list of transfers made by the querying address in the newest-first order. The user may
+                  optionally specify a limit on the number of transfers returned by paging the available items.
                 </>
               }
               codeBlock={`await secretClient.query.snip20.getTransferHistory({
@@ -756,8 +756,8 @@ const secretClient = await SecretNetworkClient.create({
               output={transactionHistoryOutput}
               text={
                 <>
-                  Returns a list of transactions made by the querying address, in newest-first order. The user may
-                  optionally specify a limit on the amount of information returned by paging the available items.
+                  Returns a list of transactions made by the querying address in the newest-first order. The user may
+                  optionally specify a limit on the number of transactions returned by paging the available items.
                 </>
               }
               codeBlock={`await secretClient.query.snip20.getTransactionHistory({
@@ -775,7 +775,7 @@ const secretClient = await SecretNetworkClient.create({
               output={allowanceOutput}
               text={
                 <>
-                  Returns the amount of tokens delegated by the owner to the spender. It's a similar feature to the
+                  Returns the number of tokens delegated by the owner to the spender. It's a similar feature to the
                   ERC-20 allowances.
                 </>
               }
@@ -801,7 +801,7 @@ const secretClient = await SecretNetworkClient.create({
               <em className='font-display text-sm font-medium text-[#FD0F9E]'>Writing data</em>
               <h1 className='font-display text-3xl tracking-tight text-white'>SNIP-20 Transactions</h1>
             </header>
-            <Paragraph>Every single transaction has to be signed by to be exectued.</Paragraph>
+            <Paragraph>Every single transaction has to be signed by to be executed.</Paragraph>
             {secretClient.isReadOnly && (
               <div className='text-white bg-[#FD0F9E]/80 p-5 font-black my-10'>
                 <button onClick={secretClient.connectWallet} className='underline underline-offset-4'>
@@ -819,13 +819,15 @@ const secretClient = await SecretNetworkClient.create({
                 <>
                   <Paragraph>
                     Moves amount from the sender account to the recipient account. The receiver account MAY be a
-                    contract that has registered itself using a RegisterReceive message.
-                  </Paragraph>
-                  <Paragraph>
-                    If such a registration has been performed, a message MUST be sent to the contract's address as a
-                    callback, after completing the transfer. The format of this message is described under Receiver
-                    interface. If the callback fails due to an error in the Receiver contract, the entire transaction
-                    will be reverted.
+                    contract which got registered with the{' '}
+                    <a
+                      href='https://github.com/SecretFoundation/SNIPs/blob/master/SNIP-20.md#RegisterReceive'
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      RegisterReceive
+                    </a>{' '}
+                    message.
                   </Paragraph>
                 </>
               }
@@ -905,7 +907,8 @@ const secretClient = await SecretNetworkClient.create({
               output={increaseAllowanceOutput}
               text={
                 <>
-                  Set or increase the allowance such that spender may access up to current_allowance + amount tokens
+                  Set or increase the allowance so the spender can access up to{' '}
+                  <code>current_allowance + amount tokens</code>
                   from the Cosmos message sender account. This may optionally come with an expiration time, which if set
                   limits when the approval can be used (by time).
                 </>
@@ -944,13 +947,7 @@ const secretClient = await SecretNetworkClient.create({
               secretClient={secretClient}
               onSubmit={handleDecreaseAllowance}
               output={decreaseAllowanceOutput}
-              text={
-                <>
-                  Decrease or clear the allowance by a sent amount. This may optionally come with an expiration time,
-                  which if set limits when the approval can be used. If amount is equal or greater than the current
-                  allowance, this action MUST set the allowance to zero, and return a "success" response.
-                </>
-              }
+              text={<>Decrease or clear the allowance by a sent amount. The message can include an expiration time.</>}
               codeBlock={`await secretClient.tx.snip20.decreaseAllowance({
   sender: secretClient.address,
   contractAddress: contractAddress,
@@ -988,7 +985,7 @@ const secretClient = await SecretNetworkClient.create({
 }
 
 function Paragraph(props: PropsWithChildren<unknown>) {
-  return <p className='text-slate-400 text-sm my-6'>{props.children}</p>
+  return <p className='text-slate-400 text-sm my-6 docs-paragraph'>{props.children}</p>
 }
 
 export function getStaticProps() {
