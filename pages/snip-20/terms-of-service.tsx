@@ -9,7 +9,7 @@ export default function TermsOfServicePage() {
         <meta name='description' content={`Terms of Service for the SNIP_20 smart contract creator.`} />
       </Head>
 
-      <article className='prose lg:prose-xl prose-invert mx-auto py-20'>
+      <article className='prose lg:prose-xl prose-invert mx-auto py-10 md:py-20 px-6 md:px-0'>
         <h1>Terms of Service</h1>
 
         <p>

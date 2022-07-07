@@ -79,7 +79,7 @@ export default function Contracts() {
                         <PrimaryLink href={landingPageUrl.createNewToken}>Create new token</PrimaryLink>
                         <div className='text-gray-100 tracking-[-0.02rem]'>
                           or if you already created one{' '}
-                          <Link href='/docs'>
+                          <Link href='/snip-20/docs'>
                             <a className='underline-offset-4 font-bold mx-2'>
                               <GradientText>see docs</GradientText>
                             </a>
