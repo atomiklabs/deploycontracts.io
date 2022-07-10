@@ -83,6 +83,8 @@ export default function TokenCreatorPage(
 
   const [goLiveState, setGoLiveState] = useState<GoLiveState>(GoLiveState.None)
 
+  const [minterUscrtBalance, setMinterUscrtBalance] = useState(0)
+
   const isCurrentStep = useCallback(
     (step: TokenCreatorStep) => (typeof router.query.step === 'string' ? router.query.step === step : false),
     [router],
@@ -181,9 +183,24 @@ export default function TokenCreatorPage(
     secretClient.connectWallet()
   }, [secretClient, secretClient.connectedWalletAddress, metaState.connectedWalletAddress])
 
-  // store most recently used wallet address
+  // when connected wallet changes
   useEffect(() => {
+    // store most recently used wallet address
     setMetaState((metaState) => ({ ...metaState, connectedWalletAddress: secretClient.connectedWalletAddress }))
+
+    if (secretClient.connectedWalletAddress) {
+      // check connected wallet SCRT balance
+      secretClient
+        .inner!.query.bank.balance({
+          address: secretClient.connectedWalletAddress,
+          denom: 'uscrt',
+        })
+        .then((response) => {
+          const uscrtBalance = parseInt(response.balance?.amount || '0', 10)
+
+          setMinterUscrtBalance(uscrtBalance)
+        })
+    }
   }, [secretClient.connectedWalletAddress])
 
   return (
@@ -203,6 +220,7 @@ export default function TokenCreatorPage(
           {isCurrentStep(TokenCreatorStep.BasicInfo) && (
             <TokenDetails
               minterAddress={secretClient.connectedWalletAddress}
+              minterUscrtBalance={minterUscrtBalance}
               prevStepPath='/'
               formData={formState.basicTokenInfo}
               validationSchema={basicTokenInfoSchema}
@@ -235,6 +253,7 @@ export default function TokenCreatorPage(
                 <TokenSummary
                   prevStepPath={stepPath(TokenCreatorStep.MarketingInfo)}
                   formData={formState}
+                  validationSchema={tokenSummaryEntity.schema}
                   stepPath={stepPath}
                   onSubmit={createOnSubmit(TokenCreatorStep.Summary)}
                 />

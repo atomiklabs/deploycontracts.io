@@ -3,6 +3,7 @@ import * as secretAddressEntity from './secret-address'
 
 export const schema = object({
   minterAddress: secretAddressEntity.schema.required('Connect your wallet to provide address'),
+  minterUscrtBalance: number().min(1, "Minter address has 0 SCRT"),
   tokenSymbol: string().required('Provide token symbol').test(
     "Symbol format",
     "From 3 to 6 uppercase letters",
@@ -16,6 +17,7 @@ export type BasicTokenInfoEntity = InferType<typeof schema>
 export function createDefault(): BasicTokenInfoEntity {
   return {
     minterAddress: '',
+    minterUscrtBalance: 0,
     tokenSymbol: '',
     tokenTotalSupply: 1_000,
   }
@@ -35,6 +37,9 @@ export function parseFromData(formData: FormData): BasicTokenInfoEntity {
 
   return schema.validateSync({
     minterAddress: formData.get('minterAddress'),
+    minterUscrtBalance: formData.get('minterUscrtBalance')
+      ? parseInt(formData.get('minterUscrtBalance')!.toString(), 10)
+      : 0,
     tokenSymbol: formData.get('tokenSymbol'),
     tokenTotalSupply: tokenTotalSupplyParsed,
   })

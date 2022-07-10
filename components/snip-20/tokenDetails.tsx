@@ -10,6 +10,7 @@ import { BasicTokenInfoEntity } from '@/lib/snip20-token-creator/entity/basic-to
 
 interface TokenDetailsProps {
   minterAddress: string | undefined
+  minterUscrtBalance: number
   prevStepPath: string
   formData: BasicTokenInfoEntity
   validationSchema: any
@@ -19,6 +20,7 @@ interface TokenDetailsProps {
 
 export default function TokenDetails({
   minterAddress,
+  minterUscrtBalance,
   prevStepPath,
   formData,
   validationSchema,
@@ -33,7 +35,8 @@ export default function TokenDetails({
     }
 
     formikRef.current.setFieldValue('minterAddress', minterAddress)
-  })
+    formikRef.current.setFieldValue('minterUscrtBalance', minterUscrtBalance)
+  }, [minterAddress, minterUscrtBalance])
 
   return (
     <>
@@ -55,14 +58,21 @@ export default function TokenDetails({
       >
         <Form>
           <Input className='mt-9' label='Minter address' type='hidden' name='minterAddress'>
-            <p className='text-white my-3'>Make sure to have some SCRT available on this account.</p>
             {minterAddress ? (
               // TODO: allow refreshing token by pulling currently selected account in Keplr
-              <div className='text-gray-200'>{minterAddress}</div>
+              <>
+                <div className='text-gray-200'>{minterAddress}</div>
+              </>
             ) : (
               <SecondaryButton onClick={onConnectWallet} type='button'>
                 Connect your wallet
               </SecondaryButton>
+            )}
+          </Input>
+
+          <Input label='' type='hidden' name='minterUscrtBalance'>
+            {minterUscrtBalance === 0 && (
+              <p className='text-white mt-3 -mb-3'>Make sure to have some SCRT available on this account.</p>
             )}
           </Input>
 

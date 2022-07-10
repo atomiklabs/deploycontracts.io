@@ -5,6 +5,7 @@ describe('Basic Token Info entity', () => {
     const formData = new FormData();
 
     formData.append('minterAddress', 'secret1fc3fzy78ttp0lwuujw7e52rhspxn8uj52zfyne')
+    formData.append('minterUscrtBalance', '1')
     formData.append('tokenSymbol', 'CUSTOM')
     formData.append('tokenTotalSupply', '3000004')
 

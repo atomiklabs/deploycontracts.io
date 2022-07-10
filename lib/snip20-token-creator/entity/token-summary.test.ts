@@ -6,6 +6,7 @@ describe('Token Summary entity', () => {
     const data: TokenSummaryEntity = {
       basicTokenInfo: {
         minterAddress: 'secret1fc3fzy78ttp0lwuujw7e52rhspxn8uj52zfyne',
+        minterUscrtBalance: 1,
         tokenSymbol: 'SHHH',
         tokenTotalSupply: 999,
       },
