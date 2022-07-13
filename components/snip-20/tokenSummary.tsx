@@ -69,8 +69,8 @@ export default function TokenSummary({ prevStepPath, formData, stepPath, onSubmi
       </div>
 
       <p className='text-slate-400 docs-paragraph mt-16 -mb-10'>
-        By clicking <strong className='text-white'>Create token</strong> button you agree that you read and understood
-        our{' '}
+        By clicking <strong className='text-white'>Create token</strong> button you acknowledge that you have carefully
+        read, understood, accept and agree to all of the provisions contained in the our{' '}
         <a href='/snip-20/terms-of-service' target='_blank' rel='noreferrer'>
           Terms of Service
         </a>

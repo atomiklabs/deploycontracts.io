@@ -12,13 +12,14 @@ export default function TermsOfServicePage() {
       <article className='prose lg:prose-xl prose-invert mx-auto py-10 md:py-20 px-6 md:px-0'>
         <h1>Terms of Service</h1>
 
+        <h2>1. Definition</h2>
         <p>
           The SNIP-20 Contract Generator is a distributed application that runs on the Secret Network, using
           specially-developed Smart Contracts to enable users to build their SNIP-20 Tokens. The Smart Contracts, and
           the Site, are collectively referred to in these Terms as the "App".
         </p>
 
-        <h2>Disclaimer</h2>
+        <h2>2. Disclaimer</h2>
         <p>
           SNIP-20 Contract Generator and its author are free of any liability regarding Tokens created using this App,
           and the use that is made of them. Tokens built on SNIP-20 Contract Generator, their projects, their teams,
@@ -30,7 +31,7 @@ export default function TermsOfServicePage() {
           owner's Conditions.
         </p>
 
-        <h2>The App</h2>
+        <h2>3. The App</h2>
         <p>
           To most easily use the App, you must first install a browser extension called Keplr. Keplr is an electronic
           wallet, which allows you to purchase, store, and engage in transactions using the SCRT cryptocurrency. You
@@ -43,7 +44,7 @@ export default function TermsOfServicePage() {
           as a result of your transactions or any other interaction with any such third parties.
         </p>
 
-        <h2>Fees and Payment</h2>
+        <h2>4. Fees and Payment</h2>
         <p>
           If you elect to create a SNIP-20 Token on the App, or with or from other users via the App, any financial
           transactions that you engage in will be conducted solely through the Secret Network via Keplr. We will have no
@@ -61,7 +62,7 @@ export default function TermsOfServicePage() {
           collect a Commission for interactions that do not involve our App.
         </p>
 
-        <h2>Risks</h2>
+        <h2>5. Risks</h2>
         <p>
           You agree that you are responsible for your own conduct while accessing or using the App, and for any
           consequences thereof. The prices of blockchain assets are extremely volatile. Fluctuations in the price of
@@ -83,7 +84,7 @@ export default function TermsOfServicePage() {
           Network may have unintended, adverse effects on all blockchains using the SNIP-20 standard.
         </p>
 
-        <h2>External Sites</h2>
+        <h2>6. External Sites</h2>
         <p>
           The App may include hyperlinks to other websites or resources (collectively, "External Sites"), which are
           provided solely as a convenience to our users. We have no control over any External Sites. You acknowledge and
@@ -95,7 +96,7 @@ export default function TermsOfServicePage() {
           from, any External Sites.
         </p>
 
-        <h2>Changes to the Terms</h2>
+        <h2>7. Changes to the Terms</h2>
         <p>
           We may make changes to the Terms from time to time. Please check these Terms periodically for changes. Any
           changes to the Terms will apply on the date that they are made, and your continued access to or use of the App
@@ -103,7 +104,7 @@ export default function TermsOfServicePage() {
           to any revised Terms, you may not access or use the App.
         </p>
 
-        <h2>Changes to the App</h2>
+        <h2>8. Changes to the App</h2>
         <p>
           We are constantly innovating the App to help provide the best possible experience. You acknowledge and agree
           that the form and nature of the App, and any part of it, may change from time to time without prior notice to
