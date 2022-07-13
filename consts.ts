@@ -7,8 +7,8 @@ export const landingPageUrl = {
   openSource: '/#open-source',
   sponsors: '/#our-sponsors',
   team: '/#our-team',
+  terms: '/snip-20/terms-of-service',
   navbarLogo: '/',
-  // TODO: Update link to exact repository when ready
   github: 'https://github.com/atomiklabs/deploycontracts.io',
   createNewToken: createNewTokenPath,
   secretNetworkGrant: 'https://scrt.network/developers/grants',
