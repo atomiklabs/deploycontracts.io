@@ -14,6 +14,9 @@ export default function Footer() {
               <span className='text-gray-200 font-bold'>Atomik Labs</span>
             </a>
           </div>
+          <a href={landingPageUrl.terms} target='_blank'>
+            <span className='text-gray-200 font-bold'>Terms of Service</span>
+          </a>
           <a href={landingPageUrl.github} target='_blank'>
             <img src='/assets/github.svg' alt='github icon' width={31} height={37} />
           </a>
